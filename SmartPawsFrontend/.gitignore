@@ -29,6 +29,7 @@ yarn-error.*
 *.pem
 
 # local env files
+# JUST MAKING A CHANGE TO A COMMENT DELETE THIS COMMENT
 .env
 .env.development.local
 .env.test.local
