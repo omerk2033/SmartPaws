@@ -7,6 +7,7 @@ import { HomeScreenNavigationType } from "navigation/types";
 import { Controller, useForm } from "react-hook-form";
 import { IPet } from "../../types";
 import Input from "../../components/shared/input";
+import axiosInstance from "../../services/config";
 
 const RegPetScreen = () => {
     const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>()
@@ -17,7 +18,7 @@ const RegPetScreen = () => {
         formState: { errors },
     } = useForm<IPet>({
         defaultValues: {
-            ownerId: "",
+            ownerId: "123456",
             name: "",
             age: "",
             species: "",
@@ -41,6 +42,25 @@ const RegPetScreen = () => {
 
     const onSubmit = async (data: IPet) => {
         // need to implement saving pet profile to mongo...
+        try {
+            const { ownerId, name, age, 
+                species, breed, color,
+                gender, microchipIdTag, vaccinationRecords,
+                medsSupplements, allergiesSensitivities, prevIllnessesInjuries,
+                behaviorTemperament, diet, exerciseHabits, 
+                indoorOrOutdoor, reproductiveStatus, image,
+                notes  
+            } = data;
+            await savePetProfileToDatabase(ownerId, name, age, 
+                species, breed, color,
+                gender, microchipIdTag, vaccinationRecords,
+                medsSupplements, allergiesSensitivities, prevIllnessesInjuries,
+                behaviorTemperament, diet, exerciseHabits, 
+                indoorOrOutdoor, reproductiveStatus, image,
+                notes);
+        } catch (error) {
+            console.log("Error on submit pet profile", error);
+        }
     }
 
     return(
@@ -334,14 +354,64 @@ const RegPetScreen = () => {
                 />
                 <Box mb="6" />
 
-
-
                 <Box mb="5.5" />
-                <Button title="RegisterPet" />
+                <Button title="Register Pet" onPress={handleSubmit(onSubmit)}/>
             {/* </Box> */}
             </ScrollView>
         </SafeAreaWrapper>
     )
+}
+
+const savePetProfileToDatabase = async ( 
+    ownerId: string,
+    name: string,
+    age: string,
+    species: string,
+    breed: string,
+    color: string,
+    gender: string,
+    microchipIdTag: string,
+    vaccinationRecords: string,
+    medsSupplements: string,
+    allergiesSensitivities: string,
+    prevIllnessesInjuries: string,
+    behaviorTemperament: string,
+    diet: string,
+    exerciseHabits: string,
+    indoorOrOutdoor: string,
+    reproductiveStatus: string,
+    image: string,
+    notes: string,
+) => {
+    try {
+        console.log("hello from savePetProfileToDatabase function")
+        const response = await axiosInstance.post("pet/create", {
+            ownerId,
+            name,
+            age,
+            species,
+            breed,
+            color,
+            gender,
+            microchipIdTag,
+            vaccinationRecords,
+            medsSupplements,
+            allergiesSensitivities,
+            prevIllnessesInjuries,
+            behaviorTemperament,
+            diet,
+            exerciseHabits,
+            indoorOrOutdoor,
+            reproductiveStatus,
+            image,
+            notes,
+        });
+        console.log("Pet registered to MongoDB");
+        return response.data.pet;
+    } catch (error) {
+        console.log("error in savePetProfileToDatabase", error);
+        throw error;
+    }
 }
 
 export default RegPetScreen
