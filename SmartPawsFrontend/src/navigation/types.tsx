@@ -24,6 +24,8 @@ export type RootBottomTabParamList = {
 
 export type HomeStackParamList = {
     Home: undefined
+    // adding RegPet Screen 
+    RegPet: undefined
 }
 
 
