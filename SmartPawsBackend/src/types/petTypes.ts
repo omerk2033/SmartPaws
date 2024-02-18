@@ -1,7 +1,7 @@
 export interface IPet {
     ownerId: string
     name: string
-    age: number
+    age: string
     species: string
     breed: string
     color: string

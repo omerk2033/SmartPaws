@@ -55,5 +55,13 @@ export type RootTabScreenProps<Screen extends keyof RootBottomTabParamList> =
         NativeStackScreenProps<RootBottomTabParamList>
     >
 
-export type HomeScreenNavigationType =
-    NativeStackNavigationProp<HomeStackParamList>
+// export type HomeScreenNavigationType =
+//     NativeStackNavigationProp<HomeStackParamList>
+
+// trying to mimic the type of AuthScreenNavigationType for HomeScreen
+export type HomeScreenNavigationType<
+    RouteName extends keyof HomeStackParamList
+> = CompositeNavigationProp<
+    NativeStackNavigationProp<HomeStackParamList, RouteName>,
+    NativeStackNavigationProp<AppStackParamList, "Root">
+>
