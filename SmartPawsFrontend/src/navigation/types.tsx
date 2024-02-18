@@ -27,6 +27,8 @@ export type HomeStackParamList = {
     // adding RegPet Screen 
     RegPet: undefined
     // when user is logged out of firebase index.tsx will handle switching to welcome screen
+    Settings: undefined
+    // user clicks on the settings button in the header
 }
 
 

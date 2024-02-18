@@ -6,7 +6,7 @@ import {Box,  Text} from "../../utils/theme/style";
 import {useNavigation} from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import React from "react"
-import { Button, ScrollView } from "react-native";
+import {Button, Keyboard, ScrollView, TouchableWithoutFeedback} from "react-native";
 import { HomeScreenNavigationType } from "navigation/types";
 import { Controller, useForm } from "react-hook-form";
 import { IPet } from "../../types";
