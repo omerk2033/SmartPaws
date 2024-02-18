@@ -12,9 +12,23 @@ const Stack = createNativeStackNavigator<HomeStackParamList>()
 const HomeStackNavigator = () => {
     return (
         <Stack.Navigator>
-           <Stack.Screen name={"Home"} component={HomeScreen}/>
+           <Stack.Screen 
+                name={"Home"} 
+                options={{
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
+                }}    
+                component={HomeScreen}
+            />
            {/* adding register pet screen */}
-           <Stack.Screen name={"RegPet"} component={RegPetScreen}/>
+           <Stack.Screen 
+                name={"RegPet"} 
+                options={{
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
+                }}
+                component={RegPetScreen}
+            />
         </Stack.Navigator>
     )
 }

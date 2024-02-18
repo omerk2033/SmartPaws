@@ -14,21 +14,30 @@ const AuthStackNavigator = () => {
             <Stack.Screen
                 name="Welcome"
                 options={{
-                    headerShown: false,
+                    // changing to allow for back button option
+                    // headerShown: false,
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
                 }}
                 component={WelcomeScreen}
             />
             <Stack.Screen
                 name="SignIn"
                 options={{
-                    headerShown: false,
+                    // changing to allow for back button option
+                    // headerShown: false,
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
                 }}
                 component={SignInScreen}
             />
             <Stack.Screen
                 name="SignUp"
                 options={{
-                    headerShown: false,
+                    // changing to allow for back button option
+                    // headerShown: false,
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
                 }}
                 component={SignUpScreen}
             />

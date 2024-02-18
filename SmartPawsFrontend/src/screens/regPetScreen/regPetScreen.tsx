@@ -1,3 +1,7 @@
+// Register pet's information for the user that is logged in
+// displays all form fields for user to fill in
+// and then saves pet profile to database 
+
 import {Box,  Text} from "../../utils/theme/style";
 import {useNavigation} from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
@@ -13,7 +17,7 @@ import { getAuth } from 'firebase/auth';
 const RegPetScreen = () => {
     const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>()
 
-    // get current user's uid to associate user with their pets
+    // get current user's uid to associate user with their pets' profiles
     const auth = getAuth();  
     const currentUser = auth.currentUser;
     const ownerId = currentUser ? currentUser.uid : "";
@@ -48,7 +52,6 @@ const RegPetScreen = () => {
     })
 
     const onSubmit = async (data: IPet) => {
-        // need to implement saving pet profile to mongo...
         try {
             const { ownerId, name, age, 
                 species, breed, color,
@@ -78,7 +81,7 @@ const RegPetScreen = () => {
             <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
                 <Text>Register Pet Screen</Text>
                 
-                {/* need to get ownerId from the User's uid... */}
+                {/* have ownerId from currently logged in User's uid already */}
 
                 <Box mb="6" />
                 <Controller 
@@ -393,7 +396,6 @@ const savePetProfileToDatabase = async (
     notes: string,
 ) => {
     try {
-        console.log("hello from savePetProfileToDatabase function")
         const response = await axiosInstance.post("pet/create", {
             ownerId,
             name,

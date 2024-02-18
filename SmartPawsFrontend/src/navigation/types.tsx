@@ -26,6 +26,7 @@ export type HomeStackParamList = {
     Home: undefined
     // adding RegPet Screen 
     RegPet: undefined
+    // when user is logged out of firebase index.tsx will handle switching to welcome screen
 }
 
 
@@ -54,9 +55,6 @@ export type RootTabScreenProps<Screen extends keyof RootBottomTabParamList> =
         BottomTabScreenProps<RootBottomTabParamList, Screen>,
         NativeStackScreenProps<RootBottomTabParamList>
     >
-
-// export type HomeScreenNavigationType =
-//     NativeStackNavigationProp<HomeStackParamList>
 
 // trying to mimic the type of AuthScreenNavigationType for HomeScreen
 export type HomeScreenNavigationType<
