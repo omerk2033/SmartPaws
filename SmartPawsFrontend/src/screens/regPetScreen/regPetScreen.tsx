@@ -8,17 +8,24 @@ import { Controller, useForm } from "react-hook-form";
 import { IPet } from "../../types";
 import Input from "../../components/shared/input";
 import axiosInstance from "../../services/config";
+import { getAuth } from 'firebase/auth';
 
 const RegPetScreen = () => {
     const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>()
+
+    // get current user's uid to associate user with their pets
+    const auth = getAuth();  
+    const currentUser = auth.currentUser;
+    const ownerId = currentUser ? currentUser.uid : "";
 
     const {
         control,
         handleSubmit,
         formState: { errors },
+        reset,
     } = useForm<IPet>({
         defaultValues: {
-            ownerId: "123456",
+            ownerId: ownerId,
             name: "",
             age: "",
             species: "",
@@ -58,6 +65,8 @@ const RegPetScreen = () => {
                 behaviorTemperament, diet, exerciseHabits, 
                 indoorOrOutdoor, reproductiveStatus, image,
                 notes);
+
+            reset(); // reset all of the fields of the form now that pet profile has been saved to database
         } catch (error) {
             console.log("Error on submit pet profile", error);
         }
@@ -66,7 +75,7 @@ const RegPetScreen = () => {
     return(
         <SafeAreaWrapper>
             {/* <Box flex={1} px="5.5" mt={"13"}> */}
-            <ScrollView style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
+            <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
                 <Text>Register Pet Screen</Text>
                 
                 {/* need to get ownerId from the User's uid... */}
