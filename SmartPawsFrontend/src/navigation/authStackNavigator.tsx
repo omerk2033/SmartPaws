@@ -26,7 +26,10 @@ const AuthStackNavigator = () => {
             <Stack.Screen
                 name="Onboard1"
                 options={{
-                    headerShown: false,
+                    // changing to allow for back button option
+                    // headerShown: false,
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
                 }}
                 component={OnBoarding1}
             />
@@ -47,14 +50,20 @@ const AuthStackNavigator = () => {
             <Stack.Screen
                 name="SignIn"
                 options={{
-                    headerShown: false,
+                    // changing to allow for back button option
+                    // headerShown: false,
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
                 }}
                 component={SignInScreen}
             />
             <Stack.Screen
                 name="SignUp"
                 options={{
-                    headerShown: false,
+                    // changing to allow for back button option
+                    // headerShown: false,
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
                 }}
                 component={SignUpScreen}
             />

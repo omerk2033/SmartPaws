@@ -2,7 +2,7 @@ import { Box, Text } from "../../utils/theme/style";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthScreenNavigationType } from "../../navigation/types";
-import { Pressable } from "react-native";
+import { Pressable, TouchableWithoutFeedback, Keyboard, View } from "react-native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { Controller, useForm } from "react-hook-form";
 import { IUser } from "../../types";
@@ -45,78 +45,80 @@ const SignUpScreen = () => {
 
     return (
         <SafeAreaWrapper>
-            <Box flex={1} px="5.5" mt={"13"}>
-                <Text variant="textXl" fontWeight="700">
-                    Welcome to SmartPaws!
-                </Text>
-                <Text variant="textXl" fontWeight="700" mb="6">
-                    Memories start here
-                </Text>
-
-                <Controller
-                    control={control}
-                    rules={{
-                        required: true,
-                    }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <Input
-                            label="Name"
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                            placeholder="Name"
-                            error={errors.name}
-                        />
-                    )}
-                    name="name"
-                />
-                <Box mb="6" />
-                <Controller
-                    control={control}
-                    rules={{
-                        required: true,
-                    }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <Input
-                            label="Email"
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                            placeholder="Email"
-                            error={errors.email}
-                        />
-                    )}
-                    name="email"
-                />
-                <Box mb="6" />
-                <Controller
-                    control={control}
-                    rules={{
-                        required: true,
-                    }}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <Input
-                            label="Password"
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                            placeholder="Password"
-                            error={errors.password}
-                            secureTextEntry
-                        />
-                    )}
-                    name="password"
-                />
-                <Box mt="5.5" />
-                <Pressable onPress={navigateToSignInScreen}>
-                    <Text color="primary" textAlign="right">
-                        Log in?
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <Box flex={1} px="5.5" mt={"13"}>
+                    <Text variant="textXl" fontWeight="700">
+                        Welcome to SmartPaws!
                     </Text>
-                </Pressable>
-                <Box mb="5.5" />
+                    <Text variant="textXl" fontWeight="700" mb="6">
+                        Memories start here
+                    </Text>
 
-                <Button label="Register" onPress={handleSubmit(onSubmit)} uppercase />
-            </Box>
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: true,
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <Input
+                                label="Name"
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={value}
+                                placeholder="Name"
+                                error={errors.name}
+                            />
+                        )}
+                        name="name"
+                    />
+                    <Box mb="6" />
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: true,
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <Input
+                                label="Email"
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={value}
+                                placeholder="Email"
+                                error={errors.email}
+                            />
+                        )}
+                        name="email"
+                    />
+                    <Box mb="6" />
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: true,
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <Input
+                                label="Password"
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={value}
+                                placeholder="Password"
+                                error={errors.password}
+                                secureTextEntry
+                            />
+                        )}
+                        name="password"
+                    />
+                    <Box mt="5.5" />
+                    <Pressable onPress={navigateToSignInScreen}>
+                        <Text color="primary" textAlign="right">
+                            Log in?
+                        </Text>
+                    </Pressable>
+                    <Box mb="5.5" />
+
+                    <Button label="Register" onPress={handleSubmit(onSubmit)} uppercase />
+                </Box>
+            </TouchableWithoutFeedback>
         </SafeAreaWrapper>
     )
 }
