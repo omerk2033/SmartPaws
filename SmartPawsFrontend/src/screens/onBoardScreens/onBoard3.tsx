@@ -1,17 +1,21 @@
-import { useNavigation } from "@react-navigation/native"
-import { LinearGradient } from "expo-linear-gradient"
-import React from "react"
-import { Box, Text} from "../../utils/theme/style";
+import React from 'react'
+import {useNavigation} from "@react-navigation/native";
 import {AuthScreenNavigationType} from "../../navigation/types";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
+import {LinearGradient} from "expo-linear-gradient";
+import { Box, Text } from "../../utils/theme/style";
 import Button from "../../components/shared/button";
 
-const WelcomeScreen = () => {
+export default function OnBoarding3 (){
+
     const navigation = useNavigation<AuthScreenNavigationType<"Welcome">>()
     const navigateToSignUpScreen = () => {
         navigation.navigate("SignUp")
     }
 
+    const navigateToOnboard2Screen = () => {
+        navigation.navigate("Onboard2")
+    }
     return (
         <SafeAreaWrapper>
             <LinearGradient
@@ -38,6 +42,12 @@ const WelcomeScreen = () => {
                             onPress={navigateToSignUpScreen}
                         />
                     </Box>
+                    <Box my="3.5" mx="10">
+                        <Button
+                            label="Back"
+                            onPress={navigateToOnboard2Screen}
+                        />
+                    </Box>
                     <Text
                         textAlign="center"
                         variant="textXs"
@@ -50,6 +60,5 @@ const WelcomeScreen = () => {
             </LinearGradient>
         </SafeAreaWrapper>
     )
-}
 
-export default WelcomeScreen
+}

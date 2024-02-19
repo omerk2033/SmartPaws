@@ -13,6 +13,9 @@ export type AuthStackParamList = {
     Welcome: undefined
     SignIn: undefined
     SignUp: undefined
+    Onboard1: undefined
+    Onboard2: undefined
+    Onboard3: undefined
 }
 
 export type RootBottomTabParamList = {

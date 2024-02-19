@@ -1,8 +1,7 @@
-// require('dotenv').config();
 import axios from "axios"
 import * as SecureStore from "expo-secure-store"
 //import * as process from "process";
-export const BASE_URL = process.env["API_URL " as string]
+export const BASE_URL = ''
 const TIME_OUT = 3000
 export const SMART_PAWS_TOKEN = "smart_paws_token"
 
