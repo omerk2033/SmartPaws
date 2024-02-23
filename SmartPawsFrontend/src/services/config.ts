@@ -8,6 +8,7 @@ import * as SecureStore from "expo-secure-store"
 // export const BASE_URL = `http://IPADDRESS:1337/`
 
 
+
 const TIME_OUT = 3000
 export const SMART_PAWS_TOKEN = "smart_paws_token"
 
