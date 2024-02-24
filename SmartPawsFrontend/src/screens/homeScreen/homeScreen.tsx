@@ -16,7 +16,7 @@ import { BASE_URL } from "../../services/config";
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'RegPet'>
 
 const HomeScreen = () => {
-    const homeStackNavigation = useNavigation<HomeStackNavigationProps>()
+    const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
     const navigateToRegPetScreen = () => {
         homeStackNavigation.navigate('RegPet');
     }
@@ -60,6 +60,14 @@ const HomeScreen = () => {
         fetchPets();
     }, []);
 
+    const handlePetSelection = () => {
+        // need to navigate to pet profile screen
+        homeStackNavigation.navigate('PetProfile');
+    
+        // need to be able to have ownerId and pet's name 
+        // when the pet profile screen loads to be able to display the correct selected pet
+    }
+
     return(
         <SafeAreaWrapper>
             <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
@@ -76,7 +84,7 @@ const HomeScreen = () => {
                     </Box>
                     {pets.map((pet: IPet, index: number) => (
                         <Box key={index} mb="6">
-                            <Button title={pet.name} />
+                            <Button title={pet.name} onPress={handlePetSelection}/>
                         </Box>
                     ))}
                     {/* <Box mt={"5"} width={150} height={500}> */}

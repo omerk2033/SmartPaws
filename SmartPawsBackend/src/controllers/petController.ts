@@ -61,3 +61,7 @@ export const getPets = async (request: Request, response: Response) => {
         throw error
     }
 }
+
+export const getOnePet = async (request: Request, response: Response) => {
+    // ...
+}

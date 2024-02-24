@@ -32,6 +32,7 @@ export type HomeStackParamList = {
     // when user is logged out of firebase index.tsx will handle switching to welcome screen
     Settings: undefined
     // user clicks on the settings button in the header
+    PetProfile: undefined
 }
 
 export type AppStackParamList = {

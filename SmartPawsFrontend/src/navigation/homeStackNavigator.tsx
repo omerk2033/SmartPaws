@@ -8,6 +8,7 @@ import RegPetScreen from "../screens/regPetScreen/regPetScreen"
 import SettingsScreen from "../screens/settingsScreen/settingsScreen"
 import { TouchableOpacity, Text, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native"
+import PetProfileScreen from "../screens/petProfileScreen/petProfileScreen"
 
 const Stack = createNativeStackNavigator<HomeStackParamList>()
 
@@ -43,7 +44,7 @@ const HomeStackNavigator = () => {
                 }}    
                 component={HomeScreen}
             />
-           {/* adding register pet screen */}
+           {/* register pet screen */}
            <Stack.Screen 
                 name={"RegPet"} 
                 options={{
@@ -60,6 +61,14 @@ const HomeStackNavigator = () => {
                     headerBackTitleVisible: false,
                 }}
                 component={SettingsScreen}
+            />
+            <Stack.Screen 
+                name={"PetProfile"} 
+                options={{
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
+                }}
+                component={PetProfileScreen}
             />
         </Stack.Navigator>
     )
