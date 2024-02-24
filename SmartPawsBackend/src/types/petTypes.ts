@@ -6,12 +6,10 @@ export interface IPet {
     breed: string
     color: string
     gender: string
-    microchipIdTag: string
     vaccinationRecords: string
     medsSupplements: string
     allergiesSensitivities: string
     prevIllnessesInjuries: string
-    behaviorTemperament: string
     diet: string
     exerciseHabits: string
     indoorOrOutdoor: string

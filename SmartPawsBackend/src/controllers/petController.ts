@@ -1,20 +1,16 @@
-// import bcrypt from "bcrypt"
 import { Request, Response, request } from "express"
-// import jwt from "jsonwebtoken"
-// import { Types } from "mongoose"
 import Pet from "../models/petModel"
-// import { IPet } from "../types/petTypes"
-
-// getUserToken is used for logging in, not sure if necessary here...
 
 export const createPet = async (request: Request, response: Response) => {
     try {
         const { ownerId, name, age, 
                 species, breed, color, 
-                gender, microchipIdTag, vaccinationRecords, 
+                gender, vaccinationRecords, 
                 medsSupplements, allergiesSensitivities, prevIllnessesInjuries, 
-                behaviorTemperament, diet, exerciseHabits, 
+                diet, exerciseHabits, 
                 indoorOrOutdoor, reproductiveStatus, image, notes } = request.body
+        
+        // NOT SURE THAT THIS IS WORKING FOR CHECKING IF AN OWNER ALREADY HAS A PET WITH THE SAME NAME, NEED TO TEST...
         const existingPet = await Pet.findOne({ ownerId, name }) // check if the database already contains a pet with same ownerId and name
         if (existingPet) {
             return response.status(409).send("pet already exists")
@@ -31,12 +27,10 @@ export const createPet = async (request: Request, response: Response) => {
             breed: breed,
             color: color,
             gender: gender,
-            microchipIdTag: microchipIdTag, // DITCH
             vaccinationRecords: vaccinationRecords,
             medsSupplements: medsSupplements,
             allergiesSensitivities: allergiesSensitivities,
             prevIllnessesInjuries: prevIllnessesInjuries,
-            behaviorTemperament: behaviorTemperament, // DITCH
             diet: diet,
             exerciseHabits: exerciseHabits,
             indoorOrOutdoor: indoorOrOutdoor,
@@ -53,7 +47,7 @@ export const createPet = async (request: Request, response: Response) => {
     }
 }
 
-// need method similar to loginUser that would display pet(s)...
+// getPets is called in petRoutes.ts in the get request
 // sends request with ownerId specified like http://localhost:1337/pet/get/123456
 // and gets all pets that have same ownerId as currently logged in user's uid
 export const getPets = async (request: Request, response: Response) => {

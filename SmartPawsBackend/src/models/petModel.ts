@@ -26,9 +26,6 @@ const petSchema=new mongoose.Schema({
     gender: {
         type: String,
     },
-    microchipIdTag: { // DITCH
-        type: String,
-    },
     vaccinationRecords: {
         type: String,
         // perhaps image files could be uploaded...
@@ -42,9 +39,6 @@ const petSchema=new mongoose.Schema({
     prevIllnessesInjuries: {
         type: String,
     },
-    behaviorTemperament: { // DITCH
-        type: String,
-    },
     diet: {
         type: String,
     },
@@ -56,7 +50,6 @@ const petSchema=new mongoose.Schema({
     },
     reproductiveStatus: {
         type: String,
-        // (spayed/neutered or intact)
     },
     image: {
         type: String,

@@ -36,12 +36,10 @@ const RegPetScreen = () => {
             breed: "",
             color: "",
             gender: "",
-            microchipIdTag: "", // DITCH
             vaccinationRecords: "",
             medsSupplements: "",
             allergiesSensitivities: "",
             prevIllnessesInjuries: "",
-            behaviorTemperament: "", // DITCH
             diet: "",
             exerciseHabits: "",
             indoorOrOutdoor: "",
@@ -53,21 +51,20 @@ const RegPetScreen = () => {
 
     const onSubmit = async (data: IPet) => {
         try {
-            // NEED TO DITCH microchipIdTag, behaviorTemperament...  
             const { ownerId, name, age, 
                 species, breed, color,
-                gender, microchipIdTag, vaccinationRecords,
+                gender, vaccinationRecords,
                 medsSupplements, allergiesSensitivities, prevIllnessesInjuries,
-                behaviorTemperament, diet, exerciseHabits, 
+                diet, exerciseHabits, 
                 indoorOrOutdoor, reproductiveStatus, image,
                 notes  
             } = data;
-            // NEED TO DITCH microchipIdTag, behaviorTemperament...  
+
             await savePetProfileToDatabase(ownerId, name, age, 
                 species, breed, color,
-                gender, microchipIdTag, vaccinationRecords,
+                gender, vaccinationRecords,
                 medsSupplements, allergiesSensitivities, prevIllnessesInjuries,
-                behaviorTemperament, diet, exerciseHabits, 
+                diet, exerciseHabits, 
                 indoorOrOutdoor, reproductiveStatus, image,
                 notes);
 
@@ -193,22 +190,6 @@ const RegPetScreen = () => {
                     name="gender"
                 />
                 <Box mb="6" />
-                {/* DITCH */}
-                <Controller 
-                    control={control}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <Input 
-                            label="Microchip/ID Tag"
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                            placeholder="Pet Microchip/ID Tag"
-                            // error={errors.name}  
-                        />
-                    )}
-                    name="microchipIdTag"
-                />
-                <Box mb="6" />
                 <Controller 
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
@@ -267,22 +248,6 @@ const RegPetScreen = () => {
                         />
                     )}
                     name="prevIllnessesInjuries"
-                />
-                <Box mb="6" />
-                {/* DITCH */}
-                <Controller 
-                    control={control}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <Input 
-                            label="Behavior/Temperament"
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            value={value}
-                            placeholder="Pet Behavior/Temperament"
-                            // error={errors.name}  
-                        />
-                    )}
-                    name="behaviorTemperament"
                 />
                 <Box mb="6" />
                 <Controller 
@@ -393,12 +358,10 @@ const savePetProfileToDatabase = async (
     breed: string,
     color: string,
     gender: string,
-    microchipIdTag: string, // DITCH
     vaccinationRecords: string,
     medsSupplements: string,
     allergiesSensitivities: string,
     prevIllnessesInjuries: string,
-    behaviorTemperament: string, // DITCH
     diet: string,
     exerciseHabits: string,
     indoorOrOutdoor: string,
@@ -415,12 +378,10 @@ const savePetProfileToDatabase = async (
             breed,
             color,
             gender,
-            microchipIdTag, // DITCH
             vaccinationRecords,
             medsSupplements,
             allergiesSensitivities,
             prevIllnessesInjuries,
-            behaviorTemperament, // DITCH
             diet,
             exerciseHabits,
             indoorOrOutdoor,
