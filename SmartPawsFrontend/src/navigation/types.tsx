@@ -34,8 +34,6 @@ export type HomeStackParamList = {
     // user clicks on the settings button in the header
 }
 
-
-
 export type AppStackParamList = {
     Root: NavigatorScreenParams<RootBottomTabParamList>
     Settings: undefined
@@ -45,8 +43,6 @@ export type RootStackParamList = {
     AppStack: NavigatorScreenParams<AppStackParamList>
     AuthStack: NavigatorScreenParams<AuthStackParamList>
 }
-
-
 
 export type AuthScreenNavigationType<
     RouteName extends keyof AuthStackParamList

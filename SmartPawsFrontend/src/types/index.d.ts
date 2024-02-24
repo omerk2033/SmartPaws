@@ -6,6 +6,7 @@ interface IUser {
 }
 
 // adding pet interface
+// DITCH microchipIdTag, behaviorTemperament...  
 interface IPet {
     ownerId: string
     name: string

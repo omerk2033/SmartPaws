@@ -31,12 +31,12 @@ export const createPet = async (request: Request, response: Response) => {
             breed: breed,
             color: color,
             gender: gender,
-            microchipIdTag: microchipIdTag,
+            microchipIdTag: microchipIdTag, // DITCH
             vaccinationRecords: vaccinationRecords,
             medsSupplements: medsSupplements,
             allergiesSensitivities: allergiesSensitivities,
             prevIllnessesInjuries: prevIllnessesInjuries,
-            behaviorTemperament: behaviorTemperament,
+            behaviorTemperament: behaviorTemperament, // DITCH
             diet: diet,
             exerciseHabits: exerciseHabits,
             indoorOrOutdoor: indoorOrOutdoor,
@@ -54,3 +54,16 @@ export const createPet = async (request: Request, response: Response) => {
 }
 
 // need method similar to loginUser that would display pet(s)...
+// sends request with ownerId specified like http://localhost:1337/pet/get/123456
+// and gets all pets that have same ownerId as currently logged in user's uid
+export const getPets = async (request: Request, response: Response) => {
+    try {
+        const { ownerId } = request.params
+        const pets = await Pet.find({ ownerId })
+        console.log(pets)
+        return response.status(200).send(pets)
+    } catch (error) {
+        console.log("error in getPets", error)
+        throw error
+    }
+}

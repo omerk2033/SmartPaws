@@ -36,12 +36,12 @@ const RegPetScreen = () => {
             breed: "",
             color: "",
             gender: "",
-            microchipIdTag: "",
+            microchipIdTag: "", // DITCH
             vaccinationRecords: "",
             medsSupplements: "",
             allergiesSensitivities: "",
             prevIllnessesInjuries: "",
-            behaviorTemperament: "",
+            behaviorTemperament: "", // DITCH
             diet: "",
             exerciseHabits: "",
             indoorOrOutdoor: "",
@@ -53,6 +53,7 @@ const RegPetScreen = () => {
 
     const onSubmit = async (data: IPet) => {
         try {
+            // NEED TO DITCH microchipIdTag, behaviorTemperament...  
             const { ownerId, name, age, 
                 species, breed, color,
                 gender, microchipIdTag, vaccinationRecords,
@@ -61,6 +62,7 @@ const RegPetScreen = () => {
                 indoorOrOutdoor, reproductiveStatus, image,
                 notes  
             } = data;
+            // NEED TO DITCH microchipIdTag, behaviorTemperament...  
             await savePetProfileToDatabase(ownerId, name, age, 
                 species, breed, color,
                 gender, microchipIdTag, vaccinationRecords,
@@ -70,6 +72,9 @@ const RegPetScreen = () => {
                 notes);
 
             reset(); // reset all of the fields of the form now that pet profile has been saved to database
+            
+            // SHOULD NAVIGATE BACK TO USER'S HOME PAGE AND DISPLAY NEWLY REGISTERED PET WITH OTHERS...
+        
         } catch (error) {
             console.log("Error on submit pet profile", error);
         }
@@ -109,7 +114,8 @@ const RegPetScreen = () => {
                         validate: value => {
                             const floatAge = parseFloat(value);
                             return Number.isFinite(floatAge) && floatAge >= 0;
-                        }
+                        },
+                        required: true,
                     }}
                     render={({ field: { onChange, onBlur, value } }) => (
                         <Input 
@@ -126,6 +132,9 @@ const RegPetScreen = () => {
                 <Box mb="6" />
                 <Controller 
                     control={control}
+                    rules={{
+                        required: true,
+                    }}
                     render={({ field: { onChange, onBlur, value } }) => (
                         <Input 
                             label="Species (dog, cat, bird, etc.)"
@@ -148,7 +157,7 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Breed"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="breed"
@@ -163,7 +172,7 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Color"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="color"
@@ -178,12 +187,13 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Gender"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="gender"
                 />
                 <Box mb="6" />
+                {/* DITCH */}
                 <Controller 
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
@@ -193,7 +203,7 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Microchip/ID Tag"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="microchipIdTag"
@@ -208,7 +218,7 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Vaccination Records"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="vaccinationRecords"
@@ -223,7 +233,7 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Medications/Supplements"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="medsSupplements"
@@ -238,7 +248,7 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Allergies/Sensitivities"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="allergiesSensitivities"
@@ -253,12 +263,13 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Previous Illnesses/Injuries/Surgeries"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="prevIllnessesInjuries"
                 />
                 <Box mb="6" />
+                {/* DITCH */}
                 <Controller 
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
@@ -268,7 +279,7 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Behavior/Temperament"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="behaviorTemperament"
@@ -283,7 +294,7 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Diet"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="diet"
@@ -298,7 +309,7 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Exercise Habits"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="exerciseHabits"
@@ -313,7 +324,7 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Indoor/Outdoor"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="indoorOrOutdoor"
@@ -328,7 +339,7 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Reproductive Status"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="reproductiveStatus"
@@ -344,7 +355,7 @@ const RegPetScreen = () => {
                             // image is currently just a string need to figure out about images...
                             value={value}
                             placeholder="Pet Image"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="image"
@@ -359,7 +370,7 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Notes"
-                            error={errors.name}  
+                            // error={errors.name}  
                         />
                     )}
                     name="notes"
@@ -382,12 +393,12 @@ const savePetProfileToDatabase = async (
     breed: string,
     color: string,
     gender: string,
-    microchipIdTag: string,
+    microchipIdTag: string, // DITCH
     vaccinationRecords: string,
     medsSupplements: string,
     allergiesSensitivities: string,
     prevIllnessesInjuries: string,
-    behaviorTemperament: string,
+    behaviorTemperament: string, // DITCH
     diet: string,
     exerciseHabits: string,
     indoorOrOutdoor: string,
@@ -404,12 +415,12 @@ const savePetProfileToDatabase = async (
             breed,
             color,
             gender,
-            microchipIdTag,
+            microchipIdTag, // DITCH
             vaccinationRecords,
             medsSupplements,
             allergiesSensitivities,
             prevIllnessesInjuries,
-            behaviorTemperament,
+            behaviorTemperament, // DITCH
             diet,
             exerciseHabits,
             indoorOrOutdoor,
@@ -420,6 +431,7 @@ const savePetProfileToDatabase = async (
         console.log("Pet registered to MongoDB");
         return response.data.pet;
     } catch (error) {
+        // THIS CATCH BLOCK IS NOT ENTERED WHEN USER SUBMITS FORM WITH MISSING REQUIRED FIELDS
         console.log("error in savePetProfileToDatabase", error);
         throw error;
     }

@@ -13,7 +13,7 @@ const connectToDatabase = async () => {
         if(connection){
             console.log("Mongoose connected!")
         }
-
+        // application imported from app.ts signifies the initial routes for /user and /pet
         application.listen(port, ()=> {
             console.log("Server running: " + port);
         });

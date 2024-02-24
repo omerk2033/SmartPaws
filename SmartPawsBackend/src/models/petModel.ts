@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const petSchema=new mongoose.Schema({
     ownerId: {
         type: String,
+        required: true,
     },
     name: {
         type: String,
@@ -10,6 +11,7 @@ const petSchema=new mongoose.Schema({
     },
     age: {
         type: Number,
+        required: true,
     },
     species: {
         type: String,
@@ -24,7 +26,7 @@ const petSchema=new mongoose.Schema({
     gender: {
         type: String,
     },
-    microchipIdTag: {
+    microchipIdTag: { // DITCH
         type: String,
     },
     vaccinationRecords: {
@@ -40,7 +42,7 @@ const petSchema=new mongoose.Schema({
     prevIllnessesInjuries: {
         type: String,
     },
-    behaviorTemperament: {
+    behaviorTemperament: { // DITCH
         type: String,
     },
     diet: {
