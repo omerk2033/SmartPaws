@@ -20,13 +20,13 @@ export type AuthStackParamList = {
 
 export type RootBottomTabParamList = {
     HomeStack: NavigatorScreenParams<HomeStackParamList>
-    Today: undefined
-    Completed: undefined
-  //  CategoriesStack: NavigatorScreenParams<CategoriesStackParamList>
+    AiStack: NavigatorScreenParams<AiStackParamList>
+    JournalStack: NavigatorScreenParams<JournalStackParamList>
+    ProfileStack: NavigatorScreenParams<ProfileStackParamList>
 }
 
 export type HomeStackParamList = {
-    Home: undefined
+
     // adding RegPet Screen 
     RegPet: undefined
     // when user is logged out of firebase index.tsx will handle switching to welcome screen
@@ -34,6 +34,29 @@ export type HomeStackParamList = {
     // user clicks on the settings button in the header
     PetProfile: undefined
 }
+
+export type ProfileStackParamList = {
+    Profile: undefined;
+    EditProfile: undefined;
+    ChangePassword: undefined;
+    Notifications: undefined;
+    PrivacySettings: undefined;
+    Settings: undefined;
+    About: undefined;
+    Help: undefined;
+    Feedback: undefined;
+    Logout: undefined;
+};
+
+
+export type AiStackParamList = {
+    aiScreen: undefined
+}
+
+export type JournalStackParamList = {
+    journal: undefined
+}
+
 
 export type AppStackParamList = {
     Root: NavigatorScreenParams<RootBottomTabParamList>
