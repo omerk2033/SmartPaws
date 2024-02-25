@@ -1,17 +1,16 @@
 // User's home screen shows already registered pets, button to register a new pet
 
-import {Box,  Text} from "../../utils/theme/style";
-import {useNavigation} from "@react-navigation/native";
+import { Box, Text } from "../../utils/theme/style";
+import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { Button, ScrollView, View, StyleSheet } from "react-native";
-import {HomeStackParamList} from "../../navigation/types";
+import { HomeStackParamList } from "../../navigation/types";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { getAuth, signOut } from 'firebase/auth';
 
 import React, { useEffect, useState } from "react";
 import { IPet, IUser } from "../../types";
 import { BASE_URL } from "../../services/config";
-
 
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'RegPet'>
 
@@ -60,12 +59,18 @@ const HomeScreen = () => {
         fetchPets();
     }, []);
 
-    const handlePetSelection = () => {
-        // need to navigate to pet profile screen
-        homeStackNavigation.navigate('PetProfile');
-    
-        // need to be able to have ownerId and pet's name 
-        // when the pet profile screen loads to be able to display the correct selected pet
+    const handlePetSelection = (pet: IPet) => {
+        console.log(pet.name);
+        // get pet name passed in from button associated with the pet
+        const petName = pet.name;
+        // navigate to pet profile screen
+        // get current user's uid to associate user with their pets' profiles
+        const auth = getAuth();  
+        const currentUser = auth.currentUser;
+        const ownerId = currentUser ? currentUser.uid : "";
+
+        // navigate to PetProfile screen with parameters needed to find/display pet
+        homeStackNavigation.navigate('PetProfile', { ownerId, petName });
     }
 
     // get user's name from mongo to display on their home screen
@@ -106,7 +111,8 @@ const HomeScreen = () => {
                     </Box>
                     {pets.map((pet: IPet, index: number) => (
                         <Box key={index} mb="6">
-                            <Button title={pet.name} onPress={handlePetSelection}/>
+                            {/* send pet object to handlePetSelection to be able to access which pet has been selected */}
+                            <Button title={pet.name} onPress={() => handlePetSelection(pet)}/>
                         </Box>
                     ))}
                     {/* <Box mt={"5"} width={150} height={500}> */}
