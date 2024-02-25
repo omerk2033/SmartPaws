@@ -5,7 +5,6 @@ import * as SecureStore from "expo-secure-store"
 //  export const BASE_URL = process.env["API_URL " as string]
 // to get rid of network error directly inputting ip address here 
 // but need to figure out concealing ip address...
-// export const BASE_URL = `http://IPADDRESS:1337/`
 export const BASE_URL = `http://IPADDRESS:1337/`
 
 
