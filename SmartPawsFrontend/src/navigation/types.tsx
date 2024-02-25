@@ -33,7 +33,7 @@ export type HomeStackParamList = {
     Settings: undefined
     // user clicks on the settings button in the header
     PetProfile: undefined
-    Home: undefined
+    // Home: undefined
 }
 
 export type ProfileStackParamList = {
