@@ -62,6 +62,7 @@ const HomeStackNavigator = () => {
                 }}
                 component={SettingsScreen}
             />
+            {/* user selects pet from home screen */}
             <Stack.Screen 
                 name={"PetProfile"} 
                 options={{

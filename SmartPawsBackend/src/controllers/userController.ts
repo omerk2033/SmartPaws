@@ -70,3 +70,16 @@ export const loginUser = async (request: Request, response: Response) => {
         throw error
     }
 }
+
+// API to handle getting User data
+export const getUser = async (request: Request, response: Response) => {
+    try {
+        const { uid } = request.params
+        const user = await User.findOne({ uid })
+        console.log(user)
+        return response.status(200).send(user)
+    } catch (error) {
+        console.log("Error in getUser", error)
+        throw error
+    }
+}

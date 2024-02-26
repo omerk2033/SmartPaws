@@ -4,6 +4,9 @@ import Navigation from "./src/navigation";
 import {SafeAreaContext, SafeAreaProvider} from "react-native-safe-area-context";
 import {SWRConfig} from "swr";
 import {AppState} from "react-native";
+import { LogBox } from 'react-native'; // to suppress firebase warnings displayed on screen 
+
+LogBox.ignoreLogs(['@firebase/auth']); // to suppress firebase warnings displayed on screen
 
 export default function App() {
 

@@ -62,6 +62,15 @@ export const getPets = async (request: Request, response: Response) => {
     }
 }
 
+// get pet based on ownerId and pet name
 export const getOnePet = async (request: Request, response: Response) => {
-    // ...
+    try {
+        const { ownerId, petName } = request.params
+        const pet = await Pet.findOne({ "ownerId": ownerId, "name": petName })
+        console.log(pet)
+        return response.status(200).send(pet)
+    } catch (error) {
+        console.log("error in getOnePet")
+        throw error
+    }
 }
