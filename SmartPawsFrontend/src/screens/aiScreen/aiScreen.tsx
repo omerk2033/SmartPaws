@@ -1,52 +1,49 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, TextInput, Button, Text, Alert } from 'react-native';
+import { BASE_URL } from "../../services/config";
 
-const AiScreen = () => {
+const AIScreen = () => {
+    const [inputText, setInputText] = useState('');
+    const [responseText, setResponseText] = useState('');
+
+    const handleSendRequest = async () => {
+        try {
+
+            const response = await fetch(BASE_URL + '/user/chatGPT', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ input: inputText }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch: ' + response.body);
+            }
+
+            const data = await response.json();
+            console.log(data.message.content)
+            setResponseText(data.message.content); // Assuming your server responds with a JSON object containing the response
+
+        } catch (error) {
+            console.error('Error:', error);
+            Alert.alert('Error', 'Failed to send request');
+        }
+    };
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Welcome to PetTracker!</Text>
-            <Text style={styles.subtitle}>Your Pet's Personalized Companion</Text>
-            <View style={styles.card}>
-                <Text style={styles.cardTitle}>Today's Summary</Text>
-                {/* Display summary of pet's activities, health stats, etc. */}
-            </View>
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <TextInput
+                style={{ height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, paddingHorizontal: 10 }}
+                placeholder="Enter your input"
+                onChangeText={setInputText}
+                value={inputText}
+            />
+            <Button title="Send Request" onPress={handleSendRequest} />
+            <Text>{responseText}</Text>
         </View>
     );
 };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#ffffff',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    subtitle: {
-        fontSize: 18,
-        color: '#888888',
-        marginBottom: 20,
-    },
-    card: {
-        width: '80%',
-        padding: 20,
-        borderRadius: 10,
-        backgroundColor: '#f0f0f0',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-        elevation: 3,
-    },
-    cardTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 10,
-    },
-});
 
-export default AiScreen;
+export default AIScreen;

@@ -2,7 +2,6 @@ import application from "./app";
 import env from "./util/validateEnv";
 import * as mongoose from "mongoose";
 const port = env.PORT
-
 // Connects to MongoDB Database and Starts development server.
 const connectToDatabase = async () => {
 
@@ -22,8 +21,6 @@ const connectToDatabase = async () => {
 
 
 }
-
-
 
 
 export default connectToDatabase()
