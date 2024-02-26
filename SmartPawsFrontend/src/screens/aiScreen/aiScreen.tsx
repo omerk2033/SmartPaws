@@ -9,7 +9,7 @@ const AIScreen = () => {
     const handleSendRequest = async () => {
         try {
 
-            const response = await fetch(BASE_URL + '/user/chatGPT', {
+            const response = await fetch(BASE_URL + 'user/chatGPT', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

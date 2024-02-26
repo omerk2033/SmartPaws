@@ -43,8 +43,8 @@ const HomeScreen = () => {
 
             // make get request to backend with ownerId of currently logged in user
             // to get all of user's pets
-            console.log(BASE_URL + '/pet/get/' + ownerId);
-            const response = await fetch(BASE_URL + '/pet/get/' + ownerId);
+            console.log(BASE_URL + 'pet/get/' + ownerId);
+            const response = await fetch(BASE_URL + 'pet/get/' + ownerId);
             const data = await response.json();
             setPets(data);
 
