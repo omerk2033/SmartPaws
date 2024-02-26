@@ -27,6 +27,7 @@ export type RootBottomTabParamList = {
 
 export type HomeStackParamList = {
 
+    Home: undefined
     // adding RegPet Screen 
     RegPet: undefined
     // when user is logged out of firebase index.tsx will handle switching to welcome screen
