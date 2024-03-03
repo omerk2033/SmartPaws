@@ -1,8 +1,8 @@
 import {Box,  Text} from "../../utils/theme/style";
 import {useNavigation} from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import { Button, ScrollView, View } from "react-native";
-import {HomeStackParamList} from "../../navigation/types";
+import { Alert, Button, ScrollView, View } from "react-native";
+import {HomeScreenNavigationType, HomeStackParamList} from "../../navigation/types";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { getAuth, signOut } from 'firebase/auth';
 
@@ -19,6 +19,8 @@ type Props = {
 
 const PetProfileScreen: React.FC<Props> = ({ route }) => {
     const { ownerId, petName } = route.params;
+
+    const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>()
 
     // get pet object from mongo to display all of their characteristics
     const [pet, setPet] = useState<IPet>();
@@ -37,6 +39,21 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
             console.log("Error in fetchPet", error);
         } finally { // set isLoading to false to move on to rendering on screen
             setIsLoading(false);
+        }
+    }
+
+    const deletePet = async (ownerId: string, petName: string) => {
+        try {
+            console.log(BASE_URL + 'pet/delete/' + ownerId + '/' + petName);
+            const response = await fetch(BASE_URL + 'pet/delete/' + ownerId + '/' + petName, {
+                method: 'DELETE'
+            });
+            const data = await response.json();
+            console.log(data);
+            navigation.goBack(); // go back to home page since deleted this pet
+            
+        } catch (error) {
+            console.log("Error in deletePet", error);
         }
     }
 
@@ -69,6 +86,26 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
                 <Text>{ "Image: " + pet?.image }</Text>
                 <Text>{ "Notes: " + pet?.notes }</Text>
             </Box>
+            {/* delete pet button with alert cautioning user */}
+            <Button
+                    title="Delete Pet"
+                    onPress={() => {
+                        Alert.alert(
+                            "Are you sure you want to delete this pet?",
+                            "This action cannot be undone.",
+                            [
+                                {
+                                    text: "Cancel",
+                                    style: "cancel"
+                                },
+                                {
+                                    text: "Delete",
+                                    onPress: () => deletePet(ownerId, petName)
+                                }
+                            ]
+                        )
+                    }}
+                />
         </ScrollView>
     </SafeAreaWrapper>
 

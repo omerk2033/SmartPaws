@@ -74,3 +74,20 @@ export const getOnePet = async (request: Request, response: Response) => {
         throw error
     }
 }
+
+// delete pet based on ownerId and pet name
+export const deleteOnePet = async (request: Request, response: Response) => {
+    try {
+        const { ownerId, petName } = request.params
+        const pet = await Pet.findOneAndDelete({ "ownerId": ownerId, "name": petName });
+        console.log(pet)
+        if (!pet) {
+            return response.status(400).json("Pet not found")
+        }
+        response.status(200).json("Pet deleted successfully")
+        console.log("pet deleted from database")
+    } catch (error) {
+        console.log("error in deleteOnePet")
+        throw error
+    }
+}
