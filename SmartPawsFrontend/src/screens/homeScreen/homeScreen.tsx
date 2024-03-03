@@ -11,9 +11,13 @@ import React, { useEffect, useState } from "react";
 import { IPet, IUser } from "../../types";
 import { BASE_URL } from "../../services/config";
 
+import { useIsFocused } from "@react-navigation/native";
+
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'RegPet'>
 
 const HomeScreen = () => {
+    const isFocused = useIsFocused();
+
     const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
     const navigateToRegPetScreen = () => {
         homeStackNavigation.navigate('RegPet');
@@ -43,20 +47,21 @@ const HomeScreen = () => {
 
             // make get request to backend with ownerId of currently logged in user
             // to get all of user's pets
+            console.log("fetchPets called");
             console.log(BASE_URL + 'pet/get/' + ownerId);
             const response = await fetch(BASE_URL + 'pet/get/' + ownerId);
             const data = await response.json();
             setPets(data);
-
             console.log(pets);
         } catch (error) {
             console.error("Error fetching pets", error);
         }
     };    
 
+    // use react native useIsFocused to trigger database fetch each time page is refocused
     useEffect(() => {
         fetchPets();
-    }, []);
+    }, [isFocused]); 
 
     const handlePetSelection = (pet: IPet) => {
         console.log(pet.name);
