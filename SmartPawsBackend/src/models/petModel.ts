@@ -54,6 +54,9 @@ const petSchema=new mongoose.Schema({
     image: {
         type: String,
         // need to figure out about handling an image file...
+        // type: Buffer,
+        // saving to some cloud storage and then saving the url to that cloud storage is recommended
+        // instead of saving to Buffer and then saving in mongo
     },
     notes: {
         type: String,

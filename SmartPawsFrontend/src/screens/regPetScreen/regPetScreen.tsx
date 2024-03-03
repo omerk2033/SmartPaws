@@ -5,14 +5,16 @@
 import {Box,  Text} from "../../utils/theme/style";
 import {useNavigation} from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import React from "react"
-import {Button, Keyboard, ScrollView, TouchableWithoutFeedback} from "react-native";
+import React, { useState } from "react"
+import {Button, Keyboard, ScrollView, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, View} from "react-native";
 import { HomeScreenNavigationType } from "navigation/types";
 import { Controller, useForm } from "react-hook-form";
 import { IPet } from "../../types";
 import Input from "../../components/shared/input";
 import axiosInstance from "../../services/config";
 import { getAuth } from 'firebase/auth';
+
+import * as ImagePicker from 'expo-image-picker';
 
 const RegPetScreen = () => {
     const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>()
@@ -44,7 +46,8 @@ const RegPetScreen = () => {
             exerciseHabits: "",
             indoorOrOutdoor: "",
             reproductiveStatus: "",
-            image: "",
+            // image: "",
+            image: undefined,
             notes: "",
         },
     })
@@ -71,7 +74,6 @@ const RegPetScreen = () => {
             reset(); // reset all of the fields of the form now that pet profile has been saved to database
             
             // navigate back to user's home page 
-            // NEED TO ALSO HAVE NEW PET UPDATED TO BE DISPLAYED WITHOUT HAVING TO LOG OUT AND BACK IN
             navigation.navigate("Home");
         } catch (error) {
             console.log("Error on submit pet profile", error);
@@ -343,8 +345,19 @@ const RegPetScreen = () => {
                 />
                 <Box mb="6" />
 
-                <Box mb="5.5" />
+                {/* <Box mb="5.5" /> */}
+
+                {/* upload image of pet option */}
+                {/* not currently being saved anywhere... */}
+                <View style={styles.container}>
+                    <Text>Upload Pet Photo</Text>
+                    <UploadImage />
+                </View>
+
                 <Button title="Register Pet" onPress={handleSubmit(onSubmit)}/>
+                
+                <Box mb="5.5" />
+                
             {/* </Box> */}
             </ScrollView>
         </SafeAreaWrapper>
@@ -398,5 +411,63 @@ const savePetProfileToDatabase = async (
         throw error;
     }
 }
+
+// upload image...
+// able to access user's files if they allow it 
+// but not saving anywhere currently...
+const UploadImage = () => {
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    const pickImageAsync = async () => {
+      try {
+        const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+            alert('Sorry, we need camera roll permissions to make this work!');
+            return;
+        } else {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: false,
+                quality: 1,
+            });
+            if (!result.canceled) {
+                setSelectedImage(result.assets[0].uri);
+            }
+        }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+    
+    return <TouchableOpacity style={uploadPhotoStyles.container} onPress={pickImageAsync} >
+        <Text>+</Text>
+    </TouchableOpacity>
+}
+
+// upload pet image styles
+const uploadPhotoStyles = StyleSheet.create({
+    container: {
+        height: 56,
+        width: 56,
+        borderRadius: 28,
+        backgroundColor: 'lightblue',
+        alignItems: 'center',
+        justifyContent: 'center',
+        shadowColor: '#000',
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.2,
+        elevation: 2,
+        marginBottom: 16
+    }
+});
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+});
 
 export default RegPetScreen

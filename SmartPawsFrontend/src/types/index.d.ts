@@ -22,6 +22,7 @@ interface IPet {
     indoorOrOutdoor: string
     reproductiveStatus: string
     image: string
+    // image: File
     notes: string
 }
 
