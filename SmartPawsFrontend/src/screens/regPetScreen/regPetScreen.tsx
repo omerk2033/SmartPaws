@@ -70,8 +70,9 @@ const RegPetScreen = () => {
 
             reset(); // reset all of the fields of the form now that pet profile has been saved to database
             
-            // SHOULD NAVIGATE BACK TO USER'S HOME PAGE AND DISPLAY NEWLY REGISTERED PET WITH OTHERS...
-        
+            // navigate back to user's home page 
+            // NEED TO ALSO HAVE NEW PET UPDATED TO BE DISPLAYED WITHOUT HAVING TO LOG OUT AND BACK IN
+            navigation.navigate("Home");
         } catch (error) {
             console.log("Error on submit pet profile", error);
         }
