@@ -12,6 +12,8 @@ import { BASE_URL } from "../../services/config";
 
 // RouteProp provides ability to receive parameters from previous screen homeScreen.tsx 
 import { RouteProp } from '@react-navigation/native';
+import { Controller } from "react-hook-form";
+import Input from "components/shared/input";
 
 type Props = {
     route: RouteProp<HomeStackParamList, 'PetProfile'>;

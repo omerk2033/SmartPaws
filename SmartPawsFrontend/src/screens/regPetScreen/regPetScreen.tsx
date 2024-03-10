@@ -6,7 +6,7 @@ import {Box,  Text} from "../../utils/theme/style";
 import {useNavigation} from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import React, { useState } from "react"
-import {Button, Keyboard, ScrollView, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, View} from "react-native";
+import {Button, Keyboard, ScrollView, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, View, Platform} from "react-native";
 import { HomeScreenNavigationType } from "navigation/types";
 import { Controller, useForm } from "react-hook-form";
 import { IPet } from "../../types";
@@ -15,6 +15,10 @@ import axiosInstance from "../../services/config";
 import { getAuth } from 'firebase/auth';
 
 import * as ImagePicker from 'expo-image-picker';
+import { firebase } from "@react-native-firebase/auth";
+
+import { FIREBASE_STORAGE } from "../../services/firebase";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
 const RegPetScreen = () => {
     const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>()
@@ -23,7 +27,7 @@ const RegPetScreen = () => {
     const auth = getAuth();  
     const currentUser = auth.currentUser;
     const ownerId = currentUser ? currentUser.uid : "";
-
+    
     const {
         control,
         handleSubmit,
@@ -46,13 +50,27 @@ const RegPetScreen = () => {
             exerciseHabits: "",
             indoorOrOutdoor: "",
             reproductiveStatus: "",
-            // image: "",
-            image: undefined,
+            image: "",
             notes: "",
         },
-    })
+    });
 
+    // need to be able to useState in order to update the pet profile image url when 
+    // received from user selecting picture to upload outside of react hook form
+    const [imageUrl, setImageUrl] = useState<string | null>("");
+    
     const onSubmit = async (data: IPet) => {
+        // imageUrl was set in UploadImage function
+        // need to make sure that data for the pet profile that we're about to save
+        // is updated before submitting to database
+        if(imageUrl != null) {
+            data.image = imageUrl;
+        }
+
+        // just printing
+        console.log("onSubmit function");
+        console.log(data); 
+
         try {
             const { ownerId, name, age, 
                 species, breed, color,
@@ -313,22 +331,7 @@ const RegPetScreen = () => {
                     name="reproductiveStatus"
                 />
                 <Box mb="6" />
-                <Controller 
-                    control={control}
-                    render={({ field: { onChange, onBlur, value } }) => (
-                        <Input 
-                            label="Image"
-                            onBlur={onBlur}
-                            onChangeText={onChange}
-                            // image is currently just a string need to figure out about images...
-                            value={value}
-                            placeholder="Pet Image"
-                            // error={errors.name}  
-                        />
-                    )}
-                    name="image"
-                />
-                <Box mb="6" />
+                {/* CAN REMOVE IMAGE TEXT BOX SINCE UPLOADING WITH + BUTTON... */}
                 <Controller 
                     control={control}
                     render={({ field: { onChange, onBlur, value } }) => (
@@ -345,13 +348,12 @@ const RegPetScreen = () => {
                 />
                 <Box mb="6" />
 
-                {/* <Box mb="5.5" /> */}
-
                 {/* upload image of pet option */}
-                {/* not currently being saved anywhere... */}
+                {/* now being saved to firebase right away in UploadImage function before REGISTER PET is pressed */}
                 <View style={styles.container}>
                     <Text>Upload Pet Photo</Text>
-                    <UploadImage />
+                    {/* setImageUrl passed in to be able to useState and update the pet profile being created in the form */}
+                    <UploadImage setImageUrl={setImageUrl} />
                 </View>
 
                 <Button title="Register Pet" onPress={handleSubmit(onSubmit)}/>
@@ -412,10 +414,10 @@ const savePetProfileToDatabase = async (
     }
 }
 
-// upload image...
+// upload pet image
 // able to access user's files if they allow it 
-// but not saving anywhere currently...
-const UploadImage = () => {
+// saving to firebase and generating url to save as image url
+const UploadImage = ({ setImageUrl }: { setImageUrl: (url: string | null) => void }) => {
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
     const pickImageAsync = async () => {
@@ -432,6 +434,21 @@ const UploadImage = () => {
             });
             if (!result.canceled) {
                 setSelectedImage(result.assets[0].uri);
+                // upload user's selected image to firebase
+                // CURRENTLY ALWAYS SAVING AS FILENAME default_filename WHICH OVERWRITES THE PREEXISTING FILE
+                // NEED TO FIGURE OUT THE NAMING THING...
+                const fileRef = ref(FIREBASE_STORAGE, result.assets[0]?.fileName ?? 'default_filename');
+                const response = await fetch(result.assets[0].uri);
+                const blob = await response.blob();
+                uploadBytesResumable(fileRef, blob)
+                .then((snapshot) => {
+                    getDownloadURL(snapshot.ref)
+                    .then((downloadUrl) => {
+                        console.log(downloadUrl);
+                        // set imageUrl to be able to update pet profile that you are saving to mongo
+                        setImageUrl(downloadUrl);
+                    })
+                })
             }
         }
         } catch (error) {
