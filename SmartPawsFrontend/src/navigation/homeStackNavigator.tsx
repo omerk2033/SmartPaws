@@ -1,14 +1,15 @@
 // All screens shown in the homestack.
 
-import { NativeStackNavigationProp, createNativeStackNavigator } from "@react-navigation/native-stack"
-import React from "react"
-import {HomeStackParamList} from "./types"
-import HomeScreen from "../screens/homeScreen/homeScreen"
-import RegPetScreen from "../screens/regPetScreen/regPetScreen"
-import SettingsScreen from "../screens/settingsScreen/settingsScreen"
+import { NativeStackNavigationProp, createNativeStackNavigator } from "@react-navigation/native-stack";
+import React from "react";
+import {HomeStackParamList} from "./types";
+import HomeScreen from "../screens/homeScreen/homeScreen";
+import RegPetScreen from "../screens/regPetScreen/regPetScreen";
+import SettingsScreen from "../screens/settingsScreen/settingsScreen";
 import { TouchableOpacity, Text, Image } from "react-native";
-import { useNavigation } from "@react-navigation/native"
-import PetProfileScreen from "../screens/petProfileScreen/petProfileScreen"
+import { useNavigation } from "@react-navigation/native";
+import PetProfileScreen from "../screens/petProfileScreen/petProfileScreen";
+import UpdatePetScreen from "../screens/updatePetScreen/updatePetScreen";
 
 const Stack = createNativeStackNavigator<HomeStackParamList>()
 
@@ -70,6 +71,15 @@ const HomeStackNavigator = () => {
                     headerBackTitleVisible: false,
                 }}
                 component={PetProfileScreen}
+            />
+            {/* user selects to update pet profile from pet profile screen */}
+            <Stack.Screen 
+                name={"UpdatePet"}
+                options={{
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
+                }}
+                component={UpdatePetScreen}
             />
         </Stack.Navigator>
     )

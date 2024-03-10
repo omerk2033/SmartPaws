@@ -1,34 +1,37 @@
-// Register pet's information for the user that is logged in
-// displays all form fields for user to fill in
-// and then saves pet profile to database 
+// update pet screen presents pet profile fields similar to regPetScreen
+// with prefilled in fields from previous entries now modifiable by user
+// to update previously existing pet profile
+// any fields with preexisting data will remain the same if not edited
 
 import {Box,  Text} from "../../utils/theme/style";
 import {useNavigation} from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import {Button, Keyboard, ScrollView, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, View, Platform} from "react-native";
-import { HomeScreenNavigationType } from "navigation/types";
+import { HomeScreenNavigationType, HomeStackParamList } from "navigation/types";
 import { Controller, useForm } from "react-hook-form";
 import { IPet } from "../../types";
 import Input from "../../components/shared/input";
-import axiosInstance from "../../services/config";
-import { getAuth } from 'firebase/auth';
+import axiosInstance, { BASE_URL } from "../../services/config";
+import { RouteProp } from '@react-navigation/native';
 
-import * as ImagePicker from 'expo-image-picker';
-import { firebase } from "@react-native-firebase/auth";
+// UploadImage used if user updates pet profile image
+// exactly the same function so importing here rather than duplicating code
+import { UploadImage } from "../regPetScreen/regPetScreen";
 
-import { FIREBASE_STORAGE } from "../../services/firebase";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+type Props = {
+    route: RouteProp<HomeStackParamList, 'UpdatePet'>;
+};
 
-import { format } from "date-fns"; 
+const UpdatePetScreen: React.FC<Props> = ({ route }) => {
+    const { ownerId, petName } = route.params;
 
-const RegPetScreen = () => {
     const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>()
 
-    // get current user's uid to associate user with their pets' profiles
-    const auth = getAuth();  
-    const currentUser = auth.currentUser;
-    const ownerId = currentUser ? currentUser.uid : "";
+    const [pet, setPet] = useState<IPet>();
+
+    // isLoading used to make sure pet has been received in fetchPet before rendering pet info
+    const [isLoading, setIsLoading] = useState(true);
 
     // need to be able to useState in order to update the pet profile image url when 
     // received from user selecting picture to upload outside of react hook form
@@ -56,16 +59,33 @@ const RegPetScreen = () => {
             exerciseHabits: "",
             indoorOrOutdoor: "",
             reproductiveStatus: "",
-            image: "",
             notes: "",
         },
     });
-    
+
+    const fetchPet = async (ownerId: string, petName: string): Promise<IPet | undefined> => {
+        try {
+            console.log(BASE_URL + 'pet/get/' + ownerId + '/' + petName);
+            const response = await fetch(BASE_URL + 'pet/get/' + ownerId + '/' + petName);
+            const data = await response.json();
+            setPet(data);
+            data.age = data.age.toString();
+            reset(data); // reset the form with the fetched pet data
+        } catch (error) {
+            console.log("Error in fetchPet", error);
+        } finally { // set isLoading to false to move on to rendering on screen
+            setIsLoading(false);
+        }
+
+        return pet;
+    }
+
     const onSubmit = async (data: IPet) => {
-        // imageUrl was set in UploadImage function
-        // need to make sure that data for the pet profile that we're about to save
-        // is updated before submitting to database
-        if(imageUrl != null) {
+        console.log("imageUrl: " + imageUrl);
+        // set image only if new image has been selected
+        // otherwise return original image url saved for pet profile before update was selected
+        if(imageUrl != null && imageUrl != "") {
+            // imageUrl was set in UploadImage function
             data.image = imageUrl;
         }
 
@@ -83,22 +103,58 @@ const RegPetScreen = () => {
                 notes  
             } = data;
 
-            await savePetProfileToDatabase(ownerId, name, age, 
-                species, breed, color,
-                gender, vaccinationRecords,
-                medsSupplements, allergiesSensitivities, prevIllnessesInjuries,
-                diet, exerciseHabits, 
-                indoorOrOutdoor, reproductiveStatus, image,
-                notes);
+            await updatePetProfileInDatabase(ownerId, name, age, 
+                    species, breed, color,
+                    gender, vaccinationRecords,
+                    medsSupplements, allergiesSensitivities, prevIllnessesInjuries,
+                    diet, exerciseHabits, 
+                    indoorOrOutdoor, reproductiveStatus, image,
+                    notes);
 
-            // reset all of the fields of the form now that pet profile has been saved to database
+            // reset all of the fields of the form now that pet profile has been updated in database
             reset(); 
             
             // navigate back to user's home page 
+            // OR COULD PERHAPS NAVIGATE BACK TO THE PET PROFILE SCREEN OF THE PET THAT WAS JUST EDITED 
             navigation.navigate("Home");
         } catch (error) {
             console.log("Error on submit pet profile", error);
         }
+    }
+
+    // sets the default values of the form to the already entered values of the pet profile
+    useEffect(() => {
+        fetchPet(ownerId, petName).then((pet: IPet | undefined) => {
+            if(pet) {
+                reset({
+                    ownerId: ownerId,
+                    name: pet.name,
+                    age: pet.age.toString(),
+                    species: pet.species,
+                    breed: pet.breed,
+                    color: pet.color,
+                    gender: pet.gender,
+                    vaccinationRecords: pet.vaccinationRecords,
+                    medsSupplements: pet.medsSupplements,
+                    allergiesSensitivities: pet.allergiesSensitivities,
+                    prevIllnessesInjuries: pet.prevIllnessesInjuries,
+                    diet: pet.diet,
+                    exerciseHabits: pet.exerciseHabits,
+                    indoorOrOutdoor: pet.indoorOrOutdoor,
+                    reproductiveStatus: pet.reproductiveStatus,
+                    image: pet.image,
+                    notes: pet.notes,
+                });
+            }
+        })
+        .catch((error) => {
+            console.log("Error fetching pet:", error);
+          });
+    }, []);
+
+    // display if page is still loading
+    if (isLoading) {
+        return <Text>Loading...</Text>;
     }
 
     return(
@@ -107,8 +163,6 @@ const RegPetScreen = () => {
             <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
                 <Text>Register Pet Screen</Text>
                 
-                {/* have ownerId from currently logged in User's uid already */}
-
                 <Box mb="6" />
                 <Controller 
                     control={control}
@@ -122,7 +176,10 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Name"
-                            error={errors.name}  
+                            error={errors.name}
+                            // do not allow user to edit pet name field as it is part of the primary key for a pet profile
+                            // once a pet name is selected by a user, they are no longer able to edit it  
+                            editable={false}
                         />
                     )}
                     name="name"
@@ -354,12 +411,12 @@ const RegPetScreen = () => {
                 {/* upload image of pet option */}
                 {/* now being saved to firebase right away in UploadImage function before REGISTER PET is pressed */}
                 <View style={styles.container}>
-                    <Text>Upload Pet Photo</Text>
-                    {/* setImageUrl passed in to be able to useState and update the pet profile being created in the form */}
+                    <Text>Upload New Pet Photo</Text>
+                    {/* setImageUrl useState hook passed in to be able to useState and update the pet profile being created in the form */}
                     <UploadImage setImageUrl={setImageUrl} />
                 </View>
 
-                <Button title="Register Pet" onPress={handleSubmit(onSubmit)}/>
+                <Button title="Update Pet Profile" onPress={handleSubmit(onSubmit)}/>
                 
                 <Box mb="5.5" />
                 
@@ -369,7 +426,7 @@ const RegPetScreen = () => {
     )
 }
 
-const savePetProfileToDatabase = async ( 
+const updatePetProfileInDatabase = async (
     ownerId: string,
     name: string,
     age: string,
@@ -389,7 +446,9 @@ const savePetProfileToDatabase = async (
     notes: string,
 ) => {
     try {
-        const response = await axiosInstance.post("pet/create", {
+        console.log(BASE_URL + "pet/update/" + ownerId, + "/" + name);
+        // put request sent to pet/update route to update preexisting pet profile with updated values
+        const response = await axiosInstance.put(BASE_URL + "pet/update/" + ownerId + "/" + name, {
             ownerId,
             name,
             age,
@@ -408,70 +467,11 @@ const savePetProfileToDatabase = async (
             image,
             notes,
         });
-        console.log("Pet registered to MongoDB");
+        console.log("pet updated in mongoDB");
         return response.data.pet;
     } catch (error) {
-        // THIS CATCH BLOCK IS NOT ENTERED WHEN USER SUBMITS FORM WITH MISSING REQUIRED FIELDS
-        console.log("error in savePetProfileToDatabase", error);
-        throw error;
+        console.log("error in updatePetProfileInDatabase", error);
     }
-}
-
-// upload pet image
-// able to access user's files if they allow it 
-// saving to firebase and generating url to save as image url
-// exporting function to be able to use in updatePetScreen.tsx
-export const UploadImage = ({ setImageUrl }: { setImageUrl: (url: string | null) => void }) => {
-    const pickImageAsync = async () => {
-      try {
-        // open user's image library for user to select pet image with expo-image-picker
-        const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-            alert('Sorry, we need camera roll permissions to make this work!');
-            return;
-        } 
-        else {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ImagePicker.MediaTypeOptions.All,
-                allowsEditing: false,
-                quality: 1,
-            });
-            if (!result.canceled) {
-                // upload user's selected image to firebase
-                // get current time to use as filename 
-                const timestamp = format(new Date(), "yyyyMMddHHmmss"); 
-                const fileName = `image_${timestamp}`; 
-                
-                // use firebase ref to get url to storage with filename created with date string
-                // the full url will be created by firebase once the file is successfully uploaded 
-                const fileRef = ref(FIREBASE_STORAGE, fileName); 
-                console.log("fileRef: " + fileRef); // just printing
-
-                // get image that user selected and convert to blob (binary large object) for uploading
-                const response = await fetch(result.assets[0].uri);
-                const blob = await response.blob();
-
-                // firebase function to upload binary data of image to firebase storage
-                uploadBytesResumable(fileRef, blob)
-                .then((snapshot) => {
-                    // get full url created by firebase now that file has been uploaded
-                    getDownloadURL(snapshot.ref) 
-                    .then((downloadUrl) => {
-                        console.log(downloadUrl);
-                        // set imageUrl to be able to update pet profile that you are saving to mongo
-                        setImageUrl(downloadUrl);
-                    })
-                })
-            }
-        }
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    
-    return <TouchableOpacity style={uploadPhotoStyles.container} onPress={pickImageAsync} >
-        <Text>+</Text>
-    </TouchableOpacity>
 }
 
 // upload pet image styles
@@ -500,4 +500,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default RegPetScreen
+export default UpdatePetScreen

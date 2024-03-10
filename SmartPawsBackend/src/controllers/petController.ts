@@ -91,3 +91,32 @@ export const deleteOnePet = async (request: Request, response: Response) => {
         throw error
     }
 }
+
+// update pet based on ownerId and pet name
+export const updatePet = async (request: Request, response: Response) => {
+    try {
+        const { ownerId, petName } = request.params;
+        const petUpdatedData = request.body;
+        
+        // mongoose function to find record in database and update it
+        // locates record based on ownerId and petName
+        // and then updates the record with the new pet data
+        const pet = await Pet.findOneAndUpdate(
+            { "ownerId": ownerId, "name": petName },
+            petUpdatedData,
+            { new: true, upsert: true }
+        );
+
+        console.log(pet);
+        
+        if(!pet) {
+            return response.status(400).json("pet not found");
+        }
+
+        response.status(200).json("pet profile updated successfully");
+        console.log("pet profile updated in database");
+    } catch (error) {
+        console.log("error in updatePet");
+        throw error;
+    }
+}

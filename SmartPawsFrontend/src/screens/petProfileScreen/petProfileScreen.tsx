@@ -1,28 +1,25 @@
-import {Box,  Text} from "../../utils/theme/style";
-import {useNavigation} from "@react-navigation/native";
+import { Box,  Text } from "../../utils/theme/style";
+import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { Alert, Button, ScrollView, View, Image, StyleSheet } from "react-native";
-import {HomeScreenNavigationType, HomeStackParamList} from "../../navigation/types";
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { getAuth, signOut } from 'firebase/auth';
+import { HomeScreenNavigationType, HomeStackParamList } from "../../navigation/types";
 
 import React, { useEffect, useState } from "react";
-import { IPet, IUser } from "../../types";
+import { IPet } from "../../types";
 import { BASE_URL } from "../../services/config";
 
-// RouteProp provides ability to receive parameters from previous screen homeScreen.tsx 
+
+// RouteProp provides ability to receive parameters from previous screen petProfileScreen.tsx 
 import { RouteProp } from '@react-navigation/native';
-import { Controller } from "react-hook-form";
-import Input from "components/shared/input";
 
 type Props = {
     route: RouteProp<HomeStackParamList, 'PetProfile'>;
 };
 
 const PetProfileScreen: React.FC<Props> = ({ route }) => {
-    const { ownerId, petName } = route.params;
+    const { ownerId, petName } = route.params; // parameters received from petProfileScreen.tsx
 
-    const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>()
+    const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>();
 
     // get pet object from mongo to display all of their characteristics
     const [pet, setPet] = useState<IPet>();
@@ -57,6 +54,15 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
         } catch (error) {
             console.log("Error in deletePet", error);
         }
+    }
+
+    const handleUpdateProfileRequest = () => {
+        console.log("handleUpdateProfileRequest");
+        // navigate to updatePetScreen and pass ownerId, petName parameters
+        navigation.navigate("UpdatePet", {
+            ownerId: ownerId,
+            petName: petName,
+        });
     }
 
     useEffect(() => {
@@ -94,31 +100,37 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
                 <Text>{ "Allergies/Sensitivities: " + pet?.allergiesSensitivities }</Text>
                 <Text>{ "Previous Illnesses/Injuries: " + pet?.prevIllnessesInjuries }</Text>
                 <Text>{ "Diet: " + pet?.diet }</Text>
+                <Text>{ "Exercise Habits: " + pet?.exerciseHabits }</Text>
                 <Text>{ "Indoor/Outdoor: " + pet?.indoorOrOutdoor }</Text>
                 <Text>{ "Reproductive Status: " + pet?.reproductiveStatus }</Text>
-                <Text>{ "Image: " + pet?.image }</Text>
                 <Text>{ "Notes: " + pet?.notes }</Text>
             </Box>
+            <Box mt="6">
+            {/* update pet button */}
+            <Button title="Update Pet Profile" onPress={handleUpdateProfileRequest}/>
+            </Box>
+            <Box mb="6"/>
             {/* delete pet button with alert cautioning user */}
             <Button
-                    title="Delete Pet"
-                    onPress={() => {
-                        Alert.alert(
-                            "Are you sure you want to delete this pet?",
-                            "This action cannot be undone.",
-                            [
-                                {
-                                    text: "Cancel",
-                                    style: "cancel"
-                                },
-                                {
-                                    text: "Delete",
-                                    onPress: () => deletePet(ownerId, petName)
-                                }
-                            ]
-                        )
-                    }}
-                />
+                title="Delete Pet"
+                color="red"
+                onPress={() => {
+                    Alert.alert(
+                        "Are you sure you want to delete this pet?",
+                        "This action cannot be undone.",
+                        [
+                            {
+                                text: "Cancel",
+                                style: "cancel"
+                            },
+                            {
+                                text: "Delete",
+                                onPress: () => deletePet(ownerId, petName)
+                            }
+                        ]
+                    )
+                }}
+            />
         </ScrollView>
     </SafeAreaWrapper>
 
@@ -127,11 +139,11 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
 
 const styles = StyleSheet.create({
     petImage: {
-      width: 200, // Set the desired width
-      height: 200, // Set the desired height
-      resizeMode: "cover", // Adjust the image to fit the frame
-      borderRadius: 10, // Add rounded corners (if needed)
-      // Add any other styling properties as needed
+      width: 200, 
+      height: 200, 
+      resizeMode: "cover", 
+      borderRadius: 10, 
     },
   });
+  
 export default PetProfileScreen

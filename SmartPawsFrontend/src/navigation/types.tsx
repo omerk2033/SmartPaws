@@ -38,6 +38,11 @@ export type HomeStackParamList = {
         ownerId: string;
         petName: string;
     }
+    // user selects to update pet from pet profile screen
+    UpdatePet: {
+        ownerId: string;
+        petName: string;
+    }
 }
 
 export type ProfileStackParamList = {
