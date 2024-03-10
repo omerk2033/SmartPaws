@@ -1,7 +1,7 @@
 import {Box,  Text} from "../../utils/theme/style";
 import {useNavigation} from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import { Alert, Button, ScrollView, View } from "react-native";
+import { Alert, Button, ScrollView, View, Image, StyleSheet } from "react-native";
 import {HomeScreenNavigationType, HomeStackParamList} from "../../navigation/types";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { getAuth, signOut } from 'firebase/auth';
@@ -70,6 +70,17 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
     return(
         <SafeAreaWrapper>
         <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
+            {/* display pet image */}
+            {/* pet.image is url to actual image stored in firebase */}
+            <View>
+            {pet?.image && ( // check if pet.image exists
+                <Image
+                    source={{ uri: pet.image }} 
+                    style={styles.petImage} 
+                />
+            )}
+            </View>
+            {/* pet info */}
             <Box>
                 <Text>Pet Profile Screen</Text>
                 <Text>{ "Name: " + pet?.name }</Text>
@@ -114,4 +125,13 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
     )
 }
 
+const styles = StyleSheet.create({
+    petImage: {
+      width: 200, // Set the desired width
+      height: 200, // Set the desired height
+      resizeMode: "cover", // Adjust the image to fit the frame
+      borderRadius: 10, // Add rounded corners (if needed)
+      // Add any other styling properties as needed
+    },
+  });
 export default PetProfileScreen

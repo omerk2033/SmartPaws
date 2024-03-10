@@ -20,6 +20,8 @@ import { firebase } from "@react-native-firebase/auth";
 import { FIREBASE_STORAGE } from "../../services/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
+import { format } from "date-fns"; 
+
 const RegPetScreen = () => {
     const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>()
 
@@ -435,9 +437,10 @@ const UploadImage = ({ setImageUrl }: { setImageUrl: (url: string | null) => voi
             if (!result.canceled) {
                 setSelectedImage(result.assets[0].uri);
                 // upload user's selected image to firebase
-                // CURRENTLY ALWAYS SAVING AS FILENAME default_filename WHICH OVERWRITES THE PREEXISTING FILE
-                // NEED TO FIGURE OUT THE NAMING THING...
-                const fileRef = ref(FIREBASE_STORAGE, result.assets[0]?.fileName ?? 'default_filename');
+                // get current time to use as filename 
+                const timestamp = format(new Date(), "yyyyMMddHHmmss"); 
+                const fileName = `image_${timestamp}`; 
+                const fileRef = ref(FIREBASE_STORAGE, fileName); 
                 const response = await fetch(result.assets[0].uri);
                 const blob = await response.blob();
                 uploadBytesResumable(fileRef, blob)
