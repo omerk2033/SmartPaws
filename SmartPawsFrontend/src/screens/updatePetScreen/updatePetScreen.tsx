@@ -37,6 +37,9 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
     // received from user selecting picture to upload outside of react hook form
     const [imageUrl, setImageUrl] = useState<string | null>("");
 
+    // disable Update Pet button until user's image is uploaded to firebase and url is generated
+    const [imageIsUploading, setImageIsUploading] = useState(false);
+
     const {
         control,
         handleSubmit,
@@ -413,10 +416,11 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 <View style={styles.container}>
                     <Text>Upload New Pet Photo</Text>
                     {/* setImageUrl useState hook passed in to be able to useState and update the pet profile being created in the form */}
-                    <UploadImage setImageUrl={setImageUrl} />
+                    {/* setImageIsUploading useState hook passed in to be able to useState and disable Update Pet Profile button until image url is generated */}
+                    <UploadImage setImageUrl={setImageUrl} setImageIsUploading={setImageIsUploading}/>
                 </View>
 
-                <Button title="Update Pet Profile" onPress={handleSubmit(onSubmit)}/>
+                <Button title="Update Pet Profile" onPress={handleSubmit(onSubmit)} disabled={imageIsUploading}/>
                 
                 <Box mb="5.5" />
                 

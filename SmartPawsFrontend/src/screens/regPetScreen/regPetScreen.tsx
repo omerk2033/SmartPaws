@@ -34,6 +34,9 @@ const RegPetScreen = () => {
     // received from user selecting picture to upload outside of react hook form
     const [imageUrl, setImageUrl] = useState<string | null>("");
 
+    // disable Register Pet button until user's image is uploaded to firebase and url is generated
+    const [imageIsUploading, setImageIsUploading] = useState(false);
+
     const {
         control,
         handleSubmit,
@@ -356,10 +359,11 @@ const RegPetScreen = () => {
                 <View style={styles.container}>
                     <Text>Upload Pet Photo</Text>
                     {/* setImageUrl passed in to be able to useState and update the pet profile being created in the form */}
-                    <UploadImage setImageUrl={setImageUrl} />
+                    {/* setImageIsUploading useState hook passed in to be able to useState and disable Update Pet Profile button until image url is generated */}
+                    <UploadImage setImageUrl={setImageUrl} setImageIsUploading={setImageIsUploading}/>
                 </View>
 
-                <Button title="Register Pet" onPress={handleSubmit(onSubmit)}/>
+                <Button title="Register Pet" onPress={handleSubmit(onSubmit)} disabled={imageIsUploading}/>
                 
                 <Box mb="5.5" />
                 
@@ -420,8 +424,9 @@ const savePetProfileToDatabase = async (
 // upload pet image
 // able to access user's files if they allow it 
 // saving to firebase and generating url to save as image url
+// setImageUrl and setImageIsUploading useState hooks passed in to be able to update url and disable register pet/update pet buttons while uploading image to firebase
 // exporting function to be able to use in updatePetScreen.tsx
-export const UploadImage = ({ setImageUrl }: { setImageUrl: (url: string | null) => void }) => {
+export const UploadImage = ({ setImageUrl, setImageIsUploading }: { setImageUrl: (url: string | null) => void, setImageIsUploading: (imageIsUploading: boolean) => void }) => {
     const pickImageAsync = async () => {
       try {
         // open user's image library for user to select pet image with expo-image-picker
@@ -437,6 +442,8 @@ export const UploadImage = ({ setImageUrl }: { setImageUrl: (url: string | null)
                 quality: 1,
             });
             if (!result.canceled) {
+                // set image is uploading boolean to disable register pet button until image file is uploaded and url is available
+                setImageIsUploading(true);
                 // upload user's selected image to firebase
                 // get current time to use as filename 
                 const timestamp = format(new Date(), "yyyyMMddHHmmss"); 
@@ -460,6 +467,7 @@ export const UploadImage = ({ setImageUrl }: { setImageUrl: (url: string | null)
                         console.log(downloadUrl);
                         // set imageUrl to be able to update pet profile that you are saving to mongo
                         setImageUrl(downloadUrl);
+                        setImageIsUploading(false); 
                     })
                 })
             }
