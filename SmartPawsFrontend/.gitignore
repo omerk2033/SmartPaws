@@ -40,4 +40,5 @@ yarn-error.*
 *.tsbuildinfo
 
 # different configuration for eas build causing errors for some team members
-app.json
+# app.json
+appEasAddIn.json

@@ -6,6 +6,9 @@ import * as SecureStore from "expo-secure-store"
 // to get rid of network error directly inputting ip address here 
 // but need to figure out concealing ip address...
 // export const BASE_URL = `http://IPADDRESS:1337/`
+export const BASE_URL = `http://192.168.1.66:1337/`
+// work ip address
+// export const BASE_URL = `http://192.168.56.1:1337/`
 
 
 
