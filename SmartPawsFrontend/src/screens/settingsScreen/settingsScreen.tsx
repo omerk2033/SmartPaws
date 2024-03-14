@@ -1,51 +1,77 @@
-import { Box, Text } from "../../utils/theme/style";
 import React from "react";
-import { Button } from "react-native"; // Add this import
+import { Text, TouchableOpacity, StyleSheet, View, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { Pressable, TouchableWithoutFeedback, Keyboard, View, ScrollView } from "react-native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import {HomeStackParamList} from "../../navigation/types";
+import { HomeStackParamList } from "../../navigation/types";
 import { getAuth, signOut } from 'firebase/auth';
-
+import { LinearGradient } from "expo-linear-gradient";
 
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'Settings'>
 
 const SettingsScreen = () => {
-    const homeStackNavigation = useNavigation<HomeStackNavigationProps>()
-    const navigateToRegPetScreen = () => {
-        homeStackNavigation.navigate('Settings');
-    }
+    const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
+    const auth = getAuth();
 
-    const auth = getAuth(); // get auth instance of app
-
-    // sign user out of firebase
-    // index.tsx will handle switching to AppStackNavigator once user is signed out
-    // and screen will change to welcome screen 
     const handleSignOut = async () => {
         try {
             await signOut(auth);
         } catch (error) {
-            console.log("error signing out of firebase");
+            console.log("Error signing out of firebase:", error);
         }
-    }
-    return(
-        <SafeAreaWrapper>
-            <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
-                <Box>
-                    <Text>Settings Screen</Text>
-                </Box>
-                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Box mt={"5"} width={150} height={500}>
-                        <Button title="Settings" onPress={navigateToRegPetScreen}/>
-                    </Box>
-                    <Box style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                        <Button title="Log Out" onPress={handleSignOut} color={'orange'}/>
-                    </Box>
-                </View>
-            </ScrollView>
-        </SafeAreaWrapper>
-    )
-}
+    };
 
-export default SettingsScreen
+    return (
+        <SafeAreaWrapper>
+            <LinearGradient
+                colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
+                style={styles.linearGradient}
+            >
+                <ScrollView
+                    keyboardShouldPersistTaps='handled'
+                    contentContainerStyle={styles.scrollViewContent}
+                >
+                    <Text style={styles.title}>Settings Screen</Text>
+                </ScrollView>
+                <TouchableOpacity style={styles.logOutButton} onPress={handleSignOut}>
+                    <Text style={styles.logOutButtonText}>Log Out</Text>
+                </TouchableOpacity>
+            </LinearGradient>
+        </SafeAreaWrapper>
+    );
+};
+
+const styles = StyleSheet.create({
+    linearGradient: {
+        flex: 1,
+        justifyContent: 'space-between', // Push content to the top and button to the bottom
+    },
+    scrollViewContent: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 20, // Space from top
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 20,
+        color: 'white',
+    },
+    logOutButton: {
+        backgroundColor: 'red',
+        borderRadius: 25, // Oval shape
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        alignSelf: 'center',
+        marginBottom: 20, // Space from bottom
+    },
+    logOutButtonText: {
+        color: 'white',
+        textAlign: 'center',
+    },
+});
+
+export default SettingsScreen;
+

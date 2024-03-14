@@ -108,21 +108,24 @@ const RegPetScreen = () => {
         <SafeAreaWrapper>
             <LinearGradient
                     colors={[
-                        "#EBD1FC",
-                        "#EBD1FC",
-                        "#EBD1FC",
-                        "#EBD1FC",
-                        "#EBD1FC",
+                        "#1B7899",
+                        "#43B2BD",
+                        "#43B2BD",
+                        "#43B2BD",
+                        "#1B7899",
                     ]}
                     style={{ flex: 1 }}
                 >
             {/* <Box flex={1} px="5.5" mt={"13"}> */}
-            <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
-                <Text>Register Pet Screen</Text>
+            <ScrollView keyboardShouldPersistTaps='handled' style={styles.scrollViewStyle}>
+                
+                <View style={styles.centeredView}>
+                    <Text style={styles.headerText}>New Pet Profile</Text>
+                </View>
                 
                 {/* have ownerId from currently logged in User's uid already */}
 
-                <Box mb="6" />
+                <Box mb="6"  />
                 <Controller 
                     control={control}
                     rules={{
@@ -135,7 +138,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Name"
-                            error={errors.name}  
+                            error={errors.name}
+               
                         />
                     )}
                     name="name"
@@ -367,15 +371,21 @@ const RegPetScreen = () => {
                 {/* upload image of pet option */}
                 {/* now being saved to firebase right away in UploadImage function before REGISTER PET is pressed */}
                 <View style={styles.container}>
-                    <Text>Upload Pet Photo</Text>
-                    {/* setImageUrl passed in to be able to useState and update the pet profile being created in the form */}
+                  <Text style={{ fontWeight: 'bold', fontSize: 14 }}>Upload Pet Photo</Text>
+              {/* setImageUrl passed in to be able to useState and update the pet profile being created in the form */}
                     {/* setImageIsUploading useState hook passed in to be able to useState and disable Update Pet Profile button until image url is generated */}
                     <UploadImage setImageUrl={setImageUrl} setImageIsUploading={setImageIsUploading}/>
                 </View>
-
-                <Button title="Register Pet" color="#67629E" onPress={handleSubmit(onSubmit)} disabled={imageIsUploading}/>
-                
-                <Box mb="5.5" />
+                <TouchableOpacity
+                    onPress={handleSubmit(onSubmit)}
+                disabled={imageIsUploading}
+                style={[
+                    styles.button,
+                    { backgroundColor: imageIsUploading ? '#aaa' : '#201A64' } // Change color when disabled
+                    ]}>
+                    <Text style={styles.buttonText}>Register Pet</Text>
+                </TouchableOpacity>
+            <Box mb="5.5" />
                 
             {/* </Box> */}
             </ScrollView>
@@ -499,7 +509,7 @@ const uploadPhotoStyles = StyleSheet.create({
         height: 56,
         width: 56,
         borderRadius: 28,
-        backgroundColor: '#67629E',
+        backgroundColor: 'rgba(255, 255, 255, 0.4)',
         alignItems: 'center',
         justifyContent: 'center',
         shadowColor: '#000',
@@ -511,12 +521,44 @@ const uploadPhotoStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+    scrollViewStyle: {
+        flex: 1,
+        paddingHorizontal: 5.5,
+        marginTop: 13,
+    },
+    centeredView: {
+        alignItems: 'center', // This will center the child components horizontally
+        justifyContent: 'center', // This will center the child components vertically if the view has a defined height
+        flex: 1,
+    },
+    headerText: {
+        fontSize: 24, // Adjust the font size as needed
+        fontWeight: 'bold', // If you want the text to be bold
+        textAlign: 'center', // Center the text horizontally
+        marginTop: 20, // Optional: add some spacing at the top
+        marginBottom: 20, // Optional: add some spacing at the bottom
+    },
     container: {
         flex: 1,
-        backgroundColor: '#EBD1FC',
+        backgroundColor: 'rgba(255, 255, 255, 0.0)',
+        padding: 10,
+        borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
     },
+    button: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 30, // Adjust this value to control the "ovalness" of the button
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+
 });
 
 export default RegPetScreen

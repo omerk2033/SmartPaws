@@ -60,6 +60,7 @@ const SignUpScreen = () => {
                 >
                 <Box flex={1} px="5.5" mt={"13"}>
                     <Text variant="textLg" color="neutral700" fontWeight="700" mb="10">
+                        
                     </Text>
 
                     <Controller
@@ -119,7 +120,7 @@ const SignUpScreen = () => {
                     <Box mt="5.5" />
                     <Pressable onPress={navigateToSignInScreen}>
                         <Text color="primary" textAlign="right">
-                            Log in?
+                            Already have an account? Sign in
                         </Text>
                     </Pressable>
                     <Box mb="5.5" />
@@ -142,13 +143,13 @@ const signUpWithEmailAndPassword = async (email: string, password: string, name:
         console.log('User logged in:', user);
 
         // Update the user's profile with their name
-        await updateProfile(user, {
+         await updateProfile(user, {
             displayName: name
         });
         console.log("User's display name updated:", name);
 
         // Save user to MongoDB
-        await registerUserMongoDB(name, email, user.uid, password);
+         await registerUserMongoDB(name, email, user.uid, password);
         console.log("User registered to MongoDB");
         // Navigate to the next screen after successful login
     } catch (error) {

@@ -61,6 +61,9 @@ const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props para
                 >
                 <Box flex={1} px="5.5" justifyContent="center">
                     <Box mb="6" />
+                    <Text variant="textLg" color="neutral700" fontWeight="700" mb="10">
+                        Welcome Back!
+                    </Text>
                     <Controller
                         control={control}
                         rules={{ required: true }}
@@ -96,7 +99,7 @@ const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props para
                     <Box mt="5.5" />
                     <Pressable onPress={navigateToSignUpScreen}>
                         <Text color="primary" textAlign="right">
-                            Register?
+                            Creating a new account? Sign up
                         </Text>
                     </Pressable>
                     <Box mb="5.5" />
