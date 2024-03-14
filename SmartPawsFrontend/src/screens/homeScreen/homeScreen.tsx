@@ -6,11 +6,11 @@ import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { Button, ScrollView, View, StyleSheet } from "react-native";
 import { HomeStackParamList } from "../../navigation/types";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import React, { useEffect, useState } from "react";
 import { IPet, IUser } from "../../types";
 import { BASE_URL } from "../../services/config";
-
+import { LinearGradient } from "expo-linear-gradient";
 import { useIsFocused } from "@react-navigation/native";
 
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'RegPet'>
@@ -22,20 +22,7 @@ const HomeScreen = () => {
     const navigateToRegPetScreen = () => {
         homeStackNavigation.navigate('RegPet');
     }
-
-    const auth = getAuth(); // get auth instance of app
-
-    // sign user out of firebase
-    // index.tsx will handle switching to AppStackNavigator once user is signed out
-    // and screen will change to welcome screen 
-    const handleSignOut = async () => {
-        try {
-            await signOut(auth);
-        } catch (error) {
-            console.log("error signing out of firebase");
-        }
-    }
-
+    
     const [pets, setPets] = useState<IPet[]>([]);
 
     const fetchPets = async () => {
@@ -102,29 +89,37 @@ const HomeScreen = () => {
 
     return(
         <SafeAreaWrapper>
+            <LinearGradient
+                    colors={[
+                        "#43B2BD",
+                        "#43B2BD",
+                        "#43B2BD",
+                        "#43B2BD",
+                        "#43B2BD",
+                    ]}
+                    style={{ flex: 1 }}
+                >
             <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Box>
-                        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Hello {user?.name}!</Text>
+                        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{user?.name}'s Pets:</Text>
                     </Box>
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center' }}>
                     {/* <Box mt={"5"} width={150} height={500}> */}
                     <Box m="6" style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                        <Button title="Add Pet" onPress={navigateToRegPetScreen} color={'green'}/>
+                        <Button title="Add New Pet" onPress={navigateToRegPetScreen} color={"#4ED5CF"}/>
                     </Box>
                     {pets.map((pet: IPet, index: number) => (
                         <Box key={index} mb="6">
                             {/* send pet object to handlePetSelection to be able to access which pet has been selected */}
-                            <Button title={pet.name} onPress={() => handlePetSelection(pet)}/>
+                            <Button title={pet.name} onPress={() => handlePetSelection(pet)} color={"#1b7899"}/>
                         </Box>
                     ))}
                     {/* <Box mt={"5"} width={150} height={500}> */}
-                    <Box style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                        <Button title="Log Out" onPress={handleSignOut} color={'orange'}/>
-                    </Box>
                 </View>
             </ScrollView>
+            </LinearGradient>
         </SafeAreaWrapper>
     )
 }

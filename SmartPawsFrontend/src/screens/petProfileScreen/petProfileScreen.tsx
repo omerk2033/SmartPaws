@@ -11,6 +11,7 @@ import { BASE_URL } from "../../services/config";
 
 // RouteProp provides ability to receive parameters from previous screen petProfileScreen.tsx 
 import { RouteProp } from '@react-navigation/native';
+import { LinearGradient } from "expo-linear-gradient";
 
 type Props = {
     route: RouteProp<HomeStackParamList, 'PetProfile'>;
@@ -75,6 +76,16 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
 
     return(
         <SafeAreaWrapper>
+            <LinearGradient
+                    colors={[
+                        "#EBD1FC",
+                        "#EBD1FC",
+                        "#EBD1FC",
+                        "#EBD1FC",
+                        "#EBD1FC",
+                    ]}
+                    style={{ flex: 1 }}
+                >
         <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
             {/* display pet image */}
             {/* pet.image is url to actual image stored in firebase */}
@@ -88,8 +99,7 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
             </View>
             {/* pet info */}
             <Box>
-                <Text>Pet Profile Screen</Text>
-                <Text>{ "Name: " + pet?.name }</Text>
+                <Text style={{ textAlign:"center", fontSize: 20, fontWeight: 'bold' }}>{pet?.name + "'s Information:"}</Text>
                 <Text>{ "Age: " + pet?.age }</Text>
                 <Text>{ "Species: " + pet?.species }</Text>
                 <Text>{ "Breed: " + pet?.breed }</Text>
@@ -107,13 +117,13 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
             </Box>
             <Box mt="6">
             {/* update pet button */}
-            <Button title="Update Pet Profile" onPress={handleUpdateProfileRequest}/>
+            <Button title="Update Profile" color="#67629E" onPress={handleUpdateProfileRequest}/>
             </Box>
             <Box mb="6"/>
             {/* delete pet button with alert cautioning user */}
             <Button
-                title="Delete Pet"
-                color="red"
+                title="Remove Profile"
+                color="darkred"
                 onPress={() => {
                     Alert.alert(
                         "Are you sure you want to delete this pet?",
@@ -132,6 +142,7 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
                 }}
             />
         </ScrollView>
+        </LinearGradient>
     </SafeAreaWrapper>
 
     )

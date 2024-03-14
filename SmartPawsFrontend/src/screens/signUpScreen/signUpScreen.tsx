@@ -9,8 +9,9 @@ import { IUser } from "../../types";
 import Input from "../../components/shared/input";
 import Button from "../../components/shared/button";
 import { FIREBASE_AUTH } from "../../services/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import axiosInstance from "../../services/config";
+import { LinearGradient } from "expo-linear-gradient";
 
 const SignUpScreen = () => {
     const navigation = useNavigation<AuthScreenNavigationType<"SignUp">>()
@@ -46,12 +47,19 @@ const SignUpScreen = () => {
     return (
         <SafeAreaWrapper>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <LinearGradient
+                    colors={[
+                        "#43B2BD",
+                        "#EEEEEE",
+                        "#EEEEEE",
+                        "#EEEEEE",
+                        "#EEEEEE",
+                        "#43B2BD",
+                    ]}
+                    style={{ flex: 1 }}
+                >
                 <Box flex={1} px="5.5" mt={"13"}>
-                    <Text variant="textXl" fontWeight="700">
-                        Welcome to SmartPaws!
-                    </Text>
-                    <Text variant="textXl" fontWeight="700" mb="6">
-                        Memories start here
+                    <Text variant="textLg" color="neutral700" fontWeight="700" mb="10">
                     </Text>
 
                     <Controller
@@ -65,7 +73,7 @@ const SignUpScreen = () => {
                                 onBlur={onBlur}
                                 onChangeText={onChange}
                                 value={value}
-                                placeholder="Name"
+                                placeholder="Enter your name..."
                                 error={errors.name}
                             />
                         )}
@@ -83,7 +91,7 @@ const SignUpScreen = () => {
                                 onBlur={onBlur}
                                 onChangeText={onChange}
                                 value={value}
-                                placeholder="Email"
+                                placeholder="Enter your email..."
                                 error={errors.email}
                             />
                         )}
@@ -101,7 +109,7 @@ const SignUpScreen = () => {
                                 onBlur={onBlur}
                                 onChangeText={onChange}
                                 value={value}
-                                placeholder="Password"
+                                placeholder="Enter your password..."
                                 error={errors.password}
                                 secureTextEntry
                             />
@@ -117,7 +125,8 @@ const SignUpScreen = () => {
                     <Box mb="5.5" />
 
                     <Button label="Register" onPress={handleSubmit(onSubmit)} uppercase />
-                </Box>
+                    </Box>
+                </LinearGradient>
             </TouchableWithoutFeedback>
         </SafeAreaWrapper>
     )
@@ -131,16 +140,22 @@ const signUpWithEmailAndPassword = async (email: string, password: string, name:
         // Signed in
         const user = userCredential.user;
         console.log('User logged in:', user);
+
+        // Update the user's profile with their name
+        await updateProfile(user, {
+            displayName: name
+        });
+        console.log("User's display name updated:", name);
+
         // Save user to MongoDB
         await registerUserMongoDB(name, email, user.uid, password);
         console.log("User registered to MongoDB");
         // Navigate to the next screen after successful login
     } catch (error) {
-        console.error('Error signing in:', error);
+        console.error('Error signing in or updating profile:', error);
         // Handle error, maybe show a message to the user
     }
 }
-
 // Takes UID provided by firebase API then hits backend API to store information in MongoDB database.
 const registerUserMongoDB = async (name: string, email: string, uid: string, password: string) => {
     try {
@@ -150,12 +165,12 @@ const registerUserMongoDB = async (name: string, email: string, uid: string, pas
             uid,
             name,
         });
-        console.log("User registered to MongoDB");
         return response.data.user;
     } catch (error) {
         console.log("error in registerUser", error);
         throw error;
     }
-};
+}
+;
 
 export default SignUpScreen;

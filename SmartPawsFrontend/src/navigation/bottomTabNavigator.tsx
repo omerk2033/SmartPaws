@@ -8,8 +8,7 @@ import theme from "../utils/theme/style";
 import { MaterialIcons } from '@expo/vector-icons'; // Import icons from the library
 import aiScreen from "../screens/aiScreen/aiScreen";
 import journalScreen from "../screens/journalScreen/journalScreen";
-import profileScreen from "../screens/profileScreen/profileScreen";
-
+import settingsScreen from "../screens/settingsScreen/settingsScreen";
 
 const Tab = createBottomTabNavigator<RootBottomTabParamList>();
 
@@ -37,7 +36,7 @@ const BottomTabNavigator = () => {
                 name="AiStack"
                 component={aiScreen}
                 options={{
-                    title: "Ai Companion",
+                    title: "AI Companion",
                     headerShown: false,
                     tabBarIcon: ({ color, size }) => (
                         <MaterialIcons name="goat" color={color} size={size} />
@@ -56,10 +55,10 @@ const BottomTabNavigator = () => {
                 }}
             />
             <Tab.Screen
-                name="ProfileStack"
-                component={profileScreen}
+                name="SettingsStack"
+                component={settingsScreen}
                 options={{
-                    title: "Profile",
+                    title: "Settings",
                     headerShown: false,
                     tabBarIcon: ({ color, size }) => (
                         <MaterialIcons name="settings" color={color} size={size} />

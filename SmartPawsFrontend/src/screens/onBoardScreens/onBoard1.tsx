@@ -1,59 +1,63 @@
-import React from 'react'
-import {useNavigation} from "@react-navigation/native";
-import {AuthScreenNavigationType} from "../../navigation/types";
+import React from 'react';
+import { useNavigation } from "@react-navigation/native";
+import { AuthScreenNavigationType } from "../../navigation/types";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import {LinearGradient} from "expo-linear-gradient";
+import { LinearGradient } from "expo-linear-gradient";
 import { Box, Text } from "../../utils/theme/style";
 import Button from "../../components/shared/button";
+import { Image } from 'react-native';
 
-export default function OnBoarding1 (){
+export default function OnBoarding1() {
 
-    const navigation = useNavigation<AuthScreenNavigationType<"Onboard1">>()
+    const navigation = useNavigation<AuthScreenNavigationType<"Onboard1">>();
 
     const navigateToOnboard2Screen = () => {
-        navigation.navigate("Onboard2")
-    }
-    const navigateToOnboard1Screen = () => {
-        navigation.navigate("Onboard1")
+        navigation.navigate("Onboard2");
     }
 
     return (
         <SafeAreaWrapper>
             <LinearGradient
                 colors={[
-                    "#ffffff",
-                    "#fcecff",
-                    "#f8daff",
-                    "#fae2ff",
-                    "#fae2ff",
-                    "#ffffff",
+                    "#C2BBF0",
+                    "#C2BBF0",
+                    "#C2BBF0",
+                    "#C2BBF0",
+                    "#C2BBF0",
+                    "#C2BBF0",
                 ]}
                 style={{ flex: 1 }}
             >
+                {/* Add Image at the top and center */}
                 <Box flex={1} justifyContent="center">
-                    <Box alignItems="center" mb="3.5">
-
-                    </Box>
-                    <Text textAlign="center" variant="textXl" fontWeight="700">
-                        Helping you, help your pet.
-                    </Text>
-                    <Box my="3.5" mx="10">
-                        <Button
-                            label="SmartPaws"
-                            onPress={navigateToOnboard2Screen}
-                        />
+                    <Box alignItems="center" mb="10">
+                        <Text
+                            textAlign="center"
+                            variant="textXl"
+                            fontWeight="700"
+                            color="blu900"
+                        >
+                            Registering a Pet:
+                            Use the Add Pet button and fill out the requested fields about your pet! They will be added to
+                            the home screen which will allow you to manage your pet's data.
+                        </Text>
                     </Box>
                     <Text
                         textAlign="center"
-                        variant="textXs"
+                        variant="textXl"
                         fontWeight="700"
-                        color="gray5"
+                        color="red700"
                     >
-                        7 billion users registered today....
+                        Fill
                     </Text>
+                    <Box my="3.5" mx="10">
+                        <Button
+                            label="Next"
+                            onPress={navigateToOnboard2Screen}
+                        />
+                    </Box>
                 </Box>
             </LinearGradient>
         </SafeAreaWrapper>
-    )
-
+    );
 }

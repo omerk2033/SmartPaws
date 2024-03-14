@@ -5,10 +5,11 @@ import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import {LinearGradient} from "expo-linear-gradient";
 import { Box, Text } from "../../utils/theme/style";
 import Button from "../../components/shared/button";
+import {Image} from 'react-native';
 
 export default function OnBoarding3 (){
 
-    const navigation = useNavigation<AuthScreenNavigationType<"Welcome">>()
+    const navigation = useNavigation<AuthScreenNavigationType<"Onboard3">>()
     const navigateToSignUpScreen = () => {
         navigation.navigate("SignUp")
     }
@@ -20,12 +21,12 @@ export default function OnBoarding3 (){
         <SafeAreaWrapper>
             <LinearGradient
                 colors={[
-                    "#ffffff",
-                    "#fcecff",
-                    "#f8daff",
-                    "#fae2ff",
-                    "#fae2ff",
-                    "#ffffff",
+                    "#62BFED",
+                    "#62BFED",
+                    "#62BFED",
+                    "#62BFED",
+                    "#62BFED",
+                    "#62BFED",
                 ]}
                 style={{ flex: 1 }}
             >
@@ -34,11 +35,14 @@ export default function OnBoarding3 (){
 
                     </Box>
                     <Text textAlign="center" variant="textXl" fontWeight="700">
-                        Helping you, help your pet.
+                        Gigi:
+                        Your very own AI companion! Gigi can assist you with any of your questions or concerns
+                        about your pet. Don't worry Gigi doesn't bite!
+                  
                     </Text>
                     <Box my="3.5" mx="10">
                         <Button
-                            label="SmartPaws"
+                            label="Next"
                             onPress={navigateToSignUpScreen}
                         />
                     </Box>
@@ -48,14 +52,6 @@ export default function OnBoarding3 (){
                             onPress={navigateToOnboard2Screen}
                         />
                     </Box>
-                    <Text
-                        textAlign="center"
-                        variant="textXs"
-                        fontWeight="700"
-                        color="gray5"
-                    >
-                        7 billion users registered today....
-                    </Text>
                 </Box>
             </LinearGradient>
         </SafeAreaWrapper>

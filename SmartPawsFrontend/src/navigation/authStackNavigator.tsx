@@ -16,13 +16,13 @@ const Stack = createNativeStackNavigator<AuthStackParamList>()
 const AuthStackNavigator = () => {
     return (
         <Stack.Navigator>
-            {/*<Stack.Screen*/}
-            {/*    name="Welcome"*/}
-            {/*    options={{*/}
-            {/*        headerShown: false,*/}
-            {/*    }}*/}
-            {/*    component={WelcomeScreen}*/}
-            {/*/>*/}
+            <Stack.Screen
+                name="Welcome"
+                options={{
+                    headerShown: false,
+                }}
+                component={WelcomeScreen}
+            />
             <Stack.Screen
                 name="Onboard1"
                 options={{

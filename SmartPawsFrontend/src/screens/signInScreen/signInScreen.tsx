@@ -10,6 +10,7 @@ import Input from "../../components/shared/input";
 import Button from "../../components/shared/button";
 import { signInWithEmailAndPassword } from "firebase/auth"; // Correct import
 import { FIREBASE_AUTH } from "../../services/firebase";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface SignInScreenProps { // Add interface for props
 }
@@ -47,14 +48,18 @@ const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props para
     return (
         <SafeAreaWrapper>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <LinearGradient
+                    colors={[
+                        "#43B2BD",
+                        "#EEEEEE",
+                        "#EEEEEE",
+                        "#EEEEEE",
+                        "#EEEEEE",
+                        "#43B2BD",
+                    ]}
+                    style={{ flex: 1 }}
+                >
                 <Box flex={1} px="5.5" justifyContent="center">
-                    <Image
-                        source={require('../../../assets/pawprint.png')}
-                        style={{ width: 200, height: 200, marginBottom: 20, marginTop: -200, alignSelf: 'center' }}
-                    />
-                    <Text variant="textXl" fontWeight="700">
-                        Welcome Back
-                    </Text>
                     <Box mb="6" />
                     <Controller
                         control={control}
@@ -65,7 +70,7 @@ const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props para
                                 onBlur={onBlur}
                                 onChangeText={onChange}
                                 value={value}
-                                placeholder="Email"
+                                placeholder="Enter your email..."
                                 error={errors.email}
                             />
                         )}
@@ -81,7 +86,7 @@ const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props para
                                 onBlur={onBlur}
                                 onChangeText={onChange}
                                 value={value}
-                                placeholder="Password"
+                                placeholder="Enter your password..."
                                 error={errors.password}
                                 secureTextEntry
                             />
@@ -96,7 +101,8 @@ const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props para
                     </Pressable>
                     <Box mb="5.5" />
                     <Button label="Login" onPress={handleSubmit(onSubmit)} uppercase />
-                </Box>
+                    </Box>
+            </LinearGradient>
             </TouchableWithoutFeedback>
         </SafeAreaWrapper>
     );

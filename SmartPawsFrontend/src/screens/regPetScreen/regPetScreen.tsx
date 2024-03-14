@@ -19,7 +19,7 @@ import { firebase } from "@react-native-firebase/auth";
 
 import { FIREBASE_STORAGE } from "../../services/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-
+import { LinearGradient } from "expo-linear-gradient";
 import { format } from "date-fns"; 
 
 const RegPetScreen = () => {
@@ -106,6 +106,16 @@ const RegPetScreen = () => {
 
     return(
         <SafeAreaWrapper>
+            <LinearGradient
+                    colors={[
+                        "#EBD1FC",
+                        "#EBD1FC",
+                        "#EBD1FC",
+                        "#EBD1FC",
+                        "#EBD1FC",
+                    ]}
+                    style={{ flex: 1 }}
+                >
             {/* <Box flex={1} px="5.5" mt={"13"}> */}
             <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
                 <Text>Register Pet Screen</Text>
@@ -363,12 +373,13 @@ const RegPetScreen = () => {
                     <UploadImage setImageUrl={setImageUrl} setImageIsUploading={setImageIsUploading}/>
                 </View>
 
-                <Button title="Register Pet" onPress={handleSubmit(onSubmit)} disabled={imageIsUploading}/>
+                <Button title="Register Pet" color="#67629E" onPress={handleSubmit(onSubmit)} disabled={imageIsUploading}/>
                 
                 <Box mb="5.5" />
                 
             {/* </Box> */}
             </ScrollView>
+            </LinearGradient>
         </SafeAreaWrapper>
     )
 }
@@ -488,7 +499,7 @@ const uploadPhotoStyles = StyleSheet.create({
         height: 56,
         width: 56,
         borderRadius: 28,
-        backgroundColor: 'lightblue',
+        backgroundColor: '#67629E',
         alignItems: 'center',
         justifyContent: 'center',
         shadowColor: '#000',
@@ -502,7 +513,7 @@ const uploadPhotoStyles = StyleSheet.create({
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        backgroundColor: '#EBD1FC',
         alignItems: 'center',
         justifyContent: 'center',
     },

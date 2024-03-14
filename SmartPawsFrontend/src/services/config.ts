@@ -5,8 +5,7 @@ import * as SecureStore from "expo-secure-store"
 //  export const BASE_URL = process.env["API_URL " as string]
 // to get rid of network error directly inputting ip address here 
 // but need to figure out concealing ip address...
-// export const BASE_URL = `http://IPADDRESS:1337/`
-
+export const BASE_URL = `http://192.168.254.68:1337/`;
 
 
 const TIME_OUT = 3000
@@ -26,5 +25,17 @@ axiosInstance.interceptors.request.use(async (req) => {
         return req
     }
 })
+
+axiosInstance.interceptors.response.use(response => {
+    // Check if the response data is not empty and is a valid object before assuming it's JSON
+    if (response.data && typeof response.data === 'object') {
+      return response;
+    } else {
+      throw new Error('Response data is not valid JSON');
+    }
+  }, error => {
+    // Handle errors
+    return Promise.reject(error);
+  });  
 
 export default axiosInstance
