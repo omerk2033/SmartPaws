@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, TouchableOpacity, Text, Alert, StyleSheet, ScrollView } from 'react-native';
+import { KeyboardAvoidingView, Platform, View, TextInput, TouchableOpacity, Text, Alert, StyleSheet, ScrollView } from 'react-native';
 import { BASE_URL } from "../../services/config";
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -30,8 +30,13 @@ const AIScreen = () => {
     };
     return (
         <LinearGradient
-            colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
-            style={styles.linearGradient}
+        colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
+        style={styles.linearGradient}
+    >
+        <KeyboardAvoidingView 
+            style={{ flex: 1 }}
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
         >
             <ScrollView contentContainerStyle={styles.chatContainer}>
                 {/* Display response text here */}
@@ -48,9 +53,9 @@ const AIScreen = () => {
                     <Text style={styles.sendButtonText}>Send to Gigi</Text>
                 </TouchableOpacity>
             </View>
-        </LinearGradient>
-    );
-};
+        </KeyboardAvoidingView>
+    </LinearGradient>
+);};
 
 const styles = StyleSheet.create({
     linearGradient: {
@@ -76,10 +81,10 @@ const styles = StyleSheet.create({
     input: {
         flex: 1,
         height: 40,
-        borderColor: 'gray',
+        borderColor: 'rgba(255, 255, 255, 0.0)',
         borderWidth: 1,
         borderRadius: 20, // Making it oval
-        backgroundColor: '#f9f9f9', // Lighter background
+        backgroundColor: 'rgba(255, 255, 255, 0.6)', // opaque background
         paddingHorizontal: 15,
         marginRight: 10, // Spacing between input and button
     },

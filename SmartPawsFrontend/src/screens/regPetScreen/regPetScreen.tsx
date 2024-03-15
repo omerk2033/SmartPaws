@@ -139,6 +139,7 @@ const RegPetScreen = () => {
                             value={value}
                             placeholder="Pet Name"
                             error={errors.name}
+                            style={styles.input}
                
                         />
                     )}
@@ -162,7 +163,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Age"
-                            error={errors.name}  
+                            error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="age"
@@ -180,7 +182,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Species"
-                            error={errors.name}  
+                            error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="species"
@@ -195,7 +198,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Breed"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="breed"
@@ -210,7 +214,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Color"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="color"
@@ -225,7 +230,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Gender"
-                            // error={errors.name}  
+                            // error={errors.name}
+                            style={styles.input}  
                         />
                     )}
                     name="gender"
@@ -240,7 +246,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Vaccination Records"
-                            // error={errors.name}  
+                            // error={errors.name}
+                            style={styles.input}  
                         />
                     )}
                     name="vaccinationRecords"
@@ -255,7 +262,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Medications/Supplements"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="medsSupplements"
@@ -270,7 +278,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Allergies/Sensitivities"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="allergiesSensitivities"
@@ -285,7 +294,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Previous Illnesses/Injuries/Surgeries"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="prevIllnessesInjuries"
@@ -301,6 +311,7 @@ const RegPetScreen = () => {
                             value={value}
                             placeholder="Pet Diet"
                             // error={errors.name}  
+                            style={styles.input}
                         />
                     )}
                     name="diet"
@@ -316,6 +327,7 @@ const RegPetScreen = () => {
                             value={value}
                             placeholder="Pet Exercise Habits"
                             // error={errors.name}  
+                            style={styles.input}
                         />
                     )}
                     name="exerciseHabits"
@@ -331,6 +343,7 @@ const RegPetScreen = () => {
                             value={value}
                             placeholder="Pet Indoor/Outdoor"
                             // error={errors.name}  
+                            style={styles.input}
                         />
                     )}
                     name="indoorOrOutdoor"
@@ -345,7 +358,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Reproductive Status"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="reproductiveStatus"
@@ -361,7 +375,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Notes"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="notes"
@@ -393,6 +408,61 @@ const RegPetScreen = () => {
         </SafeAreaWrapper>
     )
 }
+
+const styles = StyleSheet.create({
+    linearGradient: {
+        flex: 1,
+        paddingHorizontal: 10,
+        paddingTop: 20,
+    },
+    input: {
+        backgroundColor: 'rgba(255, 255, 255, 0.5)', // Semi-transparent background
+        borderRadius: 20, // Rounded corners
+        paddingHorizontal: 15, // Horizontal padding
+        borderColor: 'rgba(255, 255, 255, 0.5)', // Border color
+        borderWidth: 1, // Border width
+        marginBottom: 10, // Margin bottom
+        height: 40
+    },
+    scrollViewStyle: {
+        flex: 1,
+        paddingHorizontal: 5.5,
+        marginTop: 13,
+    },
+    centeredView: {
+        alignItems: 'center', // This will center the child components horizontally
+        justifyContent: 'center', // This will center the child components vertically if the view has a defined height
+        flex: 1,
+    },
+    headerText: {
+        fontSize: 24, // Adjust the font size as needed
+        fontWeight: 'bold', // If you want the text to be bold
+        textAlign: 'center', // Center the text horizontally
+        marginTop: 20, // Optional: add some spacing at the top
+        marginBottom: 20, // Optional: add some spacing at the bottom
+    },
+    container: {
+        flex: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.0)',
+        padding: 10,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    button: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 30, // Adjust this value to control the "ovalness" of the button
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+
+});
 
 const savePetProfileToDatabase = async ( 
     ownerId: string,
@@ -518,47 +588,6 @@ const uploadPhotoStyles = StyleSheet.create({
         elevation: 2,
         marginBottom: 16
     }
-});
-
-const styles = StyleSheet.create({
-    scrollViewStyle: {
-        flex: 1,
-        paddingHorizontal: 5.5,
-        marginTop: 13,
-    },
-    centeredView: {
-        alignItems: 'center', // This will center the child components horizontally
-        justifyContent: 'center', // This will center the child components vertically if the view has a defined height
-        flex: 1,
-    },
-    headerText: {
-        fontSize: 24, // Adjust the font size as needed
-        fontWeight: 'bold', // If you want the text to be bold
-        textAlign: 'center', // Center the text horizontally
-        marginTop: 20, // Optional: add some spacing at the top
-        marginBottom: 20, // Optional: add some spacing at the bottom
-    },
-    container: {
-        flex: 1,
-        backgroundColor: 'rgba(255, 255, 255, 0.0)',
-        padding: 10,
-        borderRadius: 10,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    button: {
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        borderRadius: 30, // Adjust this value to control the "ovalness" of the button
-        justifyContent: 'center',
-        alignItems: 'center',
-        margin: 10,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-
 });
 
 export default RegPetScreen

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { Keyboard, View, Text, TextInput, TouchableOpacity, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const JournalScreen = () => {
@@ -11,26 +11,28 @@ const JournalScreen = () => {
     };
 
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <LinearGradient
-            colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
-            style={styles.linearGradient}
+          colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
+          style={styles.linearGradient}
         >
-            <View style={styles.container}>
-                <Text style={styles.title}>Journal</Text>
-                <TextInput
-                    style={styles.input}
-                    multiline
-                    placeholder="Write your journal entry here..."
-                    value={entry}
-                    onChangeText={setEntry}
-                />
-                <TouchableOpacity style={styles.button} onPress={handleSaveEntry}>
-                    <Text style={styles.buttonText}>Save Entry</Text>
-                </TouchableOpacity>
-            </View>
+          <View style={styles.container}>
+            <Text style={styles.title}>Journal</Text>
+            <TextInput
+              style={styles.input}
+              multiline
+              placeholder="Write your journal entry here..."
+              value={entry}
+              onChangeText={setEntry}
+            />
+            <TouchableOpacity style={styles.button} onPress={handleSaveEntry}>
+              <Text style={styles.buttonText}>Save Entry</Text>
+            </TouchableOpacity>
+          </View>
         </LinearGradient>
+      </TouchableWithoutFeedback>
     );
-};
+  };
 
 const styles = StyleSheet.create({
     linearGradient: {

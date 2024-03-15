@@ -45,13 +45,7 @@ export default function WelcomeScreen() {
         <SafeAreaWrapper>
             <TouchableOpacity style={{ flex: 1 }} onPress={navigateToSignUpScreen} activeOpacity={1}>
                 <LinearGradient
-                    colors={[
-                        "#1B7899",
-                        "#43B2BD",
-                        "#EEEEEE",
-                        "#EEEEEE",
-                        "#43B2BD",
-                        "#1B7899",
+                    colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899",
                     ]}
                     style={{ flex: 1 }}
                 >
@@ -67,7 +61,7 @@ export default function WelcomeScreen() {
                                 textAlign: "center",
                                 fontSize: 30,
                                 fontWeight: "700",
-                                color: "#000000",
+                                color: "#FFFFFF",
                                 transform: [{ scale: bounce }],
                             }}
                         >
@@ -79,7 +73,7 @@ export default function WelcomeScreen() {
                             textAlign="center"
                             variant="textLg"
                             fontWeight="700"
-                            color="zinc900"
+                            color="fuchsia900"
                         >
                             Keeping your pets happy and healthy!
                         </Text>

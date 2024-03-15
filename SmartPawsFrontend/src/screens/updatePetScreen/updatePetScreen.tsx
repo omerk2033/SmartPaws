@@ -194,6 +194,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             value={value}
                             placeholder="Pet Name"
                             error={errors.name}
+                            style={styles.input}
                             // do not allow user to edit pet name field as it is part of the primary key for a pet profile
                             // once a pet name is selected by a user, they are no longer able to edit it  
                             editable={false}
@@ -220,6 +221,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             value={value}
                             placeholder="Pet Age"
                             error={errors.name}  
+                            style={styles.input}
                         />
                     )}
                     name="age"
@@ -238,6 +240,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             value={value}
                             placeholder="Pet Species"
                             error={errors.name}  
+                            style={styles.input}
                         />
                     )}
                     name="species"
@@ -252,6 +255,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Breed"
+                            style={styles.input}
                             // error={errors.name}  
                         />
                     )}
@@ -267,6 +271,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Color"
+                            style={styles.input}
                             // error={errors.name}  
                         />
                     )}
@@ -282,6 +287,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Gender"
+                            style={styles.input}
                             // error={errors.name}  
                         />
                     )}
@@ -297,6 +303,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Vaccination Records"
+                            style={styles.input}
                             // error={errors.name}  
                         />
                     )}
@@ -312,6 +319,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Medications/Supplements"
+                            style={styles.input}
                             // error={errors.name}  
                         />
                     )}
@@ -327,6 +335,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Allergies/Sensitivities"
+                            style={styles.input}
                             // error={errors.name}  
                         />
                     )}
@@ -342,6 +351,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Previous Illnesses/Injuries/Surgeries"
+                            style={styles.input}
                             // error={errors.name}  
                         />
                     )}
@@ -357,6 +367,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Diet"
+                            style={styles.input}
                             // error={errors.name}  
                         />
                     )}
@@ -372,6 +383,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Exercise Habits"
+                            style={styles.input}
                             // error={errors.name}  
                         />
                     )}
@@ -387,6 +399,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Indoor/Outdoor"
+                            style={styles.input}
                             // error={errors.name}  
                         />
                     )}
@@ -402,6 +415,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Reproductive Status"
+                            style={styles.input}
                             // error={errors.name}  
                         />
                     )}
@@ -418,6 +432,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Notes"
+                            style={styles.input}
                             // error={errors.name}  
                         />
                     )}
@@ -517,6 +532,20 @@ const uploadPhotoStyles = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+    linearGradient: {
+        flex: 1,
+        paddingHorizontal: 10,
+        paddingTop: 20,
+    },
+    input: {
+        backgroundColor: 'rgba(255, 255, 255, 0.5)', // Semi-transparent background
+        borderRadius: 20, // Rounded corners
+        paddingHorizontal: 15, // Horizontal padding
+        borderColor: 'rgba(255, 255, 255, 0.5)', // Border color
+        borderWidth: 1, // Border width
+        marginBottom: 10, // Margin bottom
+        height: 40
+    },
     scrollViewStyle: {
         flex: 1,
         paddingHorizontal: 5.5,
