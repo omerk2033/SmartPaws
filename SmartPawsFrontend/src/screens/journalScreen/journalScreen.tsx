@@ -1,28 +1,32 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 const JournalScreen = () => {
     const [entry, setEntry] = useState('');
 
     const handleSaveEntry = () => {
-        // Here you can save the entry to a database or perform any other action
         console.log('Entry saved:', entry);
-        // Clear the input field after saving
         setEntry('');
     };
 
+    const dismissKeyboard = () => {
+        Keyboard.dismiss();
+    };
+
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Journal</Text>
-            <TextInput
-                style={styles.input}
-                multiline
-                placeholder="Write your journal entry here..."
-                value={entry}
-                onChangeText={setEntry}
-            />
-            <Button title="Save Entry" onPress={handleSaveEntry} />
-        </View>
+        <TouchableWithoutFeedback onPress={dismissKeyboard}>
+            <View style={styles.container}>
+                <Text style={styles.title}>Journal</Text>
+                <TextInput
+                    style={styles.input}
+                    multiline
+                    placeholder="Write your journal entry here..."
+                    value={entry}
+                    onChangeText={setEntry}
+                />
+                <Button title="Save Entry" onPress={handleSaveEntry} />
+            </View>
+        </TouchableWithoutFeedback>
     );
 };
 
