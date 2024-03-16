@@ -1,55 +1,95 @@
-import { useNavigation } from "@react-navigation/native"
-import { LinearGradient } from "expo-linear-gradient"
-import React from "react"
-import { Box, Text} from "../../utils/theme/style";
-import {AuthScreenNavigationType} from "../../navigation/types";
+import React, { useEffect, useRef } from 'react';
+import { useNavigation } from "@react-navigation/native";
+import { AuthScreenNavigationType } from "../../navigation/types";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import Button from "../../components/shared/button";
+import { LinearGradient } from "expo-linear-gradient";
+import { Box, Text } from "../../utils/theme/style";
+import { Image, Animated, TouchableOpacity } from 'react-native';
 
-const WelcomeScreen = () => {
-    const navigation = useNavigation<AuthScreenNavigationType<"Welcome">>()
+export default function WelcomeScreen() {
+
+    const navigation = useNavigation<AuthScreenNavigationType<"Welcome">>();
+
     const navigateToSignUpScreen = () => {
-        navigation.navigate("SignUp")
+        navigation.navigate("SignUp");
     }
+
+    // Create an animated value
+    const bounceAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        // Start the animation when the component mounts
+        Animated.loop(
+            Animated.sequence([
+                Animated.timing(bounceAnim, {
+                    toValue: 1,
+                    duration: 700,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(bounceAnim, {
+                    toValue: 0,
+                    duration: 700,
+                    useNativeDriver: true,
+                }),
+            ]),
+        ).start();
+    }, [bounceAnim]);
+
+    // Interpolate the animated value to use it for scale transformation
+    const bounce = bounceAnim.interpolate({
+        inputRange: [0, 0.5, 1],
+        outputRange: [1, 1.1, 1], // Scale from 100% to 110% to 100%
+    });
 
     return (
         <SafeAreaWrapper>
-            <LinearGradient
-                colors={[
-                    "#ffffff",
-                    "#fcecff",
-                    "#f8daff",
-                    "#fae2ff",
-                    "#fae2ff",
-                    "#ffffff",
-                ]}
-                style={{ flex: 1 }}
-            >
-                <Box flex={1} justifyContent="center">
-                    <Box alignItems="center" mb="3.5">
-
-                    </Box>
-                    <Text textAlign="center" variant="textXl" fontWeight="700">
-                        Helping you, help your pet.
-                    </Text>
-                    <Box my="3.5" mx="10">
-                        <Button
-                            label="SmartPaws"
-                            onPress={navigateToSignUpScreen}
+            <TouchableOpacity style={{ flex: 1 }} onPress={navigateToSignUpScreen} activeOpacity={1}>
+                <LinearGradient
+                    colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899",
+                    ]}
+                    style={{ flex: 1 }}
+                >
+                    <Box alignItems="center" mt="5">
+                        <Image
+                            source={require('../../../assets/sp_logo.png')}
+                            style={{ width: 225, height: 225 }}
                         />
                     </Box>
-                    <Text
-                        textAlign="center"
-                        variant="textXs"
-                        fontWeight="700"
-                        color="gray5"
-                    >
-                        7 billion users registered today....
-                    </Text>
-                </Box>
-            </LinearGradient>
+                    <Box alignItems="center" mt="10">
+                        <Animated.Text
+                            style={{
+                                textAlign: "center",
+                                fontSize: 30,
+                                fontWeight: "700",
+                                color: "#FFFFFF",
+                                transform: [{ scale: bounce }],
+                            }}
+                        >
+                            Welcome to SmartPaws
+                        </Animated.Text>
+                    </Box>
+                    <Box alignItems="center" mt="10">
+                        <Text
+                            textAlign="center"
+                            variant="textLg"
+                            fontWeight="700"
+                            color="fuchsia900"
+                        >
+                            Keeping your pets happy and healthy!
+                        </Text>
+                    </Box>
+                    <Box alignItems="center" mt="10">
+                        <Text
+                            textAlign="center"
+                            variant="textXs"
+                            fontWeight="700"
+                            color="zinc900"
+                        >
+                            Tap anywhere to continue...
+                        </Text>
+                    </Box>
+                </LinearGradient>
+            </TouchableOpacity>
         </SafeAreaWrapper>
-    )
+    );
 }
-
-export default WelcomeScreen

@@ -21,12 +21,12 @@ export default function OnBoarding2 (){
         <SafeAreaWrapper>
             <LinearGradient
                 colors={[
-                    "#ffffff",
-                    "#fcecff",
-                    "#f8daff",
-                    "#fae2ff",
-                    "#fae2ff",
-                    "#ffffff",
+                    "#8FB8ED",
+                    "#8FB8ED",
+                    "#8FB8ED",
+                    "#8FB8ED",
+                    "#8FB8ED",
+                    "#8FB8ED",
                 ]}
                 style={{ flex: 1 }}
             >
@@ -35,11 +35,14 @@ export default function OnBoarding2 (){
 
                     </Box>
                     <Text textAlign="center" variant="textXl" fontWeight="700">
-                        Helping you, help your pet.
+                        Concern Tracker:
+                        Enabling this for a pet will keep track of when a concern was noted.
+                        You can add more details about the concern within this space to help maintain your
+                        pet's progress.  
                     </Text>
                     <Box my="3.5" mx="10">
                         <Button
-                            label="SmartPaws"
+                            label="Next"
                             onPress={navigateToOnboard3Screen}
                         />
                     </Box>
@@ -49,14 +52,6 @@ export default function OnBoarding2 (){
                             onPress={navigateToOnboard1Screen}
                         />
                     </Box>
-                    <Text
-                        textAlign="center"
-                        variant="textXs"
-                        fontWeight="700"
-                        color="gray5"
-                    >
-                        7 billion users registered today....
-                    </Text>
                 </Box>
             </LinearGradient>
         </SafeAreaWrapper>

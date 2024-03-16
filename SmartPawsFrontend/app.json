@@ -27,7 +27,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "appEasAddIn": "appEasAddIn.json"
+    }
   }
 }

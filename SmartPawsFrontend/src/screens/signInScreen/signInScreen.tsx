@@ -1,7 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Pressable, TouchableWithoutFeedback, Keyboard, Image } from "react-native"; // Add missing import
+import { Platform, KeyboardAvoidingView, Pressable, TouchableWithoutFeedback, Keyboard, StyleSheet, Image, TouchableOpacity, ScrollView } from "react-native"; // Add missing import
 import { IUser } from "../../types";
 import { AuthScreenNavigationType } from "../../navigation/types";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
@@ -10,6 +10,7 @@ import Input from "../../components/shared/input";
 import Button from "../../components/shared/button";
 import { signInWithEmailAndPassword } from "firebase/auth"; // Correct import
 import { FIREBASE_AUTH } from "../../services/firebase";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface SignInScreenProps { // Add interface for props
 }
@@ -47,15 +48,26 @@ const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props para
     return (
         <SafeAreaWrapper>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <LinearGradient
+                    colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
+                    style={{ flex: 1 }}
+                >
+                     <KeyboardAvoidingView
+                        style={{ flex: 1 }}
+                        behavior={Platform.OS === "ios" ? "padding" : "height"}
+                        keyboardVerticalOffset={Platform.OS === "ios" ? 150 : 0}
+                    >
+                         <ScrollView 
+                            style={styles.scrollView}
+                            contentContainerStyle={styles.scrollViewContent}
+                            keyboardShouldPersistTaps="handled"
+                            >
+                        
                 <Box flex={1} px="5.5" justifyContent="center">
-                    <Image
-                        source={require('../../../assets/pawprint.png')}
-                        style={{ width: 200, height: 200, marginBottom: 20, marginTop: -200, alignSelf: 'center' }}
-                    />
-                    <Text variant="textXl" fontWeight="700">
-                        Welcome Back
-                    </Text>
                     <Box mb="6" />
+                    <Text variant="textLg" color="neutral700" fontWeight="700" mb="10">
+                        Welcome Back!
+                    </Text>
                     <Controller
                         control={control}
                         rules={{ required: true }}
@@ -65,8 +77,9 @@ const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props para
                                 onBlur={onBlur}
                                 onChangeText={onChange}
                                 value={value}
-                                placeholder="Email"
+                                placeholder="Enter your email..."
                                 error={errors.email}
+                                style={styles.input}
                             />
                         )}
                         name="email"
@@ -81,8 +94,9 @@ const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props para
                                 onBlur={onBlur}
                                 onChangeText={onChange}
                                 value={value}
-                                placeholder="Password"
+                                placeholder="Enter your password..."
                                 error={errors.password}
+                                style={styles.input}
                                 secureTextEntry
                             />
                         )}
@@ -90,13 +104,20 @@ const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props para
                     />
                     <Box mt="5.5" />
                     <Pressable onPress={navigateToSignUpScreen}>
-                        <Text color="primary" textAlign="right">
-                            Register?
+                        <Text color="fuchsia900" textAlign="right">
+                            Creating a new account? Sign up
                         </Text>
                     </Pressable>
                     <Box mb="5.5" />
-                    <Button label="Login" onPress={handleSubmit(onSubmit)} uppercase />
-                </Box>
+                    <TouchableOpacity
+                            onPress={handleSubmit(onSubmit)}
+                            style={styles.loginButton}>
+                            <Text style={styles.loginButtonText}>Log in</Text>
+                    </TouchableOpacity>
+                        </Box>
+                        </ScrollView>
+                        </KeyboardAvoidingView>
+            </LinearGradient>
             </TouchableWithoutFeedback>
         </SafeAreaWrapper>
     );
@@ -115,5 +136,70 @@ const loginWithEmailAndPassword = async (email: string, password: string) => {
         throw error; // Re-throw the error so that it can be caught in the onSubmit function
     }
 };
+
+const styles = StyleSheet.create({
+    loginButton: {
+        backgroundColor: '#201A64', // Button color
+        borderRadius: 20, // If you want the button to be oval-shaped
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      loginButtonText: {
+        color: '#FFFFFF', // Text color
+        fontSize: 16,
+        textTransform: 'uppercase', // If you want the text to be uppercase
+      },
+    linearGradient: {
+        flex: 1,
+        paddingHorizontal: 20,
+    },
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
+        color: 'white',
+    },
+    input: {
+        height: 50,
+        width: '100%',
+        borderWidth: 1,
+        borderColor: '#ccc',
+        padding: 15,
+        borderRadius: 25, // oval shape
+        backgroundColor: 'rgba(255, 255, 255, 0.5)', // semi-transparent white
+        color: 'black', // ensure text is readable on light background
+        marginBottom: 20,
+        textAlignVertical: 'top', // start text from the top of the text input
+    },
+    button: {
+        backgroundColor: '#201A64',
+        borderRadius: 20, // oval shape
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+    
+    keyboardAvoidingView: {
+        flex: 1,
+      },
+      scrollView: {
+        flex: 1,
+      },
+      scrollViewContent: {
+        padding: 20,
+      },
+});
 
 export default SignInScreen;

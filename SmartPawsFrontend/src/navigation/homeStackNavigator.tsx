@@ -15,33 +15,13 @@ const Stack = createNativeStackNavigator<HomeStackParamList>()
 
 const HomeStackNavigator = () => {
 
-    const SettingsButton = () => {
-        const navigation = useNavigation<NativeStackNavigationProp<HomeStackParamList, 'Settings'>>();
-
-        const navigateToSettingsScreen = () => {
-            navigation.navigate('Settings');
-        };
-
-        return (
-            <TouchableOpacity onPress={navigateToSettingsScreen}>
-                <Image
-                    source={require('../../assets/settings.png')}
-                    style={{ width: 25, height: 25, marginRight: 15 }}
-                />
-            </TouchableOpacity>
-        );
-    };
-
-
     return (
         <Stack.Navigator>
            <Stack.Screen 
                 name={"Home"} 
                 options={{
-                    headerTitle: "SmartPaws",
-                    headerBackTitleVisible: false,
-                    headerRight: () => <SettingsButton />,
-                    
+                    headerTitle: "",
+                    headerBackTitleVisible: false,           
                 }}    
                 component={HomeScreen}
             />

@@ -1,7 +1,7 @@
 import { Box,  Text } from "../../utils/theme/style";
 import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import { Alert, Button, ScrollView, View, Image, StyleSheet } from "react-native";
+import { Alert, TouchableOpacity, Button, ScrollView, View, Image, StyleSheet } from "react-native";
 import { HomeScreenNavigationType, HomeStackParamList } from "../../navigation/types";
 
 import React, { useEffect, useState } from "react";
@@ -11,6 +11,7 @@ import { BASE_URL } from "../../services/config";
 
 // RouteProp provides ability to receive parameters from previous screen petProfileScreen.tsx 
 import { RouteProp } from '@react-navigation/native';
+import { LinearGradient } from "expo-linear-gradient";
 
 type Props = {
     route: RouteProp<HomeStackParamList, 'PetProfile'>;
@@ -75,6 +76,16 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
 
     return(
         <SafeAreaWrapper>
+            <LinearGradient
+                    colors={[
+                        "#1B7899",
+                        "#43B2BD",
+                        "#43B2BD",
+                        "#43B2BD",
+                        "#1B7899",
+                    ]}
+                    style={{ flex: 1 }}
+                >
         <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
             {/* display pet image */}
             {/* pet.image is url to actual image stored in firebase */}
@@ -88,8 +99,7 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
             </View>
             {/* pet info */}
             <Box>
-                <Text>Pet Profile Screen</Text>
-                <Text>{ "Name: " + pet?.name }</Text>
+                <Text style={{ textAlign:"center", fontSize: 24, fontWeight: 'bold' }}>{pet?.name + "'s Information:"}</Text>
                 <Text>{ "Age: " + pet?.age }</Text>
                 <Text>{ "Species: " + pet?.species }</Text>
                 <Text>{ "Breed: " + pet?.breed }</Text>
@@ -105,33 +115,42 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
                 <Text>{ "Reproductive Status: " + pet?.reproductiveStatus }</Text>
                 <Text>{ "Notes: " + pet?.notes }</Text>
             </Box>
-            <Box mt="6">
-            {/* update pet button */}
-            <Button title="Update Pet Profile" onPress={handleUpdateProfileRequest}/>
-            </Box>
-            <Box mb="6"/>
-            {/* delete pet button with alert cautioning user */}
-            <Button
-                title="Delete Pet"
-                color="red"
-                onPress={() => {
-                    Alert.alert(
-                        "Are you sure you want to delete this pet?",
-                        "This action cannot be undone.",
-                        [
-                            {
-                                text: "Cancel",
-                                style: "cancel"
-                            },
-                            {
-                                text: "Delete",
-                                onPress: () => deletePet(ownerId, petName)
-                            }
-                        ]
-                    )
-                }}
-            />
+            <Box mt="6" style={styles.centeredView}>
+    <TouchableOpacity 
+        onPress={handleUpdateProfileRequest} 
+        style={[styles.button, { backgroundColor: "#201A64" }]} // Apply custom button style
+    >
+        <Text style={styles.buttonText}>Update Profile</Text>
+    </TouchableOpacity>
+</Box>
+
+<Box mb="6" style={styles.centeredView}>
+    <TouchableOpacity
+        onPress={() => {
+            Alert.alert(
+                "Are you sure you want to delete this pet?",
+                "This action cannot be undone.",
+                [
+                    {
+                        text: "Cancel",
+                        style: "cancel"
+                    },
+                    {
+                        text: "Delete",
+                        onPress: () => deletePet(ownerId, petName),
+                        style: "destructive",
+                    }
+                ]
+            );
+        }}
+        style={[styles.button, { backgroundColor: "red" }]} // Apply custom button style
+    >
+        <Text style={styles.buttonText}>Remove Profile</Text>
+    </TouchableOpacity>
+</Box>
+
         </ScrollView>
+        </LinearGradient>
     </SafeAreaWrapper>
 
     )
@@ -144,6 +163,43 @@ const styles = StyleSheet.create({
       resizeMode: "cover", 
       borderRadius: 10, 
     },
+        scrollViewStyle: {
+            flex: 1,
+            paddingHorizontal: 5.5,
+            marginTop: 13,
+        },
+        centeredView: {
+            alignItems: 'center', // This will center the child components horizontally
+            justifyContent: 'center', // This will center the child components vertically if the view has a defined height
+            flex: 1,
+        },
+        headerText: {
+            fontSize: 24, // Adjust the font size as needed
+            fontWeight: 'bold', // If you want the text to be bold
+            textAlign: 'center', // Center the text horizontally
+            marginTop: 20, // Optional: add some spacing at the top
+            marginBottom: 20, // Optional: add some spacing at the bottom
+        },
+        container: {
+            flex: 1,
+            backgroundColor: 'rgba(255, 255, 255, 0.0)',
+            padding: 10,
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        button: {
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            borderRadius: 30, // Adjust this value to control the "ovalness" of the button
+            justifyContent: 'center',
+            alignItems: 'center',
+            margin: 10,
+        },
+        buttonText: {
+            color: '#fff',
+            fontSize: 16,
+        },
   });
   
 export default PetProfileScreen

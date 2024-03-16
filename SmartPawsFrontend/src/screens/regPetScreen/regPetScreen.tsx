@@ -19,7 +19,7 @@ import { firebase } from "@react-native-firebase/auth";
 
 import { FIREBASE_STORAGE } from "../../services/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-
+import { LinearGradient } from "expo-linear-gradient";
 import { format } from "date-fns"; 
 
 const RegPetScreen = () => {
@@ -106,13 +106,26 @@ const RegPetScreen = () => {
 
     return(
         <SafeAreaWrapper>
+            <LinearGradient
+                    colors={[
+                        "#1B7899",
+                        "#43B2BD",
+                        "#43B2BD",
+                        "#43B2BD",
+                        "#1B7899",
+                    ]}
+                    style={{ flex: 1 }}
+                >
             {/* <Box flex={1} px="5.5" mt={"13"}> */}
-            <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
-                <Text>Register Pet Screen</Text>
+            <ScrollView keyboardShouldPersistTaps='handled' style={styles.scrollViewStyle}>
+                
+                <View style={styles.centeredView}>
+                    <Text style={styles.headerText}>New Pet Profile</Text>
+                </View>
                 
                 {/* have ownerId from currently logged in User's uid already */}
 
-                <Box mb="6" />
+                <Box mb="6"  />
                 <Controller 
                     control={control}
                     rules={{
@@ -125,7 +138,9 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Name"
-                            error={errors.name}  
+                            error={errors.name}
+                            style={styles.input}
+               
                         />
                     )}
                     name="name"
@@ -148,7 +163,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Age"
-                            error={errors.name}  
+                            error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="age"
@@ -166,7 +182,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Species"
-                            error={errors.name}  
+                            error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="species"
@@ -181,7 +198,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Breed"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="breed"
@@ -196,7 +214,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Color"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="color"
@@ -211,7 +230,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Gender"
-                            // error={errors.name}  
+                            // error={errors.name}
+                            style={styles.input}  
                         />
                     )}
                     name="gender"
@@ -226,7 +246,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Vaccination Records"
-                            // error={errors.name}  
+                            // error={errors.name}
+                            style={styles.input}  
                         />
                     )}
                     name="vaccinationRecords"
@@ -241,7 +262,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Medications/Supplements"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="medsSupplements"
@@ -256,7 +278,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Allergies/Sensitivities"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="allergiesSensitivities"
@@ -271,7 +294,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Previous Illnesses/Injuries/Surgeries"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="prevIllnessesInjuries"
@@ -287,6 +311,7 @@ const RegPetScreen = () => {
                             value={value}
                             placeholder="Pet Diet"
                             // error={errors.name}  
+                            style={styles.input}
                         />
                     )}
                     name="diet"
@@ -302,6 +327,7 @@ const RegPetScreen = () => {
                             value={value}
                             placeholder="Pet Exercise Habits"
                             // error={errors.name}  
+                            style={styles.input}
                         />
                     )}
                     name="exerciseHabits"
@@ -317,6 +343,7 @@ const RegPetScreen = () => {
                             value={value}
                             placeholder="Pet Indoor/Outdoor"
                             // error={errors.name}  
+                            style={styles.input}
                         />
                     )}
                     name="indoorOrOutdoor"
@@ -331,7 +358,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Reproductive Status"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="reproductiveStatus"
@@ -347,7 +375,8 @@ const RegPetScreen = () => {
                             onChangeText={onChange}
                             value={value}
                             placeholder="Pet Notes"
-                            // error={errors.name}  
+                            // error={errors.name} 
+                            style={styles.input} 
                         />
                     )}
                     name="notes"
@@ -357,21 +386,83 @@ const RegPetScreen = () => {
                 {/* upload image of pet option */}
                 {/* now being saved to firebase right away in UploadImage function before REGISTER PET is pressed */}
                 <View style={styles.container}>
-                    <Text>Upload Pet Photo</Text>
-                    {/* setImageUrl passed in to be able to useState and update the pet profile being created in the form */}
+                  <Text style={{ fontWeight: 'bold', fontSize: 14 }}>Upload Pet Photo</Text>
+              {/* setImageUrl passed in to be able to useState and update the pet profile being created in the form */}
                     {/* setImageIsUploading useState hook passed in to be able to useState and disable Update Pet Profile button until image url is generated */}
                     <UploadImage setImageUrl={setImageUrl} setImageIsUploading={setImageIsUploading}/>
                 </View>
-
-                <Button title="Register Pet" onPress={handleSubmit(onSubmit)} disabled={imageIsUploading}/>
-                
-                <Box mb="5.5" />
+                <TouchableOpacity
+                    onPress={handleSubmit(onSubmit)}
+                disabled={imageIsUploading}
+                style={[
+                    styles.button,
+                    { backgroundColor: imageIsUploading ? '#aaa' : '#201A64' } // Change color when disabled
+                    ]}>
+                    <Text style={styles.buttonText}>Register Pet</Text>
+                </TouchableOpacity>
+            <Box mb="5.5" />
                 
             {/* </Box> */}
             </ScrollView>
+            </LinearGradient>
         </SafeAreaWrapper>
     )
 }
+
+const styles = StyleSheet.create({
+    linearGradient: {
+        flex: 1,
+        paddingHorizontal: 10,
+        paddingTop: 20,
+    },
+    input: {
+        backgroundColor: 'rgba(255, 255, 255, 0.5)', // Semi-transparent background
+        borderRadius: 20, // Rounded corners
+        paddingHorizontal: 15, // Horizontal padding
+        borderColor: 'rgba(255, 255, 255, 0.5)', // Border color
+        borderWidth: 1, // Border width
+        marginBottom: 10, // Margin bottom
+        height: 40
+    },
+    scrollViewStyle: {
+        flex: 1,
+        paddingHorizontal: 5.5,
+        marginTop: 13,
+    },
+    centeredView: {
+        alignItems: 'center', // This will center the child components horizontally
+        justifyContent: 'center', // This will center the child components vertically if the view has a defined height
+        flex: 1,
+    },
+    headerText: {
+        fontSize: 24, // Adjust the font size as needed
+        fontWeight: 'bold', // If you want the text to be bold
+        textAlign: 'center', // Center the text horizontally
+        marginTop: 20, // Optional: add some spacing at the top
+        marginBottom: 20, // Optional: add some spacing at the bottom
+    },
+    container: {
+        flex: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.0)',
+        padding: 10,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    button: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 30, // Adjust this value to control the "ovalness" of the button
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+
+});
 
 const savePetProfileToDatabase = async ( 
     ownerId: string,
@@ -488,7 +579,7 @@ const uploadPhotoStyles = StyleSheet.create({
         height: 56,
         width: 56,
         borderRadius: 28,
-        backgroundColor: 'lightblue',
+        backgroundColor: 'rgba(255, 255, 255, 0.4)',
         alignItems: 'center',
         justifyContent: 'center',
         shadowColor: '#000',
@@ -497,15 +588,6 @@ const uploadPhotoStyles = StyleSheet.create({
         elevation: 2,
         marginBottom: 16
     }
-});
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#fff',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
 });
 
 export default RegPetScreen

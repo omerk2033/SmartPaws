@@ -1,44 +1,51 @@
 // User's home screen shows already registered pets, button to register a new pet
 
 import { Box, Text } from "../../utils/theme/style";
-import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import { Button, ScrollView, View, StyleSheet } from "react-native";
+import { TouchableOpacity, Image, ActivityIndicator, Button, ScrollView, View, StyleSheet } from "react-native";
 import { HomeStackParamList } from "../../navigation/types";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
-import { getAuth, signOut } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import React, { useEffect, useState } from "react";
 import { IPet, IUser } from "../../types";
 import { BASE_URL } from "../../services/config";
+import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation, useIsFocused } from "@react-navigation/native";
 
-import { useIsFocused } from "@react-navigation/native";
 
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'RegPet'>
 
 const HomeScreen = () => {
     const isFocused = useIsFocused();
+    const [loading, setLoading] = useState(true); // Add loading state
 
     const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
     const navigateToRegPetScreen = () => {
         homeStackNavigation.navigate('RegPet');
     }
-
-    const auth = getAuth(); // get auth instance of app
-
-    // sign user out of firebase
-    // index.tsx will handle switching to AppStackNavigator once user is signed out
-    // and screen will change to welcome screen 
-    const handleSignOut = async () => {
-        try {
-            await signOut(auth);
-        } catch (error) {
-            console.log("error signing out of firebase");
-        }
-    }
-
+    
+    const [user, setUser] = useState<IUser>();
     const [pets, setPets] = useState<IPet[]>([]);
+    
+    const fetchUser = async () => {
+        try {
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+            const ownerId = currentUser ? currentUser.uid : "";
+            if (!ownerId) throw new Error("No user ID found");
+            
+            const response = await fetch(`${BASE_URL}user/get/${ownerId}`);
+            const data = await response.json();
+            setUser(data);
+            await fetchPets(ownerId); // Fetch pets after successfully fetching user
+        } catch (error) {
+            console.error("Error fetching user", error);
+        } finally {
+            setLoading(false); // Set loading to false regardless of the outcome
+        }
+    };
 
-    const fetchPets = async () => {
+    const fetchPets = async (ownerId: string) => {
         try {
             // get current user's uid to associate user with their pets' profiles
             const auth = getAuth();  
@@ -58,11 +65,14 @@ const HomeScreen = () => {
         }
     };    
 
-    // use react native useIsFocused to trigger database fetch each time page is refocused
     useEffect(() => {
-        fetchPets();
-    }, [isFocused]); 
+        if (isFocused) fetchUser(); // Fetch user and pets when the screen is focused and on initial load
+    }, [isFocused]);
 
+    if (loading) {
+        // Show loading indicator while data is loading
+        return <ActivityIndicator size="large" color="#00ff00" />;
+    }
     const handlePetSelection = (pet: IPet) => {
         console.log(pet.name);
         // get pet name passed in from button associated with the pet
@@ -76,57 +86,94 @@ const HomeScreen = () => {
         // navigate to PetProfile screen with parameters needed to find/display pet
         homeStackNavigation.navigate('PetProfile', { ownerId, petName });
     }
-
-    // get user's name from mongo to display on their home screen
-    const [user, setUser] = useState<IUser>();
-
-    const fetchUser = async () => {
-        try {
-            // get current user's uid to query database
-            const auth = getAuth();
-            const currentUser = auth.currentUser;
-            const ownerId = currentUser ? currentUser.uid : "";
-            console.log(BASE_URL + 'user/get/' + ownerId);
-            const response = await fetch(BASE_URL + 'user/get/' + ownerId);
-            const data = await response.json();
-            setUser(data);
-            console.log(user);
-        } catch (error) {
-            console.error("Error fetching user", error);
-        }
-    };
-
-    useEffect(() => {
-        fetchUser();
-    }, []);
-
     return(
         <SafeAreaWrapper>
+            <LinearGradient
+                    colors={[
+                        "#1B7899",
+                        "#43B2BD",
+                        "#43B2BD",
+                        "#43B2BD",
+                        "#1B7899",
+                    ]}
+                    style={{ flex: 1 }}
+                >
             <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Box>
-                        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Hello {user?.name}!</Text>
+                        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{user?.name}'s Pets:</Text>
                     </Box>
                 </View>
-                <View style={{ flex: 1, justifyContent: 'center' }}>
-                    {/* <Box mt={"5"} width={150} height={500}> */}
-                    <Box m="6" style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                        <Button title="Add Pet" onPress={navigateToRegPetScreen} color={'green'}/>
-                    </Box>
-                    {pets.map((pet: IPet, index: number) => (
-                        <Box key={index} mb="6">
-                            {/* send pet object to handlePetSelection to be able to access which pet has been selected */}
-                            <Button title={pet.name} onPress={() => handlePetSelection(pet)}/>
-                        </Box>
-                    ))}
-                    {/* <Box mt={"5"} width={150} height={500}> */}
-                    <Box style={{ flexDirection: 'row', justifyContent: 'center' }}>
-                        <Button title="Log Out" onPress={handleSignOut} color={'orange'}/>
-                    </Box>
-                </View>
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <TouchableOpacity 
+        onPress={navigateToRegPetScreen} 
+        style={[styles.button, { backgroundColor: "#201A64" }]} // Use your styled button
+    >
+        <Text style={styles.buttonText}>Add New Pet</Text>
+    </TouchableOpacity>
+</View>
+{pets.map((pet: IPet, index: number) => (
+    <View key={index} style={[styles.container, { flexDirection: 'row', alignItems: 'center', marginBottom: 6 }]}>
+        <Image
+            source={{ uri: pet.image }}
+            style={{ width: 50, height: 50, borderRadius: 25, marginRight: 10 }}
+            resizeMode="cover"
+        />
+        <TouchableOpacity 
+            onPress={() => handlePetSelection(pet)} 
+            style={[styles.button, { backgroundColor: "#1B7899" }]} // Use your styled button
+        >
+            <Text style={styles.buttonText}>{pet.name}</Text>
+        </TouchableOpacity>
+    </View>
+))}
+
             </ScrollView>
+            </LinearGradient>
         </SafeAreaWrapper>
     )
 }
+
+const styles = StyleSheet.create({
+    scrollViewStyle: {
+        flex: 1,
+        paddingHorizontal: 5.5,
+        marginTop: 13,
+    },
+    centeredView: {
+        alignItems: 'center', // This will center the child components horizontally
+        justifyContent: 'center', // This will center the child components vertically if the view has a defined height
+        flex: 1,
+    },
+    headerText: {
+        fontSize: 24, // Adjust the font size as needed
+        fontWeight: 'bold', // If you want the text to be bold
+        textAlign: 'center', // Center the text horizontally
+        marginTop: 20, // Optional: add some spacing at the top
+        marginBottom: 20, // Optional: add some spacing at the bottom
+    },
+    container: {
+        flex: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.0)',
+        padding: 10,
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    button: {
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 30, // Adjust this value to control the "ovalness" of the button
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
+    },
+});
+
+
 
 export default HomeScreen
