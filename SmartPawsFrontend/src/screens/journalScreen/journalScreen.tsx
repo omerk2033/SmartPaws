@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Keyboard, View, Text, TextInput, TouchableOpacity, StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { Keyboard, View, Text, TextInput, Button, TouchableOpacity, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 const JournalScreen = () => {
@@ -10,8 +10,12 @@ const JournalScreen = () => {
         setEntry('');
     };
 
+    const dismissKeyboard = () => {
+        Keyboard.dismiss();
+    };
+
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <TouchableWithoutFeedback onPress={dismissKeyboard} accessible={false}>
         <LinearGradient
           colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
           style={styles.linearGradient}
