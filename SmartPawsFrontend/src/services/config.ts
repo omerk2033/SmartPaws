@@ -1,12 +1,9 @@
-// require('dotenv').config();
 import axios from "axios"
 import * as SecureStore from "expo-secure-store"
-//import * as process from "process";
-//  export const BASE_URL = process.env["API_URL " as string]
-// to get rid of network error directly inputting ip address here 
-// but need to figure out concealing ip address...
-export const BASE_URL = `http://192.168.254.68:1337/`;
 
+export const BASE_URL = process.env.BASE_URL
+console.log("BASE_URL: " + BASE_URL);
+console.log("a change to config.ts to try to get stuff to update");
 
 const TIME_OUT = 3000
 export const SMART_PAWS_TOKEN = "smart_paws_token"

@@ -29,7 +29,6 @@ yarn-error.*
 *.pem
 
 # local env files
-# JUST MAKING A CHANGE TO A COMMENT DELETE THIS COMMENT
 .env
 .env.development.local
 .env.test.local
@@ -40,5 +39,5 @@ yarn-error.*
 *.tsbuildinfo
 
 # different configuration for eas build causing errors for some team members
-# app.json
 appEasAddIn.json
+app.json

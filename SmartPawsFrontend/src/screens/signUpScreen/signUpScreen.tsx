@@ -145,8 +145,6 @@ const SignUpScreen = () => {
     )
 }
 
-
-// Uses values provided by user then creates the user with email and password in Firebase.
 const signUpWithEmailAndPassword = async (email: string, password: string, name: string) => {
     try {
         const userCredential = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
@@ -155,13 +153,13 @@ const signUpWithEmailAndPassword = async (email: string, password: string, name:
         console.log('User logged in:', user);
 
         // Update the user's profile with their name
-         await updateProfile(user, {
+        await updateProfile(user, {
             displayName: name
         });
         console.log("User's display name updated:", name);
 
         // Save user to MongoDB
-         await registerUserMongoDB(name, email, user.uid, password);
+        await registerUserMongoDB(name, email, user.uid, password);
         console.log("User registered to MongoDB");
         // Navigate to the next screen after successful login
     } catch (error) {
