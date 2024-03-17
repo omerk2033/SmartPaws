@@ -1,15 +1,19 @@
 import React from 'react';
 import { useNavigation } from "@react-navigation/native";
-import { AuthScreenNavigationType } from "../../navigation/types";
+import { AuthScreenNavigationType, HomeStackParamList } from "../../navigation/types";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { LinearGradient } from "expo-linear-gradient";
 import { Box, Text } from "../../utils/theme/style";
 import Button from "../../components/shared/button";
 import { Image } from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'RegPet'>
 
 export default function OnBoarding1() {
 
-    const navigation = useNavigation<AuthScreenNavigationType<"Onboard1">>();
+    // const navigation = useNavigation<AuthScreenNavigationType<"Onboard1">>();
+    const navigation = useNavigation<HomeStackNavigationProps>();
 
     const navigateToOnboard2Screen = () => {
         navigation.navigate("Onboard2");

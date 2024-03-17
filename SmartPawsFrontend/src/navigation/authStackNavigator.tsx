@@ -23,7 +23,8 @@ const AuthStackNavigator = () => {
                 }}
                 component={WelcomeScreen}
             />
-            <Stack.Screen
+            {/* seeing about moving Onboards to homeStackNavigator */}
+            {/* <Stack.Screen
                 name="Onboard1"
                 options={{
                     // changing to allow for back button option
@@ -46,7 +47,7 @@ const AuthStackNavigator = () => {
                     headerShown: false,
                 }}
                 component={OnBoarding3}
-            />
+            /> */}
             <Stack.Screen
                 name="SignIn"
                 options={{

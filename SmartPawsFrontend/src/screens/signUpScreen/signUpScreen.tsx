@@ -1,5 +1,5 @@
 import { Box, Text } from "../../utils/theme/style";
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthScreenNavigationType } from "../../navigation/types";
 import { Pressable, TouchableWithoutFeedback, Keyboard, View, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
@@ -13,7 +13,18 @@ import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import axiosInstance from "../../services/config";
 import { LinearGradient } from "expo-linear-gradient";
 
+import { useContext } from 'react';
+import { NavigationContext } from "../../navigation/navigationContext";
+
 const SignUpScreen = () => {
+    // navigate to Onboard1 screen after registration is complete
+    const { setInitialScreen } = useContext(NavigationContext);
+
+    // set initial screen in home stack navigator to be Onboard1 since coming from SignUp
+    useEffect(() => {
+        setInitialScreen('Onboard1');
+    }, []);
+
     const navigation = useNavigation<AuthScreenNavigationType<"SignUp">>()
     const navigateToSignInScreen = () => {
         navigation.navigate("SignIn")
@@ -52,7 +63,7 @@ const SignUpScreen = () => {
                     ]}
                     style={{ flex: 1 }}
                 >
-                       <KeyboardAvoidingView
+                    <KeyboardAvoidingView
                         style={{ flex: 1 }}
                         behavior={Platform.OS === "ios" ? "padding" : "height"}
                         keyboardVerticalOffset={Platform.OS === "ios" ? 150 : 0}
@@ -61,8 +72,9 @@ const SignUpScreen = () => {
                             style={styles.scrollView}
                             contentContainerStyle={styles.scrollViewContent}
                             keyboardShouldPersistTaps="handled"
-                            >
-                <Box flex={1} px="5.5" mt={"13"}>
+                        >
+                {/* removed mt="13" to be able to see password input box above keyboard */}
+                <Box flex={1} px="5.5" >
                     <Text variant="textLg" color="neutral700" fontWeight="700" mb="10">
                         
                     </Text>

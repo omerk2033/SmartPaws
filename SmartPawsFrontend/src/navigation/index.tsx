@@ -7,25 +7,53 @@ import AppStackNavigator from "./appStackNavigator";
 import { onAuthStateChanged } from "firebase/auth"; // Import the onAuthStateChanged function
 import { FIREBASE_AUTH } from "../services/firebase";
 
-const Navigation = () => {
+// adding context to be able to control if Home screen loads from SignIn screen or Onboard1 loads from SignUp screen
+import { NavigationContext } from './navigationContext';
 
+const Navigation = () => {
+    const [initialScreen, setInitialScreen] = useState('Home');
     const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-            setIsAuthenticated(!!user); // Update isAuthenticated based on user existence
+            setIsAuthenticated(!!user);
+
+            // set inital screen of home stack based on if user exists already
+            // otherwise will be registering for the 1st time and will go to Onboard1 instead
+            setInitialScreen(user ? 'Home' : 'Onboard1');
         });
 
-        // Cleanup function for useEffect
         return () => unsubscribe();
     }, []);
 
     return (
-        <NavigationContainer>
-            {isAuthenticated ? <AppStackNavigator /> : <AuthStackNavigator />}
-        </NavigationContainer>
+        <NavigationContext.Provider value={{ initialScreen, setInitialScreen }}>
+            <NavigationContainer>
+                {isAuthenticated ? <AppStackNavigator /> : <AuthStackNavigator />}
+            </NavigationContainer>
+        </NavigationContext.Provider>
     );
 };
+
+// const Navigation = () => {
+
+//     const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
+
+//     useEffect(() => {
+//         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+//             setIsAuthenticated(!!user); // Update isAuthenticated based on user existence
+//         });
+
+//         // Cleanup function for useEffect
+//         return () => unsubscribe();
+//     }, []);
+
+//     return (
+//         <NavigationContainer>
+//             {isAuthenticated ? <AppStackNavigator /> : <AuthStackNavigator />}
+//         </NavigationContainer>
+//     );
+// };
 
 export default Navigation;
 

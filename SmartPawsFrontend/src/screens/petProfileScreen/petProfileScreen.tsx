@@ -89,14 +89,15 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
         <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
             {/* display pet image */}
             {/* pet.image is url to actual image stored in firebase */}
-            <View>
-            {pet?.image && ( // check if pet.image exists
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                {/* show default empty pet image if none has been selected yet */}
                 <Image
-                    source={{ uri: pet.image }} 
+                    source={pet?.image !== '' ? { uri: pet?.image } : require('../../../assets/no-image-icon-23485.png')}
                     style={styles.petImage} 
+                    resizeMode="cover"
                 />
-            )}
             </View>
+
             {/* pet info */}
             <Box>
                 <Text style={{ textAlign:"center", fontSize: 24, fontWeight: 'bold' }}>{pet?.name + "'s Information:"}</Text>

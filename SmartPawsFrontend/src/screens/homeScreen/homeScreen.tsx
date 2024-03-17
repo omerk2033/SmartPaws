@@ -12,6 +12,7 @@ import { BASE_URL } from "../../services/config";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
+// import emptyPet from "../../../assets/no-image-icon-23485.png";
 
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'RegPet'>
 
@@ -114,8 +115,17 @@ const HomeScreen = () => {
 </View>
 {pets.map((pet: IPet, index: number) => (
     <View key={index} style={[styles.container, { flexDirection: 'row', alignItems: 'center', marginBottom: 6 }]}>
-        <Image
+        {/* trying to get rid of warning source.uri should not be an empty string */}
+        {/* <Image
             source={{ uri: pet.image }}
+            style={{ width: 50, height: 50, borderRadius: 25, marginRight: 10 }}
+            resizeMode="cover"
+        /> */}
+
+        {/* check if pet.image has been assigned then render image next to pet name */}
+        {/* if not render default empty placeholder image */}
+        <Image
+            source={pet.image !== '' ? { uri: pet.image } : require('../../../assets/no-image-icon-23485.png')}
             style={{ width: 50, height: 50, borderRadius: 25, marginRight: 10 }}
             resizeMode="cover"
         />

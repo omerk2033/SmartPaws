@@ -10,13 +10,51 @@ import { TouchableOpacity, Text, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import PetProfileScreen from "../screens/petProfileScreen/petProfileScreen";
 import UpdatePetScreen from "../screens/updatePetScreen/updatePetScreen";
+import OnBoarding1 from "../screens/onBoardScreens/onBoard1";
+import OnBoarding2 from "../screens/onBoardScreens/onBoard2";
+import OnBoarding3 from "../screens/onBoardScreens/onBoard3";
+
+import { useContext } from 'react';
+import { NavigationContext } from "./navigationContext";
 
 const Stack = createNativeStackNavigator<HomeStackParamList>()
 
 const HomeStackNavigator = () => {
+    const { initialScreen } = useContext(NavigationContext);
 
     return (
-        <Stack.Navigator>
+        // <Stack.Navigator>
+        // initialScreen is determined in authStack 
+        // based on if user is registering for the 1st time 
+        // or is logging in as a preexisting user
+        // the initialScreen value will be either Onboard1 or Home 
+        // and so will dictate the name of the 1st screen that gets loaded on the home stack
+        <Stack.Navigator initialRouteName={initialScreen as keyof HomeStackParamList}>
+            <Stack.Screen
+                name={"Onboard1"}
+                options={{
+                    // changing to allow for back button option
+                    // headerShown: false,
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
+                }}
+                component={OnBoarding1}
+            />
+            <Stack.Screen
+                name={"Onboard2"}
+                options={{
+                    headerShown: false,
+                }}
+                component={OnBoarding2}
+            />
+            <Stack.Screen
+                name={"Onboard3"}
+                options={{
+                    headerShown: false,
+                }}
+                component={OnBoarding3}
+            />
+
            <Stack.Screen 
                 name={"Home"} 
                 options={{
