@@ -27,15 +27,18 @@ axiosInstance.interceptors.request.use(async (req) => {
 })
 
 axiosInstance.interceptors.response.use(response => {
-    // Check if the response data is not empty and is a valid object before assuming it's JSON
-    if (response.data && typeof response.data === 'object') {
+  // Check if the response data is not empty and is a valid object before assuming it's JSON
+  console.log('Raw response:', response);
+  
+  if (response.data !== null && typeof response.data === 'object') {
       return response;
-    } else {
+  } else {
       throw new Error('Response data is not valid JSON');
-    }
-  }, error => {
-    // Handle errors
-    return Promise.reject(error);
-  });  
+  }
+
+}, error => {
+  // Handle errors
+  return Promise.reject(error);
+});
 
 export default axiosInstance

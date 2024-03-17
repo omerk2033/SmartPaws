@@ -2,11 +2,11 @@
 
 import { Box, Text } from "../../utils/theme/style";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import { TouchableOpacity, Image, ActivityIndicator, Button, ScrollView, View, StyleSheet } from "react-native";
+import { TouchableOpacity, Image, ActivityIndicator, Button, ScrollView, View, StyleSheet, RefreshControl } from "react-native";
 import { HomeStackParamList } from "../../navigation/types";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { getAuth } from 'firebase/auth';
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { IPet, IUser } from "../../types";
 import { BASE_URL } from "../../services/config";
 import { LinearGradient } from "expo-linear-gradient";
@@ -35,6 +35,9 @@ const HomeScreen = () => {
             if (!ownerId) throw new Error("No user ID found");
             
             const response = await fetch(`${BASE_URL}user/get/${ownerId}`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
             const data = await response.json();
             setUser(data);
             await fetchPets(ownerId); // Fetch pets after successfully fetching user
@@ -43,7 +46,7 @@ const HomeScreen = () => {
         } finally {
             setLoading(false); // Set loading to false regardless of the outcome
         }
-    };
+    };    
 
     const fetchPets = async (ownerId: string) => {
         try {
@@ -65,9 +68,27 @@ const HomeScreen = () => {
         }
     };    
 
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+      setRefreshing(true);
+      fetchUser().then(() => setRefreshing(false))
+                 .catch((error) => {
+                   console.error("Error fetching user on refresh", error);
+                   setRefreshing(false);
+                 });
+    }, []);
+
     useEffect(() => {
-        if (isFocused) fetchUser(); // Fetch user and pets when the screen is focused and on initial load
-    }, [isFocused]);
+        if (isFocused) {
+          setLoading(true);
+          fetchUser().catch((error) => {
+            console.error("Error fetching user on focus", error);
+          }).finally(() => {
+            setLoading(false);
+          });
+        }
+      }, [isFocused]);
 
     if (loading) {
         // Show loading indicator while data is loading
@@ -86,6 +107,8 @@ const HomeScreen = () => {
         // navigate to PetProfile screen with parameters needed to find/display pet
         homeStackNavigation.navigate('PetProfile', { ownerId, petName });
     }
+    
+    
     return(
         <SafeAreaWrapper>
             <LinearGradient
@@ -98,36 +121,34 @@ const HomeScreen = () => {
                     ]}
                     style={{ flex: 1 }}
                 >
-            <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13}}>
+            <ScrollView keyboardShouldPersistTaps='handled' style={{ flex: 1, paddingHorizontal: 5.5, marginTop: 13 }}
+                refreshControl={<RefreshControl refreshing={refreshing}
+                onRefresh={onRefresh}/> } >
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Box>
                         <Text style={{ fontSize: 24, fontWeight: 'bold' }}>{user?.name}'s Pets:</Text>
                     </Box>
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    <TouchableOpacity 
-        onPress={navigateToRegPetScreen} 
-        style={[styles.button, { backgroundColor: "#201A64" }]} // Use your styled button
-    >
-        <Text style={styles.buttonText}>Add New Pet</Text>
-    </TouchableOpacity>
-</View>
-{pets.map((pet: IPet, index: number) => (
-    <View key={index} style={[styles.container, { flexDirection: 'row', alignItems: 'center', marginBottom: 6 }]}>
-        <Image
-            source={{ uri: pet.image }}
-            style={{ width: 50, height: 50, borderRadius: 25, marginRight: 10 }}
-            resizeMode="cover"
-        />
-        <TouchableOpacity 
-            onPress={() => handlePetSelection(pet)} 
-            style={[styles.button, { backgroundColor: "#1B7899" }]} // Use your styled button
-        >
-            <Text style={styles.buttonText}>{pet.name}</Text>
-        </TouchableOpacity>
-    </View>
-))}
-
+                <TouchableOpacity 
+                    onPress={navigateToRegPetScreen} 
+                    style={[styles.button, { backgroundColor: "#201A64" }]} // Use your styled button
+                >
+                    <Text style={styles.buttonText}>Add New Pet</Text>
+                </TouchableOpacity>
+            </View>
+            {pets.map((pet: IPet, index: number) => (
+            <View key={index} style={styles.petEntry}>
+                <TouchableOpacity onPress={() => handlePetSelection(pet)} style={styles.button}>
+                <Image
+                    source={pet.image ? { uri: pet.image } : require('../../../assets/pawprint.png')}
+                    style={styles.petImage}
+                    resizeMode="cover"
+                    />
+                <Text style={styles.petName}>{pet.name}</Text>
+                </TouchableOpacity>
+            </View>
+                ))}
             </ScrollView>
             </LinearGradient>
         </SafeAreaWrapper>
@@ -135,6 +156,23 @@ const HomeScreen = () => {
 }
 
 const styles = StyleSheet.create({
+    petEntry: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginVertical: 8, // Adds space between entries
+      },
+      petImage: {
+        width: 100, // Adjust width as desired
+        height: 100, // Adjust height as desired
+        borderRadius: 50, // Adjust for rounded corners, 50 if you want it circular
+      },
+      petInfo: {
+        marginLeft: 10, // Space between image and pet name
+      },
+      petName: {
+        fontSize: 24, // Adjust font size as desired
+        fontWeight: 'bold',
+      },
     scrollViewStyle: {
         flex: 1,
         paddingHorizontal: 5.5,
