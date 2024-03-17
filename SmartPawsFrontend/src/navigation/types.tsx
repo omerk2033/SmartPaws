@@ -9,13 +9,14 @@ import {
     NativeStackScreenProps,
 } from "@react-navigation/native-stack"
 
+// trying moving onboarding screens to HomeStackParamList
 export type AuthStackParamList = {
     Welcome: undefined
     SignIn: undefined
     SignUp: undefined
-    Onboard1: undefined
-    Onboard2: undefined
-    Onboard3: undefined
+    // Onboard1: undefined
+    // Onboard2: undefined
+    // Onboard3: undefined
 }
 
 export type RootBottomTabParamList = {
@@ -26,6 +27,9 @@ export type RootBottomTabParamList = {
 }
 
 export type HomeStackParamList = {
+    Onboard1: undefined
+    Onboard2: undefined
+    Onboard3: undefined
 
     Home: undefined
     // adding RegPet Screen 
@@ -71,8 +75,6 @@ export type SettingsStackParamList = {
     settings: undefined
 }
 
-
-
 export type AppStackParamList = {
     Root: NavigatorScreenParams<RootBottomTabParamList>
     Settings: undefined
@@ -96,7 +98,6 @@ export type RootTabScreenProps<Screen extends keyof RootBottomTabParamList> =
         NativeStackScreenProps<RootBottomTabParamList>
     >
 
-// trying to mimic the type of AuthScreenNavigationType for HomeScreen
 export type HomeScreenNavigationType<
     RouteName extends keyof HomeStackParamList
 > = CompositeNavigationProp<

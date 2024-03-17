@@ -12,6 +12,7 @@ import { BASE_URL } from "../../services/config";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
+// import emptyPet from "../../../assets/no-image-icon-23485.png";
 
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'RegPet'>
 
