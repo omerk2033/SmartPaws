@@ -19,8 +19,13 @@ const firebaseConfig = {
 let FIREBASE_APP;
 if (getApps().length === 0) {
   FIREBASE_APP = initializeApp(firebaseConfig);
+  console.log(firebaseConfig.apiKey); // just printing
+  console.log(firebaseConfig.authDomain); // just printing
 } else {
   FIREBASE_APP = getApp(); // If already initialized, use that instance
+  console.log("FIREBASE_APP: " + FIREBASE_APP);
+  console.log(firebaseConfig.apiKey); // just printing
+  console.log(firebaseConfig.authDomain); // just printing
 }
 
 // Initialize Firebase services
