@@ -1,4 +1,4 @@
-import { Request, Response, request } from "express"
+import { Request, Response } from "express"
 import Pet from "../models/petModel"
 
 export const createPet = async (request: Request, response: Response) => {
@@ -19,7 +19,8 @@ export const createPet = async (request: Request, response: Response) => {
         // not doing anything with generating a password
         // because creating a pet should be tied in already with user being logged in 
 
-        const pet = Pet.create({
+        // const pet = Pet.create({
+        await Pet.create({
             ownerId: ownerId,
             name: name,
             age: age,

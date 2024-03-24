@@ -2,11 +2,11 @@
 // displays all form fields for user to fill in
 // and then saves pet profile to database 
 
-import {Box,  Text} from "../../utils/theme/style";
-import {useNavigation} from "@react-navigation/native";
+import { Box,  Text } from "../../utils/theme/style";
+import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import React, { useState } from "react"
-import {Button, Keyboard, ScrollView, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, View, Platform} from "react-native";
+import { ScrollView, TouchableOpacity, StyleSheet, View, } from "react-native";
 import { HomeScreenNavigationType } from "navigation/types";
 import { Controller, useForm } from "react-hook-form";
 import { IPet } from "../../types";
@@ -15,7 +15,6 @@ import axiosInstance from "../../services/config";
 import { getAuth } from 'firebase/auth';
 
 import * as ImagePicker from 'expo-image-picker';
-import { firebase } from "@react-native-firebase/auth";
 
 import { FIREBASE_STORAGE } from "../../services/firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
@@ -527,7 +526,8 @@ export const UploadImage = ({ setImageUrl, setImageIsUploading }: { setImageUrl:
             return;
         } 
         else {
-            let result = await ImagePicker.launchImageLibraryAsync({
+            // let result = await ImagePicker.launchImageLibraryAsync({
+            const result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing: false,
                 quality: 1,

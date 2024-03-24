@@ -3,11 +3,11 @@
 // to update previously existing pet profile
 // any fields with preexisting data will remain the same if not edited
 
-import {Box,  Text} from "../../utils/theme/style";
-import {useNavigation} from "@react-navigation/native";
+import { Box, Text } from "../../utils/theme/style";
+import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import React, { useEffect, useState } from "react"
-import {Button, Keyboard, ScrollView, TouchableOpacity, TouchableWithoutFeedback, StyleSheet, View, Platform} from "react-native";
+import { ScrollView, TouchableOpacity, StyleSheet, View, } from "react-native";
 import { HomeScreenNavigationType, HomeStackParamList } from "navigation/types";
 import { Controller, useForm } from "react-hook-form";
 import { IPet } from "../../types";
@@ -514,22 +514,24 @@ const updatePetProfileInDatabase = async (
     }
 }
 
+// commenting out as is not being used currently
+// can remove if determined to never be used
 // upload pet image styles
-const uploadPhotoStyles = StyleSheet.create({
-    container: {
-        height: 56,
-        width: 56,
-        borderRadius: 28,
-        backgroundColor: 'rgba(255, 255, 255, 0.4)',
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOffset: {width: 0, height: 2},
-        shadowOpacity: 0.2,
-        elevation: 2,
-        marginBottom: 16
-    }
-});
+// const uploadPhotoStyles = StyleSheet.create({
+//     container: {
+//         height: 56,
+//         width: 56,
+//         borderRadius: 28,
+//         backgroundColor: 'rgba(255, 255, 255, 0.4)',
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//         shadowColor: '#000',
+//         shadowOffset: {width: 0, height: 2},
+//         shadowOpacity: 0.2,
+//         elevation: 2,
+//         marginBottom: 16
+//     }
+// });
 
 const styles = StyleSheet.create({
     linearGradient: {

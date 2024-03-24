@@ -1,6 +1,6 @@
 import { FieldError } from "react-hook-form"
 import { StyleSheet, TextInput, TextInputProps } from "react-native"
-import theme, {Box, Text} from "../../utils/theme/style";
+import theme, { Box, Text } from "../../utils/theme/style";
 
 type InputProps = {
     label: string

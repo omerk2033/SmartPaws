@@ -1,7 +1,7 @@
 import { Box,  Text } from "../../utils/theme/style";
 import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import { Alert, TouchableOpacity, Button, ScrollView, View, Image, StyleSheet } from "react-native";
+import { Alert, TouchableOpacity, ScrollView, View, Image, StyleSheet } from "react-native";
 import { HomeScreenNavigationType, HomeStackParamList } from "../../navigation/types";
 
 import React, { useEffect, useState } from "react";

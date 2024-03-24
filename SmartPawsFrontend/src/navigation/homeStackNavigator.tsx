@@ -1,13 +1,11 @@
 // All screens shown in the homestack.
 
-import { NativeStackNavigationProp, createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
 import {HomeStackParamList} from "./types";
 import HomeScreen from "../screens/homeScreen/homeScreen";
 import RegPetScreen from "../screens/regPetScreen/regPetScreen";
 import SettingsScreen from "../screens/settingsScreen/settingsScreen";
-import { TouchableOpacity, Text, Image } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 import PetProfileScreen from "../screens/petProfileScreen/petProfileScreen";
 import UpdatePetScreen from "../screens/updatePetScreen/updatePetScreen";
 import OnBoarding1 from "../screens/onBoardScreens/onBoard1";

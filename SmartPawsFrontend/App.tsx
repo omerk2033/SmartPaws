@@ -1,9 +1,9 @@
-import {ThemeProvider} from "@shopify/restyle";
+import { ThemeProvider } from "@shopify/restyle";
 import theme from "./src/utils/theme/style";
 import Navigation from "./src/navigation";
-import {SafeAreaContext, SafeAreaProvider} from "react-native-safe-area-context";
-import {SWRConfig} from "swr";
-import {AppState} from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SWRConfig } from "swr";
+import { AppState, AppStateStatus } from "react-native";
 import { LogBox } from 'react-native'; // to suppress firebase warnings displayed on screen 
 
 LogBox.ignoreLogs(['@firebase/auth']); // to suppress firebase warnings displayed on screen
@@ -24,7 +24,8 @@ export default function App() {
                  initFocus(callback) {
                      let appState = AppState.currentState
 
-                     const onAppStateChange = (nextAppState: any) => {
+                    //  const onAppStateChange = (nextAppState: any) => {
+                    const onAppStateChange = (nextAppState: AppStateStatus) => {
                          /* If it's resuming from background or inactive mode to active one */
                          if (
                              appState.match(/inactive|background/) &&

@@ -1,13 +1,12 @@
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Platform, KeyboardAvoidingView, Pressable, TouchableWithoutFeedback, Keyboard, StyleSheet, Image, TouchableOpacity, ScrollView } from "react-native"; // Add missing import
+import { Platform, KeyboardAvoidingView, Pressable, TouchableWithoutFeedback, Keyboard, StyleSheet, TouchableOpacity, ScrollView } from "react-native"; // Add missing import
 import { IUser } from "../../types";
 import { AuthScreenNavigationType } from "../../navigation/types";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { Box, Text } from "../../utils/theme/style";
 import Input from "../../components/shared/input";
-import Button from "../../components/shared/button";
 import { signInWithEmailAndPassword } from "firebase/auth"; // Correct import
 import { FIREBASE_AUTH } from "../../services/firebase";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,13 +19,15 @@ interface SignInScreenProps { // Add interface for props
 }
 
 
-const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props parameter
+// const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props parameter
+const SignInScreen: React.FC<SignInScreenProps> = () => { // Add props parameter
     // navigate to Home screen after logging in process is complete
     const { setInitialScreen } = useContext(NavigationContext);
 
     // set initial screen of home stack to Home skipping onboarding screens since user already has an account
     useEffect(() => {
         setInitialScreen('Home');
+        // setInitialScreen();
     }, []);
 
     const navigation = useNavigation<AuthScreenNavigationType<"SignIn">>();

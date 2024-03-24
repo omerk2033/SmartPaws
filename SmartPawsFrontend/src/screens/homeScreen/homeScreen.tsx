@@ -2,7 +2,7 @@
 
 import { Box, Text } from "../../utils/theme/style";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import { TouchableOpacity, Image, ActivityIndicator, Button, ScrollView, View, StyleSheet, RefreshControl } from "react-native";
+import { TouchableOpacity, Image, ActivityIndicator, ScrollView, View, StyleSheet, RefreshControl } from "react-native";
 import { HomeStackParamList } from "../../navigation/types";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack'
 import { getAuth } from 'firebase/auth';
@@ -41,7 +41,9 @@ const HomeScreen = () => {
             }
             const data = await response.json();
             setUser(data);
-            await fetchPets(ownerId); // Fetch pets after successfully fetching user
+            // await fetchPets(ownerId); // Fetch pets after successfully fetching user
+            // no need to pass userId to fetchPets as fetchPets gets the userId from finding the currently logged in user
+            await fetchPets(); // Fetch pets after successfully fetching user
         } catch (error) {
             console.error("Error fetching user", error);
         } finally {
@@ -49,7 +51,8 @@ const HomeScreen = () => {
         }
     };    
 
-    const fetchPets = async (ownerId: string) => {
+    // const fetchPets = async (ownerId: string) => {
+    const fetchPets = async () => {
         try {
             // get current user's uid to associate user with their pets' profiles
             const auth = getAuth();  

@@ -8,5 +8,8 @@
 
     }
   },
-  "extends": "expo/tsconfig.base"
+  "extends": "expo/tsconfig.base",
+  "exclude": [
+    "__tests__/**/*-test.ts"
+  ]
 }

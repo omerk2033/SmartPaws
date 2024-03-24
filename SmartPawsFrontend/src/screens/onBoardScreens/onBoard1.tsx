@@ -1,11 +1,10 @@
 import React from 'react';
 import { useNavigation } from "@react-navigation/native";
-import { AuthScreenNavigationType, HomeStackParamList } from "../../navigation/types";
+import { HomeStackParamList } from "../../navigation/types";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { LinearGradient } from "expo-linear-gradient";
 import { Box, Text } from "../../utils/theme/style";
 import Button from "../../components/shared/button";
-import { Image } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'RegPet'>

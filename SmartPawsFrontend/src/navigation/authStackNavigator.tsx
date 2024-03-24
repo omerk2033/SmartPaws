@@ -5,11 +5,6 @@ import { AuthStackParamList } from "./types"
 import WelcomeScreen from "../screens/welcomeScreen/welcomeScreen";
 import SignInScreen from "../screens/signInScreen/signInScreen";
 import SignUpScreen from "../screens/signUpScreen/signUpScreen";
-import OnBoarding1 from "../screens/onBoardScreens/onBoard1";
-import OnBoarding2 from "../screens/onBoardScreens/onBoard2";
-import OnBoarding3 from "../screens/onBoardScreens/onBoard3";
-
-
 
 const Stack = createNativeStackNavigator<AuthStackParamList>()
 
@@ -23,31 +18,7 @@ const AuthStackNavigator = () => {
                 }}
                 component={WelcomeScreen}
             />
-            {/* seeing about moving Onboards to homeStackNavigator */}
-            {/* <Stack.Screen
-                name="Onboard1"
-                options={{
-                    // changing to allow for back button option
-                    // headerShown: false,
-                    headerTitle: "",
-                    headerBackTitleVisible: false,
-                }}
-                component={OnBoarding1}
-            />
-            <Stack.Screen
-                name="Onboard2"
-                options={{
-                    headerShown: false,
-                }}
-                component={OnBoarding2}
-            />
-            <Stack.Screen
-                name="Onboard3"
-                options={{
-                    headerShown: false,
-                }}
-                component={OnBoarding3}
-            /> */}
+            {/* moved Onboards to homeStackNavigator */}
             <Stack.Screen
                 name="SignIn"
                 options={{

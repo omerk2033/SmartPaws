@@ -78,8 +78,12 @@ const AIScreen: React.FC = () => {
 
   // Construct the data for the dropdown list
   const data = [{ key: 'Chat with Gigi', value: 'Chat with Gigi' }].concat(
-    pets.map((pet: any) => ({
-      key: pet.id,
+    // modifying to specify pet type as IPet
+    // and using pet.name as the key 
+    // pets.map((pet: any) => ({
+    pets.map((pet: IPet) => ({
+      // key: pet.id,
+      key: pet.name,
       value: pet.name
     }))
   );

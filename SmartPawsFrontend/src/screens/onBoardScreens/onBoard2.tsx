@@ -1,8 +1,8 @@
 import React from 'react'
-import {useNavigation} from "@react-navigation/native";
-import {AuthScreenNavigationType, HomeStackParamList} from "../../navigation/types";
+import { useNavigation } from "@react-navigation/native";
+import { HomeStackParamList } from "../../navigation/types";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import {LinearGradient} from "expo-linear-gradient";
+import { LinearGradient } from "expo-linear-gradient";
 import { Box, Text } from "../../utils/theme/style";
 import Button from "../../components/shared/button";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -11,7 +11,6 @@ type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'R
 
 export default function OnBoarding2 (){
 
-    // const navigation = useNavigation<AuthScreenNavigationType<"Onboard2">>()
     const navigation = useNavigation<HomeStackNavigationProps>()
 
     const navigateToOnboard3Screen = () => {
