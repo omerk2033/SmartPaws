@@ -24,6 +24,12 @@ const HomeScreen = () => {
     const navigateToRegPetScreen = () => {
         homeStackNavigation.navigate('RegPet');
     }
+
+    // navigate to map screen
+    // const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
+    const navigateToMapScreen = () => {
+        homeStackNavigation.navigate('Map');
+    }
     
     const [user, setUser] = useState<IUser>();
     const [pets, setPets] = useState<IPet[]>([]);
@@ -134,13 +140,13 @@ const HomeScreen = () => {
                     </Box>
                 </View>
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <TouchableOpacity 
-                    onPress={navigateToRegPetScreen} 
-                    style={[styles.button, { backgroundColor: "#201A64" }]} // Use your styled button
-                >
-                    <Text style={styles.buttonText}>Add New Pet</Text>
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity 
+                        onPress={navigateToRegPetScreen} 
+                        style={[styles.button, { backgroundColor: "#201A64" }]} // Use your styled button
+                    >
+                        <Text style={styles.buttonText}>Add New Pet</Text>
+                    </TouchableOpacity>
+                </View>
             {pets.map((pet: IPet, index: number) => (
             <View key={index} style={styles.petEntry}>
                 <TouchableOpacity onPress={() => handlePetSelection(pet)} style={styles.button}>
@@ -153,6 +159,15 @@ const HomeScreen = () => {
                 </TouchableOpacity>
             </View>
                 ))}
+            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <TouchableOpacity 
+                    onPress={navigateToMapScreen} 
+                    style={[styles.button, { backgroundColor: "#201A64" }]} // Use your styled button
+                >
+                    <Text style={styles.buttonText}>Locate Nearby Vet</Text>
+                </TouchableOpacity>
+            </View>
+
             </ScrollView>
             </LinearGradient>
         </SafeAreaWrapper>

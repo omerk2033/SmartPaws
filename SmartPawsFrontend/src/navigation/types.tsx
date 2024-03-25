@@ -47,6 +47,7 @@ export type HomeStackParamList = {
         ownerId: string;
         petName: string;
     }
+    Map: undefined
 }
 
 export type ProfileStackParamList = {

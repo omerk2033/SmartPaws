@@ -11,6 +11,7 @@ import UpdatePetScreen from "../screens/updatePetScreen/updatePetScreen";
 import OnBoarding1 from "../screens/onBoardScreens/onBoard1";
 import OnBoarding2 from "../screens/onBoardScreens/onBoard2";
 import OnBoarding3 from "../screens/onBoardScreens/onBoard3";
+import MapScreen from "../screens/mapScreen/mapScreen";
 
 import { useContext } from 'react';
 import { NavigationContext } from "./navigationContext";
@@ -97,6 +98,15 @@ const HomeStackNavigator = () => {
                 }}
                 component={UpdatePetScreen}
             />
+            <Stack.Screen 
+                name={"Map"}
+                options={{
+                    headerTitle: "",
+                    headerBackTitleVisible: false,
+                }}
+                component={MapScreen}
+            />
+
         </Stack.Navigator>
     )
 }

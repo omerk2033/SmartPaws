@@ -92,7 +92,8 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 {/* show default empty pet image if none has been selected yet */}
                 <Image
-                    source={pet?.image !== '' ? { uri: pet?.image } : require('../../../assets/no-image-icon-23485.png')}
+                    // source={pet?.image !== '' ? { uri: pet?.image } : require('../../../assets/no-image-icon-23485.png')}
+                    source={pet?.image !== '' ? { uri: pet?.image } : require('../../../assets/pawprint.png')}
                     style={styles.petImage} 
                     resizeMode="cover"
                 />
