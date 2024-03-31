@@ -114,6 +114,30 @@ const AIScreen: React.FC = () => {
          + `Notes: ${pet.notes}\n`;
   };
 
+  // construct pet profile json object to send to backend
+  // const constructPetDetailsJsonObject = (pet: IPet): string {
+
+  // } 
+
+  const petDetailsJsonObj = {
+    name: petDetails?.name,
+    age: petDetails?.age,
+    species: petDetails?.species,
+    breed: petDetails?.breed,
+    color: petDetails?.color,
+    gender: petDetails?.gender,
+    vaccinationRecords: petDetails?.vaccinationRecords,
+    medsSupplements: petDetails?.medsSupplements,
+    allergiesSensitivities: petDetails?.allergiesSensitivities,
+    prevIllnessesInjuries: petDetails?.prevIllnessesInjuries,
+    diet: petDetails?.diet,
+    exerciseHabits: petDetails?.exerciseHabits,
+    indoorOrOutdoor: petDetails?.indoorOrOutdoor,
+    reproductiveStatus: petDetails?.reproductiveStatus,
+    notes: petDetails?.notes,
+    threadId: petDetails?.threadId,
+  }
+
   // Triggered when pet details change
   useEffect(() => {
     if (petDetails) {
@@ -144,8 +168,11 @@ const AIScreen: React.FC = () => {
       threadId = "nope";
     }
     try {
+      const petDetailsString = JSON.stringify(petDetailsJsonObj);
+      console.log("petDetailsString: " + petDetailsString);
       // const response = await fetch(`${BASE_URL}user/chatGPT`, {
-      const response = await fetch(`${BASE_URL}user/chatGPT/${threadId}`, {
+      // const response = await fetch(`${BASE_URL}user/chatGPT/${threadId}`, {
+      const response = await fetch(`${BASE_URL}user/chatGPT/${pet.ownerId}/${pet.name}/${threadId}`, {
       // DON'T WANT TO NECESSARILY SEND THE PET PROFILE RIGHT AWAY ANY MORE
       // WILL NEED TO CHECK IF A PET PROFILE FILE HAS ALREADY BEEN UPLOADED TO THE ASSISTANT 
       // AND A THREAD HAS ALREADY BEEN CREATED FOR THE PET
@@ -154,7 +181,9 @@ const AIScreen: React.FC = () => {
       // const response = await fetch(`${BASE_URL}user/chatGPT/${pet.name}/${pet.age}/${pet.species}/${pet.breed}/${pet.color}/${pet.gender}/${pet.vaccinationRecords}/${pet.medsSupplements}/${pet.allergiesSensitivities}/${pet.prevIllnessesInjuries}/${pet.diet}/${pet.exerciseHabits}/${pet.indoorOrOutdoor}/${pet.reproductiveStatus}/${pet.notes}/${pet.threadId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ input: petMessageContent })
+        // body: JSON.stringify({ input: petMessageContent })
+        body: JSON.stringify({ input: petDetailsString })
+        // body: petDetailsString
       });
 
       if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);

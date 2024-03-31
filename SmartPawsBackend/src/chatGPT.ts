@@ -1,9 +1,6 @@
 import OpenAI from 'openai';
 import { Request, Response } from "express";
 
-// import { assistantID } from "../assistant.json";
-// had to "resolveJsonModule": true in tsconfig.json to be able to import json file
-// import { assistantId as assistantID } from "../assistant.json";
 import fs from 'fs'; // Import the 'fs' module for file operations
 import * as process from 'process';
 
@@ -23,6 +20,8 @@ if (!apiKey) {
 }
 
 const openai = new OpenAI({ apiKey });
+
+// const fsPromises = fs.promises;
 
 // commenting out to use new function runCompletionAssistant for configuration with specific assistant and specific thread
 // async function runCompletion(req: Request, res: Response) {
@@ -54,51 +53,120 @@ async function runCompletionAssistant(req: Request, res: Response) {
     try {
         // Extract input from the request body
         const { input } = req.body;
+        console.log("Backend input received:", input);
 
-        // Check if input exists
-        if (!input) {
-            return res.status(400).json({ error: "Input is required" });
-        }
-
-        // get threadId passed in as a parameter
-        const { threadId } = req.params;
+        // parameters passed in in url
+        const { ownerId, petName, threadId } = req.params;
+        console.log("ownerId: " + ownerId);
+        console.log("petName: " + petName);
         console.log("threadId: " + threadId);
-        // console.log("backend");
-        // const { name, age, species, breed, color, gender, vaccinationRecords, medsSupplements, allergiesSensitivities, prevIllnessesInjuries, diet, exerciseHabits, indoorOrOutdoor, reproductiveStatus, notes, threadId } = req.params;
-        // console.log("name: " + name);
-        // console.log("age: " + age);
-        // console.log("species: " + species);
-        // console.log("breed: " + breed);
-        // console.log("color: " + color);
-        // console.log("gender: " + gender);
-        // console.log("vaccinationRecords: " + vaccinationRecords);
-        // console.log("medsSupplements: " + medsSupplements);
-        // console.log("allergiesSensitivities: " + allergiesSensitivities);
-        // console.log("prevIllnessesInjuries: " + prevIllnessesInjuries);
-        // console.log("diet: " + diet);
-        // console.log("exerciseHabits: " + exerciseHabits);
-        // console.log("indoorOrOutdoor: " + indoorOrOutdoor);
-        // console.log("reproductiveStatus: " + reproductiveStatus);
-        // console.log("notes: " + notes);
-        // console.log("threadId: " + threadId);
 
-        // const currentDirectory: string = process.cwd();
-        // console.log(`Current working directory: ${currentDirectory}`);
-        // current working directory is SmartPawsBackend
-        const jsonContent = fs.readFileSync('assistant.json', 'utf8');
         // get assistant configuration data from json file
+        const jsonContent = fs.readFileSync('assistant.json', 'utf8');
         const assistantConfiguration = JSON.parse(jsonContent);
         // just printing
         console.log(assistantConfiguration.assistantId);
         console.log(assistantConfiguration.name);
         console.log(assistantConfiguration.instructions);
 
+        // threadIdToUse will be created fresh if threadID is nope
+        // or set to the threadId that was passed in in the url
+        let threadIdToUse = "";
+
+        if(threadId == "nope") {
+            // maybe see about creating new thread 
+            // and then sending all of the pet information to it 
+            // to see if can reference in future conversations
+
+            // ok so it seems like this is taking care of creating a new thread
+            // if there wasn't already a thread id found for the pet
+            const newThread = await openai.beta.threads.create();
+            console.log(newThread.id);
+            threadIdToUse = newThread.id;
+
+            // and then creating the message from the pet details that were passed in the request body
+            await openai.beta.threads.messages.create(newThread.id, {
+                role: "user",
+                content: input,
+            });
+            
+            // it seems to be able to remember the information that you send from the pet's profile
+            // at this point, it even remembered it in another thread
+
+            // const fileName = "Bob-cwslHZYwcOS5cUDPiOFjWgBQdgg2.json";
+            // const file = await openai.files.create({
+            //     file: fs.createReadStream(fileName),
+            //     purpose: "assistants",
+            // });
+            // // let existingFileIds = assistantDetails.file_ids || [];
+            // await fsPromises.writeFile(
+            //     fileName,
+            //     JSON.stringify(file, null, 2)
+            //   );
+
+              // ok maybe could write the pet string info to a json file
+            // and then upload to the chatgpt assistant
+            // I've manually uploaded the file that the below creates
+            // and the assistant is able to read from it successfully
+            // write pet profile to json file
+            // IF CAN'T UPLOAD FILE TO OPENAI THEN NO POINT TO WRITE IT TO A FILE I SUPPOSE
+            // const dataToWrite = JSON.stringify(input, null, 2); // Convert to pretty-printed JSON
+            // fs.writeFileSync(`${petName}-${ownerId}.json`, dataToWrite);
+            // console.log('Data written to json file');
+
+            // upload pet profile to chatgpt assistant API
+            // I HAVEN'T FOUND THAT IT IS POSSIBLE TO UPLOAD A FILE TO THE ASSISTANT FROM HERE YET
+            // const file = new File([Blob], 'Stimpy-cwslHZYwcOS5cUDPiOFjWgBQdgg2.json', { type: 'text/plain' }); 
+            // const upload = await openai.files.create({
+            //     file: file,
+            //     purpose: "assistants",
+            // })
+            // create thread and save thread ID to send back to front end to modify pet profile 
+            
+        }
+        // else {
+
+        // }
+
+        // Check if input exists
+        if (!input) {
+            return res.status(400).json({ error: "Input is required" });
+        }
+
+        // const currentDirectory: string = process.cwd();
+        // console.log(`Current working directory: ${currentDirectory}`);
+        // current working directory is SmartPawsBackend
+        // const jsonContent = fs.readFileSync('assistant.json', 'utf8');
+        // // get assistant configuration data from json file
+        // const assistantConfiguration = JSON.parse(jsonContent);
+        // // just printing
+        // console.log(assistantConfiguration.assistantId);
+        // console.log(assistantConfiguration.name);
+        // console.log(assistantConfiguration.instructions);
+
         // const assistant = await openai.beta.assistants.create(assistantConfiguration);
         // const assistantDetails: AssistantDetails = { assistantId: assistant.id, ...assistantConfiguration };
         
         // Gunter's thread
-        const existingThreadId = "thread_9DcJNYRPB9bRdfwhFPMhrAZT";
+        // const existingThreadId = "thread_9DcJNYRPB9bRdfwhFPMhrAZT";
+        // let threadIdToUse = "";
+        // just a default thread for debugging, NEED TO DITCH PROBABLY...
+        // and instead check for if the threadId passed in as a parameter is not the empty string
+        if(threadIdToUse == "") {
+            threadIdToUse = "thread_9DcJNYRPB9bRdfwhFPMhrAZT";
+        }
+        // else {
+        //     threadIdToUse = newThreadId;
+        // }
+        // if(newThreadId == "") {
+        //     threadIdToUse = "thread_9DcJNYRPB9bRdfwhFPMhrAZT";
+        // }
+        // else {
+        //     threadIdToUse = newThreadId;
+        // }
 
+        // Bill's thread
+        // const existingThreadId = "thread_HT99NbUHaYVmsesVI4LQoDIJ";
 
 
         // need to check if threadId that will be passed in as a parameter 
@@ -108,68 +176,71 @@ async function runCompletionAssistant(req: Request, res: Response) {
 
         // COMMENTING OUT TO NOT SEND WHILE JUST VERIFYING THE STEPS BEFORE SENDING TO CHATGPT
         // const thread = { id: existingThreadId };
-        // // Pass in the user question into the existing thread
-        // await openai.beta.threads.messages.create(thread.id, {
-        //     role: "user",
-        //     content: input,
-        // });
+        console.log("thread ID to use: " + threadIdToUse);
+        const thread = { id: threadIdToUse };
+        console.log(thread);
+        // Pass in the user question into the existing thread
+        await openai.beta.threads.messages.create(thread.id, {
+            role: "user",
+            content: input,
+        });
+
+        // Create a run
+        const run = await openai.beta.threads.runs.create(thread.id, {
+            assistant_id: assistantConfiguration.assistantId,
+        });
     
-        // // Create a run
-        // const run = await openai.beta.threads.runs.create(thread.id, {
-        //     assistant_id: assistantConfiguration.assistantId,
-        // });
-    
-        // // Immediately fetch run status, which will be "in_progress" or "complete"
-        // let runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
-        // console.log("Run status:", runStatus.status);
+        // Immediately fetch run status, which will be "in_progress" or "complete"
+        let runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+        console.log("Run status:", runStatus.status);
 
-        // // Polling mechanism to see if runStatus is completed
-        // while (runStatus.status !== "completed") {
-        //     await new Promise((resolve) => setTimeout(resolve, 1000));
-        //     runStatus = await openai.beta.threads.runs.retrieve(
-        //         thread.id,
-        //         run.id
-        //     );
+        // Polling mechanism to see if runStatus is completed
+        while (runStatus.status !== "completed") {
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+            runStatus = await openai.beta.threads.runs.retrieve(
+                thread.id,
+                run.id
+            );
 
-        //     // Check for failed, cancelled, or expired status
-        //     if (["failed", "cancelled", "expired"].includes(runStatus.status)) {
-        //     console.log(
-        //         `Run status is '${runStatus.status}'. Unable to complete the request.`
-        //     );
-        //     break; // Exit the loop if the status indicates a failure or cancellation
-        //     }
-        // }
+            // Check for failed, cancelled, or expired status
+            if (["failed", "cancelled", "expired"].includes(runStatus.status)) {
+            console.log(
+                `Run status is '${runStatus.status}'. Unable to complete the request.`
+            );
+            break; // Exit the loop if the status indicates a failure or cancellation
+            }
+        }
 
-        // // Get the last assistant message from the messages array
-        // const messages = await openai.beta.threads.messages.list(thread.id);
+        // Get the last assistant message from the messages array
+        const messages = await openai.beta.threads.messages.list(thread.id);
 
-        // // Find the last message for the current run
-        // const lastMessageForRun = messages.data
-        //     .filter(
-        //     (message) =>
-        //         message.run_id === run.id && message.role === "assistant"
-        //     )
-        //     .pop();
+        // Find the last message for the current run
+        const lastMessageForRun = messages.data
+            .filter(
+            (message) =>
+                message.run_id === run.id && message.role === "assistant"
+            )
+            .pop();
 
-        // // If an assistant message is found, console.log() it
-        // if (lastMessageForRun) {
-        //     // console.log(`${lastMessageForRun.content[0].text.value} \n`);
-        //     const content = lastMessageForRun.content[0];
-        //     if ("text" in content) {
-        //         // It's a MessageContentText
-        //         console.log(`${content.text.value} \n`);
-        //         const responseText = content.text.value;
-        //         res.json({ message: responseText }); 
-        //       } else {
-        //         // It's a MessageContentImageFile (handle accordingly)
-        //         console.log("Received an image content. Handle appropriately.");
-        //         res.status(400).json({ error: "Received an image content. Handle appropriately." });
-        //       }
-        // } else if (
-        //     !["failed", "cancelled", "expired"].includes(runStatus.status)
-        // ) {
-        //     console.log("No response received from the assistant.");
-        // }
+        // If an assistant message is found, console.log() it
+        if (lastMessageForRun) {
+            // console.log(`${lastMessageForRun.content[0].text.value} \n`);
+            const content = lastMessageForRun.content[0];
+            if ("text" in content) {
+                // It's a MessageContentText
+                console.log(`${content.text.value} \n`);
+                const responseText = content.text.value;
+                res.json({ message: responseText }); 
+              } else {
+                // It's a MessageContentImageFile (handle accordingly)
+                console.log("Received an image content. Handle appropriately.");
+                res.status(400).json({ error: "Received an image content. Handle appropriately." });
+              }
+        } else if (
+            !["failed", "cancelled", "expired"].includes(runStatus.status)
+        ) {
+            console.log("No response received from the assistant.");
+        }
     // END COMMENTING OUT TO NOT SEND WHILE JUST VERIFYING THE STEPS BEFORE SENDING TO CHATGPT
 
     } catch (error) {
