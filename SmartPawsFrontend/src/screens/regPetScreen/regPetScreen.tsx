@@ -28,7 +28,7 @@ const RegPetScreen = () => {
     const auth = getAuth();  
     const currentUser = auth.currentUser;
     const ownerId = currentUser ? currentUser.uid : "";
-
+    const threadId = "";
     // need to be able to useState in order to update the pet profile image url when 
     // received from user selecting picture to upload outside of react hook form
     const [imageUrl, setImageUrl] = useState<string | null>("");
@@ -60,6 +60,8 @@ const RegPetScreen = () => {
             reproductiveStatus: "",
             image: "",
             notes: "",
+            // adding threadId for pet's specific thread with openai assistant
+            threadId: threadId, 
         },
     });
     
@@ -82,7 +84,7 @@ const RegPetScreen = () => {
                 medsSupplements, allergiesSensitivities, prevIllnessesInjuries,
                 diet, exerciseHabits, 
                 indoorOrOutdoor, reproductiveStatus, image,
-                notes  
+                notes, threadId 
             } = data;
 
             await savePetProfileToDatabase(ownerId, name, age, 
@@ -91,7 +93,7 @@ const RegPetScreen = () => {
                 medsSupplements, allergiesSensitivities, prevIllnessesInjuries,
                 diet, exerciseHabits, 
                 indoorOrOutdoor, reproductiveStatus, image,
-                notes);
+                notes, threadId);
 
             // reset all of the fields of the form now that pet profile has been saved to database
             reset(); 
@@ -481,6 +483,7 @@ const savePetProfileToDatabase = async (
     reproductiveStatus: string,
     image: string,
     notes: string,
+    threadId: string,
 ) => {
     try {
         const response = await axiosInstance.post("pet/create", {
@@ -501,6 +504,7 @@ const savePetProfileToDatabase = async (
             reproductiveStatus,
             image,
             notes,
+            threadId,
         });
         console.log("Pet registered to MongoDB");
         return response.data.pet;

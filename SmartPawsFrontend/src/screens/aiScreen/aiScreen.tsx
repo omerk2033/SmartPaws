@@ -135,8 +135,23 @@ const AIScreen: React.FC = () => {
     const aiMessage: Message = { id: `ai-${Date.now()}`, text: simulatedAIResponse, type: 'ai' };
     setMessages(messages => [...messages, aiMessage]);
 
+    // NEED TO GET threadId OF PET TO ALSO SEND TO BACKEND...
+    // send userId and pet name to backend to determine if 
+    // pet profile needs to be uploaded to assistant API 
+    // or if thread has already been created and assistant already has pet file
+    let threadId = pet.threadId;
+    if(threadId == "") {
+      threadId = "nope";
+    }
     try {
-      const response = await fetch(`${BASE_URL}user/chatGPT`, {
+      // const response = await fetch(`${BASE_URL}user/chatGPT`, {
+      const response = await fetch(`${BASE_URL}user/chatGPT/${threadId}`, {
+      // DON'T WANT TO NECESSARILY SEND THE PET PROFILE RIGHT AWAY ANY MORE
+      // WILL NEED TO CHECK IF A PET PROFILE FILE HAS ALREADY BEEN UPLOADED TO THE ASSISTANT 
+      // AND A THREAD HAS ALREADY BEEN CREATED FOR THE PET
+      // const response = await fetch(`${BASE_URL}user/chatGPT/${pet.ownerId}/${pet.name}`, {
+      // console.log(`${BASE_URL}user/chatGPT/${pet.name}/${pet.age}/${pet.species}/${pet.breed}/${pet.color}/${pet.gender}/${pet.vaccinationRecords}/${pet.medsSupplements}/${pet.allergiesSensitivities}/${pet.prevIllnessesInjuries}/${pet.diet}/${pet.exerciseHabits}/${pet.indoorOrOutdoor}/${pet.reproductiveStatus}/${pet.notes}/${pet.threadId}`);
+      // const response = await fetch(`${BASE_URL}user/chatGPT/${pet.name}/${pet.age}/${pet.species}/${pet.breed}/${pet.color}/${pet.gender}/${pet.vaccinationRecords}/${pet.medsSupplements}/${pet.allergiesSensitivities}/${pet.prevIllnessesInjuries}/${pet.diet}/${pet.exerciseHabits}/${pet.indoorOrOutdoor}/${pet.reproductiveStatus}/${pet.notes}/${pet.threadId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ input: petMessageContent })

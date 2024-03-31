@@ -59,6 +59,10 @@ const petSchema=new mongoose.Schema({
         type: String,
         // perhaps an array of notes...
     },
+    threadId: {
+        type: String,
+        // threadId is the id of the openai assistant thread specific to the pet 
+    }
 
 },
     {

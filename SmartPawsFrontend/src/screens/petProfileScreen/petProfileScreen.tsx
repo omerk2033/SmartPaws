@@ -116,6 +116,7 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
                 <Text>{ "Indoor/Outdoor: " + pet?.indoorOrOutdoor }</Text>
                 <Text>{ "Reproductive Status: " + pet?.reproductiveStatus }</Text>
                 <Text>{ "Notes: " + pet?.notes }</Text>
+                <Text>{ "Thread ID: " + pet?.threadId }</Text>
             </Box>
             <Box mt="6" style={styles.centeredView}>
     <TouchableOpacity 

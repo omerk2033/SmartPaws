@@ -8,7 +8,7 @@ export const createPet = async (request: Request, response: Response) => {
                 gender, vaccinationRecords, 
                 medsSupplements, allergiesSensitivities, prevIllnessesInjuries, 
                 diet, exerciseHabits, indoorOrOutdoor, 
-                reproductiveStatus, image, notes } = request.body
+                reproductiveStatus, image, notes, threadId } = request.body
         
         // NOT SURE THAT THIS IS WORKING FOR CHECKING IF AN OWNER ALREADY HAS A PET WITH THE SAME NAME, NEED TO TEST...
         const existingPet = await Pet.findOne({ ownerId, name }) // check if the database already contains a pet with same ownerId and name
@@ -38,6 +38,7 @@ export const createPet = async (request: Request, response: Response) => {
             reproductiveStatus: reproductiveStatus,
             image: image,
             notes: notes,
+            threadId: threadId,
         })
 
         return response.status(201).send({ message: "Pet created successfully" })
