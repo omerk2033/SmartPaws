@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View, TextInput, TouchableOpacity, Text, Alert, StyleSheet, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axiosInstance, { BASE_URL } from '../../services/config';
@@ -20,6 +20,13 @@ const AIScreen: React.FC = () => {
   const [selectedPet, setSelectedPet] = useState('');
   const [petDetails, setPetDetails] = useState<IPet | null>(null);
   const isFocused = useIsFocused();
+
+  // to have chat screen automatically scroll to newest message
+  const scrollViewRef = useRef<ScrollView | null>(null);
+
+  const scrollToBottom = () => {
+    scrollViewRef.current?.scrollToEnd({ animated: true });
+  };
 
   // If user navigates to this screen, fetch pets in case they've added a new pet
   useEffect(() => {
@@ -60,10 +67,6 @@ const AIScreen: React.FC = () => {
     }
   }, [selectedPet]);
 
-  // useEffect(() => {
-  //   fetchPets();
-  // }, []);
-
   // Fetch pet details from backend
   const fetchPetDetails = async (petName: string) => {
     try {
@@ -78,9 +81,6 @@ const AIScreen: React.FC = () => {
 
   // Construct the data for the dropdown list
   const data = [{ key: 'Chat with Gigi', value: 'Chat with Gigi' }].concat(
-    // modifying to specify pet type as IPet
-    // and using pet.name as the key 
-    // pets.map((pet: any) => ({
     pets.map((pet: IPet) => ({
       // key: pet.id,
       key: pet.name,
@@ -115,7 +115,6 @@ const AIScreen: React.FC = () => {
          + `Notes: ${pet.notes}\n`;
   };
 
-  // } 
   // construct pet profile json object to send to backend
   // for pet profile to be sent to new thread when 1st asking a question about a pet
   const petDetailsJsonObj = {
@@ -258,6 +257,9 @@ const AIScreen: React.FC = () => {
       console.log(aiMessage);
       // const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
       setMessages(messages => [...messages, aiMessage]);
+      // to have chat screen automatically scroll to newest message
+      scrollToBottom();  
+
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'Failed to send request');
@@ -311,7 +313,7 @@ const AIScreen: React.FC = () => {
             placeholder='Select a pet...' 
           />
         </View>
-        <ScrollView contentContainerStyle={styles.chatContainer}>
+        <ScrollView contentContainerStyle={styles.chatContainer} ref={scrollViewRef} >
           {messages.map((message) => (
             <Text key={message.id} style={[
               styles.message,
