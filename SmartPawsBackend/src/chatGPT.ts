@@ -73,40 +73,26 @@ async function runCompletionAssistant(req: Request, res: Response) {
         // or set to the threadId that was passed in in the url
         let threadIdToUse = "";
 
-        // 
+        // if thread has not been associated with the pet profile
         if(threadId == "nope") {
-            // maybe see about creating new thread 
-            // and then sending all of the pet information to it 
-            // to see if can reference in future conversations
-
-            // ok so it seems like this is taking care of creating a new thread
+            // this is taking care of creating a new thread
             // if there wasn't already a thread id found for the pet
             const newThread = await openai.beta.threads.create();
             console.log(newThread.id);
             threadIdToUse = newThread.id;
 
-            // and then creating the message from the pet details that were passed in the request body
+            // create the message from the pet details that were passed in the request body
+            // the assistant will be able to reference in future same thread conversations
             await openai.beta.threads.messages.create(newThread.id, {
                 role: "user",
                 content: input,
             });
             
-            // it seems to be able to remember the information that you send from the pet's profile
-            // at this point, it even remembered it in another thread
-
-            // ok maybe could write the pet string info to a json file
-            // and then upload to the chatgpt assistant
-            // I've manually uploaded the file that the below creates
-            // and the assistant is able to read from it successfully
-            // write pet profile to json file
-            // I HAVEN'T FOUND THAT IT IS POSSIBLE TO UPLOAD A FILE TO THE ASSISTANT FROM HERE YET
-            // IF CAN'T UPLOAD FILE TO OPENAI THEN NO POINT TO WRITE IT TO A FILE I SUPPOSE
+            // I do not find a way to upload a file to the assistant like I can manually do
+            // tried stuff like below, but wasn't able to get to work
             // const dataToWrite = JSON.stringify(input, null, 2); // Convert to pretty-printed JSON
             // fs.writeFileSync(`${petName}-${ownerId}.json`, dataToWrite);
             // console.log('Data written to json file');
-
-            // create thread and save thread ID to send back to front end to modify pet profile 
-            
         }
         else {
             threadIdToUse = threadId;
@@ -118,19 +104,11 @@ async function runCompletionAssistant(req: Request, res: Response) {
             return res.status(400).json({ error: "Input is required" });
         }
 
-        // Gunter's thread
-        // const existingThreadId = "thread_9DcJNYRPB9bRdfwhFPMhrAZT";
-        // just a default thread for debugging, NEED TO DITCH PROBABLY...
-        // and instead check for if the threadId passed in as a parameter is not the empty string
-        if(threadIdToUse == "") {
-            threadIdToUse = "thread_9DcJNYRPB9bRdfwhFPMhrAZT";
-        }
-
-        // COMMENTING OUT TO NOT SEND WHILE JUST VERIFYING THE STEPS BEFORE SENDING TO CHATGPT
         console.log("thread ID to use: " + threadIdToUse);
         const thread = { id: threadIdToUse };
         console.log(thread);
         // Pass in the user question into the existing thread
+        // thread will either be newly created thread or preexisting thread of same thread id that was passed in url
         await openai.beta.threads.messages.create(thread.id, {
             role: "user",
             content: input,
@@ -193,7 +171,6 @@ async function runCompletionAssistant(req: Request, res: Response) {
         ) {
             console.log("No response received from the assistant.");
         }
-    // END COMMENTING OUT TO NOT SEND WHILE JUST VERIFYING THE STEPS BEFORE SENDING TO CHATGPT
 
     } catch (error) {
         console.error("Error:", error);

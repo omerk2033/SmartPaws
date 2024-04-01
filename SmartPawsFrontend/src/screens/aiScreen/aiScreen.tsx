@@ -93,6 +93,7 @@ const AIScreen: React.FC = () => {
     setSelectedPet(selectedValue);
   };
 
+  // creating a json object instead
   // Construct a message from the pet details
   const constructPetDetailsMessage = (pet: IPet): string => {
     return `Pet Details:\n`
@@ -114,12 +115,9 @@ const AIScreen: React.FC = () => {
          + `Notes: ${pet.notes}\n`;
   };
 
-  // construct pet profile json object to send to backend
-  // const constructPetDetailsJsonObject = (pet: IPet): string {
-
   // } 
-
-  // AM I USING THIS ANYMORE???
+  // construct pet profile json object to send to backend
+  // for pet profile to be sent to new thread when 1st asking a question about a pet
   const petDetailsJsonObj = {
     name: petDetails?.name,
     age: petDetails?.age,
@@ -155,22 +153,23 @@ const AIScreen: React.FC = () => {
       return;
     }
 
+    // a thread id is not associated with this pet profile yet, so proceed
+
     const petMessageContent = constructPetDetailsMessage(pet);
 
     // Log the pet message content
     console.log("Sending pet details to AI:", petMessageContent);
 
-    // Simulate an AI response by echoing the pet details
+    // // Simulate an AI response by echoing the pet details
     const simulatedAIResponse = `Received the following pet details:\n${petMessageContent}`;
+    // const simulatedAIResponse = `Received ${pet.name}'s details`;
 
     // Add the AI response to the messages state
     const aiMessage: Message = { id: `ai-${Date.now()}`, text: simulatedAIResponse, type: 'ai' };
     setMessages(messages => [...messages, aiMessage]);
 
-    // NEED TO GET threadId OF PET TO ALSO SEND TO BACKEND...
-    // send userId and pet name to backend to determine if 
-    // pet profile needs to be uploaded to assistant API 
-    // or if thread has already been created and assistant already has pet file
+    // if thread id is not associated with this pet, call it nope 
+    // to check in backend if a new thread needs to be created
     let threadId = pet.threadId;
     if(threadId == "") {
       threadId = "nope";
@@ -181,12 +180,6 @@ const AIScreen: React.FC = () => {
       // const response = await fetch(`${BASE_URL}user/chatGPT`, {
       // const response = await fetch(`${BASE_URL}user/chatGPT/${threadId}`, {
       const response = await fetch(`${BASE_URL}user/chatGPT/${pet.ownerId}/${pet.name}/${threadId}`, {
-      // DON'T WANT TO NECESSARILY SEND THE PET PROFILE RIGHT AWAY ANY MORE
-      // WILL NEED TO CHECK IF A PET PROFILE FILE HAS ALREADY BEEN UPLOADED TO THE ASSISTANT 
-      // AND A THREAD HAS ALREADY BEEN CREATED FOR THE PET
-      // const response = await fetch(`${BASE_URL}user/chatGPT/${pet.ownerId}/${pet.name}`, {
-      // console.log(`${BASE_URL}user/chatGPT/${pet.name}/${pet.age}/${pet.species}/${pet.breed}/${pet.color}/${pet.gender}/${pet.vaccinationRecords}/${pet.medsSupplements}/${pet.allergiesSensitivities}/${pet.prevIllnessesInjuries}/${pet.diet}/${pet.exerciseHabits}/${pet.indoorOrOutdoor}/${pet.reproductiveStatus}/${pet.notes}/${pet.threadId}`);
-      // const response = await fetch(`${BASE_URL}user/chatGPT/${pet.name}/${pet.age}/${pet.species}/${pet.breed}/${pet.color}/${pet.gender}/${pet.vaccinationRecords}/${pet.medsSupplements}/${pet.allergiesSensitivities}/${pet.prevIllnessesInjuries}/${pet.diet}/${pet.exerciseHabits}/${pet.indoorOrOutdoor}/${pet.reproductiveStatus}/${pet.notes}/${pet.threadId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         // body: JSON.stringify({ input: petMessageContent })
@@ -238,9 +231,18 @@ const AIScreen: React.FC = () => {
     setInputText('');
 
     try {
+      console.log("petDetails.ownerId: " + petDetails?.ownerId);
+      // check if no pet is selected, then use random chatgpt designated thread not associated with a particular pet
+      let threadIdToSend = "";
+      if(petDetails?.ownerId === undefined) {
+        threadIdToSend = process.env.CHATGPT_GEN_THREAD_ID ?? ""; 
+      }
+      else {
+        threadIdToSend = petDetails.threadId;
+      }
       // const response = await fetch(`${BASE_URL}user/chatGPT`, {
-      // const response = await fetch(`${BASE_URL}user/chatGPT/${pet.ownerId}/${pet.name}/${threadId}`, {
-      const response = await fetch(`${BASE_URL}user/chatGPT/${petDetails?.ownerId}/${petDetails?.name}/${petDetails?.threadId}`, {
+      // const response = await fetch(`${BASE_URL}user/chatGPT/${petDetails?.ownerId}/${petDetails?.name}/${petDetails?.threadId}`, {
+      const response = await fetch(`${BASE_URL}user/chatGPT/${petDetails?.ownerId}/${petDetails?.name}/${threadIdToSend}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ input: message.text })
@@ -250,12 +252,9 @@ const AIScreen: React.FC = () => {
       const responseBody = await response.json();
       const aiMessage: Message = {
           id: `ai-${Date.now()}`,
-          text: responseBody.message, // Extract the content from the response
-          // text: responseBody.message.content, // Extract the content from the response
-          // text: responseBody.message.content.text.value, // Extract the content from the response
+          text: responseBody.message, // extract the message text back from the response
           type: 'ai'
       };
-      // TEXT IS CURRENTLY COMING BACK AS UNDEFINED AND NOT DISPLAYING ON SCREEN...
       console.log(aiMessage);
       // const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
       setMessages(messages => [...messages, aiMessage]);
