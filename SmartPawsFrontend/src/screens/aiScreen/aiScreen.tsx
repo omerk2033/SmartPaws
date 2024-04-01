@@ -119,6 +119,7 @@ const AIScreen: React.FC = () => {
 
   // } 
 
+  // AM I USING THIS ANYMORE???
   const petDetailsJsonObj = {
     name: petDetails?.name,
     age: petDetails?.age,
@@ -190,7 +191,6 @@ const AIScreen: React.FC = () => {
         headers: { 'Content-Type': 'application/json' },
         // body: JSON.stringify({ input: petMessageContent })
         body: JSON.stringify({ input: petDetailsString })
-        // body: petDetailsString
       });
 
       if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
@@ -199,11 +199,12 @@ const AIScreen: React.FC = () => {
       const responseBody = await response.json();
       const receivedThreadId = responseBody.threadId;
       console.log("thread id received from backend: " + receivedThreadId);
-      // update pet profile with new thread id 
+      // update pet with new thread id 
       pet.threadId = receivedThreadId;
-      // and need to update pet profile in mongodb as well...
+
+      // update pet profile in mongodb with new threadId
       await updatePetProfileInDatabase(pet);
-      
+
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'Failed to send pet details to AI');
@@ -222,75 +223,24 @@ const AIScreen: React.FC = () => {
     }
   };
 
-  // from updatePetScreen.tsx seeing if can use for updating the threadId in mongo
-//   const updatePetProfileInDatabase = async (
-//     ownerId: string,
-//     name: string,
-//     age: string,
-//     species: string,
-//     breed: string,
-//     color: string,
-//     gender: string,
-//     vaccinationRecords: string,
-//     medsSupplements: string,
-//     allergiesSensitivities: string,
-//     prevIllnessesInjuries: string,
-//     diet: string,
-//     exerciseHabits: string,
-//     indoorOrOutdoor: string,
-//     reproductiveStatus: string,
-//     image: string,
-//     notes: string,
-//     threadId: string,
-// ) => {
-//     try {
-//         console.log(BASE_URL + "pet/update/" + ownerId, + "/" + name);
-//         // put request sent to pet/update route to update preexisting pet profile with updated values
-//         const response = await axiosInstance.put(BASE_URL + "pet/update/" + ownerId + "/" + name, {
-//             ownerId,
-//             name,
-//             age,
-//             species,
-//             breed,
-//             color,
-//             gender,
-//             vaccinationRecords,
-//             medsSupplements,
-//             allergiesSensitivities,
-//             prevIllnessesInjuries,
-//             diet,
-//             exerciseHabits,
-//             indoorOrOutdoor,
-//             reproductiveStatus,
-//             image,
-//             notes,
-//             threadId
-//         });
-//         console.log("pet updated in mongoDB");
-//         return response.data.pet;
-//     } catch (error) {
-//         console.log("error in updatePetProfileInDatabase", error);
-//     }
-// }
-
-  
-
-  const handleSendRequest = async () => {
+  const handleSendRequest2 = async () => {
     if (!inputText.trim()) {
       Alert.alert('Error', 'Please enter a message');
       return;
     }
 
     const newMessage: Message = { id: `user-${Date.now()}`, text: inputText, type: 'user' };
-    processUserMessage(newMessage);
+    processUserMessage2(newMessage);
   };
 
-  const processUserMessage = async (message: Message) => {
+  const processUserMessage2 = async (message: Message) => {
     setMessages(messages => [...messages, message]);
     setInputText('');
 
     try {
-      const response = await fetch(`${BASE_URL}user/chatGPT`, {
+      // const response = await fetch(`${BASE_URL}user/chatGPT`, {
+      // const response = await fetch(`${BASE_URL}user/chatGPT/${pet.ownerId}/${pet.name}/${threadId}`, {
+      const response = await fetch(`${BASE_URL}user/chatGPT/${petDetails?.ownerId}/${petDetails?.name}/${petDetails?.threadId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ input: message.text })
@@ -304,6 +254,36 @@ const AIScreen: React.FC = () => {
       Alert.alert('Error', 'Failed to send request');
     }
   };
+
+  // const handleSendRequest = async () => {
+  //   if (!inputText.trim()) {
+  //     Alert.alert('Error', 'Please enter a message');
+  //     return;
+  //   }
+
+  //   const newMessage: Message = { id: `user-${Date.now()}`, text: inputText, type: 'user' };
+  //   processUserMessage(newMessage);
+  // };
+
+  // const processUserMessage = async (message: Message) => {
+  //   setMessages(messages => [...messages, message]);
+  //   setInputText('');
+
+  //   try {
+  //     const response = await fetch(`${BASE_URL}user/chatGPT`, {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ input: message.text })
+  //     });
+
+  //     if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
+  //     const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
+  //     setMessages(messages => [...messages, aiMessage]);
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //     Alert.alert('Error', 'Failed to send request');
+  //   }
+  // };
 
   return (
     <LinearGradient
@@ -340,7 +320,8 @@ const AIScreen: React.FC = () => {
             value={inputText}
             placeholderTextColor="#666"
           />
-          <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest}>
+          {/* <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest}> */}
+          <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest2}>
             <Text style={styles.sendButtonText}>Send to Gigi</Text>
           </TouchableOpacity>
         </View>
