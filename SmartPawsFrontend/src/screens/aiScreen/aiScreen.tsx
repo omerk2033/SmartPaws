@@ -19,6 +19,7 @@ const AIScreen: React.FC = () => {
   const [pets, setPets] = useState<IPet[]>([]);
   const [selectedPet, setSelectedPet] = useState('');
   const [petDetails, setPetDetails] = useState<IPet | null>(null);
+  const [uploadPetProfilePressed, setUploadPetProfilePressed] = useState<boolean>(false);
   const isFocused = useIsFocused();
 
   // to have chat screen automatically scroll to newest message
@@ -66,6 +67,18 @@ const AIScreen: React.FC = () => {
       setPetDetails(null);
     }
   }, [selectedPet]);
+
+  // set pet details if needing to upload pet profile again because assistant seems to have forgot the details
+  useEffect(() => {
+    if (selectedPet && selectedPet !== 'Chat with Gigi') {
+      // fetchPetDetails(selectedPet);
+      if(petDetails != null) {
+        sendPetDetailsToAI(petDetails);
+      }
+    } else {
+      setPetDetails(null);
+    }
+  }, [uploadPetProfilePressed]);
 
   // Fetch pet details from backend
   const fetchPetDetails = async (petName: string) => {
@@ -159,7 +172,7 @@ const AIScreen: React.FC = () => {
     // Log the pet message content
     console.log("Sending pet details to AI:", petMessageContent);
 
-    // // Simulate an AI response by echoing the pet details
+    // Simulate an AI response by echoing the pet details
     const simulatedAIResponse = `Received the following pet details:\n${petMessageContent}`;
     // const simulatedAIResponse = `Received ${pet.name}'s details`;
 
@@ -266,6 +279,51 @@ const AIScreen: React.FC = () => {
     }
   };
 
+  // if assistant cannot recall pet's profile from the thread, ability to send again
+  const handleSendPetInfoAgain = async () => {
+    setUploadPetProfilePressed(true);
+    if (petDetails != null) {
+      sendPetInfoAgain(petDetails);
+    }
+  }
+
+  // send pet profile to thread again without creating a new thread
+  const sendPetInfoAgain = async (pet: IPet) => {
+    if(pet.threadId == "") {
+      console.log("should not send pet info again if haven't sent before and don't have a thread id already");
+      return;
+    }
+    const petMessageContent = constructPetDetailsMessage(pet);
+    console.log("Sending pet details to AI:", petMessageContent);
+
+    try {
+      const petDetailsString = JSON.stringify(petDetailsJsonObj);
+      console.log("petDetailsString: " + petDetailsString);
+      const response = await fetch(`${BASE_URL}user/chatGPT/${pet.ownerId}/${pet.name}/${pet.threadId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ input: petDetailsString })
+      });
+
+      if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
+
+      const responseBody = await response.json();
+      const aiMessage: Message = {
+          id: `ai-${Date.now()}`,
+          text: responseBody.message, // extract the message text back from the response
+          type: 'ai'
+      };
+      console.log(aiMessage);
+      setMessages(messages => [...messages, aiMessage]);
+      // to have chat screen automatically scroll to newest message
+      scrollToBottom();  
+
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'Failed to send pet details to AI');
+    }
+  }
+
   // const handleSendRequest = async () => {
   //   if (!inputText.trim()) {
   //     Alert.alert('Error', 'Please enter a message');
@@ -334,6 +392,12 @@ const AIScreen: React.FC = () => {
           {/* <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest}> */}
           <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest2}>
             <Text style={styles.sendButtonText}>Send to Gigi</Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+        {/* if assistant cannot recall pet's profile from the thread, ability to send again */}
+          <TouchableOpacity style={styles.sendButton} onPress={handleSendPetInfoAgain}>
+            <Text style={styles.sendButtonText}>Upload Pet Profile</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
