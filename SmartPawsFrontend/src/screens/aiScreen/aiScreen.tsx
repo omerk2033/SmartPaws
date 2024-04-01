@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View, TextInput, TouchableOpacity, Text, Alert, StyleSheet, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BASE_URL } from '../../services/config';
+import axiosInstance, { BASE_URL } from '../../services/config';
 import { getAuth } from 'firebase/auth';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { IPet } from 'types';
@@ -202,12 +202,77 @@ const AIScreen: React.FC = () => {
       // update pet profile with new thread id 
       pet.threadId = receivedThreadId;
       // and need to update pet profile in mongodb as well...
+      await updatePetProfileInDatabase(pet);
       
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'Failed to send pet details to AI');
     }
   };
+
+  const updatePetProfileInDatabase = async (pet: IPet) => {
+    try {
+        console.log(BASE_URL + "pet/update/" + pet.ownerId + "/" + pet.name);
+        // Put request sent to pet/update route to update preexisting pet profile with updated values
+        const response = await axiosInstance.put(BASE_URL + "pet/update/" + pet.ownerId + "/" + pet.name, pet);
+        console.log("Pet updated in MongoDB");
+        return response.data.pet;
+    } catch (error) {
+        console.log("Error in updatePetProfileInDatabase", error);
+    }
+  };
+
+  // from updatePetScreen.tsx seeing if can use for updating the threadId in mongo
+//   const updatePetProfileInDatabase = async (
+//     ownerId: string,
+//     name: string,
+//     age: string,
+//     species: string,
+//     breed: string,
+//     color: string,
+//     gender: string,
+//     vaccinationRecords: string,
+//     medsSupplements: string,
+//     allergiesSensitivities: string,
+//     prevIllnessesInjuries: string,
+//     diet: string,
+//     exerciseHabits: string,
+//     indoorOrOutdoor: string,
+//     reproductiveStatus: string,
+//     image: string,
+//     notes: string,
+//     threadId: string,
+// ) => {
+//     try {
+//         console.log(BASE_URL + "pet/update/" + ownerId, + "/" + name);
+//         // put request sent to pet/update route to update preexisting pet profile with updated values
+//         const response = await axiosInstance.put(BASE_URL + "pet/update/" + ownerId + "/" + name, {
+//             ownerId,
+//             name,
+//             age,
+//             species,
+//             breed,
+//             color,
+//             gender,
+//             vaccinationRecords,
+//             medsSupplements,
+//             allergiesSensitivities,
+//             prevIllnessesInjuries,
+//             diet,
+//             exerciseHabits,
+//             indoorOrOutdoor,
+//             reproductiveStatus,
+//             image,
+//             notes,
+//             threadId
+//         });
+//         console.log("pet updated in mongoDB");
+//         return response.data.pet;
+//     } catch (error) {
+//         console.log("error in updatePetProfileInDatabase", error);
+//     }
+// }
+
   
 
   const handleSendRequest = async () => {
