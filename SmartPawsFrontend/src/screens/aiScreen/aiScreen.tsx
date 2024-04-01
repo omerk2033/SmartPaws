@@ -247,7 +247,17 @@ const AIScreen: React.FC = () => {
       });
 
       if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
-      const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
+      const responseBody = await response.json();
+      const aiMessage: Message = {
+          id: `ai-${Date.now()}`,
+          text: responseBody.message, // Extract the content from the response
+          // text: responseBody.message.content, // Extract the content from the response
+          // text: responseBody.message.content.text.value, // Extract the content from the response
+          type: 'ai'
+      };
+      // TEXT IS CURRENTLY COMING BACK AS UNDEFINED AND NOT DISPLAYING ON SCREEN...
+      console.log(aiMessage);
+      // const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
       setMessages(messages => [...messages, aiMessage]);
     } catch (error) {
       console.error('Error:', error);
