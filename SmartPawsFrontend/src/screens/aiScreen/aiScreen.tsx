@@ -147,6 +147,13 @@ const AIScreen: React.FC = () => {
 
   // Send pet details to the AI
   const sendPetDetailsToAI = async (pet: IPet) => {
+    // if threadId already exists, then don't send all of the pet details to the thread again
+    if(pet.threadId != "") {
+      console.log("there is already a thread associated with this pet so no need to send to assistant");
+      console.log(pet.threadId);
+      return;
+    }
+
     const petMessageContent = constructPetDetailsMessage(pet);
 
     // Log the pet message content
@@ -188,6 +195,14 @@ const AIScreen: React.FC = () => {
 
       if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
 
+      // get newly created thread id from backend and updated pet profile
+      const responseBody = await response.json();
+      const receivedThreadId = responseBody.threadId;
+      console.log("thread id received from backend: " + receivedThreadId);
+      // update pet profile with new thread id 
+      pet.threadId = receivedThreadId;
+      // and need to update pet profile in mongodb as well...
+      
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'Failed to send pet details to AI');
