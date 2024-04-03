@@ -55,7 +55,7 @@ const AIScreen: React.FC = () => {
       setPets(data);
     } catch (error) {
       console.error("Error fetching pets", error);
-      // Handle the error as appropriate
+      // Handle the error as appropriate...
     }
   };
 
@@ -71,7 +71,6 @@ const AIScreen: React.FC = () => {
   // set pet details if needing to upload pet profile again because assistant seems to have forgot the details
   useEffect(() => {
     if (selectedPet && selectedPet !== 'Chat with Gigi') {
-      // fetchPetDetails(selectedPet);
       if(petDetails != null) {
         sendPetDetailsToAI(petDetails);
       }
@@ -97,7 +96,6 @@ const AIScreen: React.FC = () => {
     pets.map((pet: IPet) => ({
       // key: pet.id,
       key: pet.name,
-      // key: `${pet.ownerId}-${pet.name}`, // this caused errors not sure why yet...
       value: pet.name
     }))
   );
@@ -105,8 +103,7 @@ const AIScreen: React.FC = () => {
   // Triggered when a pet is selected from the dropdown list
   const onPetSelect = (selectedValue: string) => {
     setSelectedPet(selectedValue);
-    // IS IT SELECTING THE CORRECT PET WHEN YOU SELECT FROM THE DROP DOWN?
-    // UNEXPECTED THINGS PRINTING OUT FOR selectedPet 
+    // seems to print out one pet selection delayed in the console, but seems to be working fine
     console.log("selectedPet: " + selectedPet);
   };
 
@@ -178,7 +175,6 @@ const AIScreen: React.FC = () => {
 
     // Simulate an AI response by echoing the pet details
     const simulatedAIResponse = `Received the following pet details:\n${petMessageContent}`;
-    // const simulatedAIResponse = `Received ${pet.name}'s details`;
 
     // Add the AI response to the messages state
     const aiMessage: Message = { id: `ai-${Date.now()}`, text: simulatedAIResponse, type: 'ai' };
@@ -193,6 +189,7 @@ const AIScreen: React.FC = () => {
     try {
       const petDetailsString = JSON.stringify(petDetailsJsonObj);
       console.log("petDetailsString: " + petDetailsString);
+      // NOT SURE IF NEED pet.ownerId AND pet.name STILL OR IF JUST threadId IS ALL WE NEED
       // const response = await fetch(`${BASE_URL}user/chatGPT`, {
       // const response = await fetch(`${BASE_URL}user/chatGPT/${threadId}`, {
       const response = await fetch(`${BASE_URL}user/chatGPT/${pet.ownerId}/${pet.name}/${threadId}`, {
@@ -212,13 +209,13 @@ const AIScreen: React.FC = () => {
       pet.threadId = receivedThreadId;
 
       // log ai response to pet profile submission
+      // const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
       const aiMessage: Message = {
           id: `ai-${Date.now()}`,
           text: responseBody.message, // extract the message text back from the response
           type: 'ai'
       };
       console.log(aiMessage);
-      // const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
       setMessages(messages => [...messages, aiMessage]);
 
       // to have chat screen automatically scroll to newest message
@@ -233,6 +230,7 @@ const AIScreen: React.FC = () => {
     }
   };
 
+  // for updating thread id when received back from the backend
   const updatePetProfileInDatabase = async (pet: IPet) => {
     try {
         console.log(BASE_URL + "pet/update/" + pet.ownerId + "/" + pet.name);
@@ -269,8 +267,8 @@ const AIScreen: React.FC = () => {
       else {
         threadIdToSend = petDetails.threadId;
       }
+      // NOT SURE IF NEED pet.ownerId AND pet.name STILL OR IF JUST threadId IS ALL WE NEED
       // const response = await fetch(`${BASE_URL}user/chatGPT`, {
-      // const response = await fetch(`${BASE_URL}user/chatGPT/${petDetails?.ownerId}/${petDetails?.name}/${petDetails?.threadId}`, {
       const response = await fetch(`${BASE_URL}user/chatGPT/${petDetails?.ownerId}/${petDetails?.name}/${threadIdToSend}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -279,13 +277,13 @@ const AIScreen: React.FC = () => {
 
       if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
       const responseBody = await response.json();
+      // const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
       const aiMessage: Message = {
           id: `ai-${Date.now()}`,
           text: responseBody.message, // extract the message text back from the response
           type: 'ai'
       };
       console.log(aiMessage);
-      // const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
       setMessages(messages => [...messages, aiMessage]);
       // to have chat screen automatically scroll to newest message
       scrollToBottom();  
@@ -340,7 +338,7 @@ const AIScreen: React.FC = () => {
       Alert.alert('Error', 'Failed to send pet details to AI');
     }
   }
-
+  // ORIGINAL VERSION
   // const handleSendRequest = async () => {
   //   if (!inputText.trim()) {
   //     Alert.alert('Error', 'Please enter a message');

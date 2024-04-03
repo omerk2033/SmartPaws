@@ -39,13 +39,13 @@ const openai = new OpenAI({ apiKey });
 // }
 
 // experimenting with using the openai assistant api
-async function runCompletionAssistant(req: Request, res: Response) {
+async function runCompletionAssistant(request: Request, response: Response) {
     try {
-        const { input } = req.body;
+        const { input } = request.body;
         console.log("Backend input received:", input);
 
         // get parameters passed in from url
-        const { ownerId, petName, threadId } = req.params;
+        const { ownerId, petName, threadId } = request.params;
         console.log("ownerId: " + ownerId);
         console.log("petName: " + petName);
         console.log("threadId: " + threadId);
@@ -90,12 +90,11 @@ async function runCompletionAssistant(req: Request, res: Response) {
 
         // Check if input exists
         if (!input) {
-            return res.status(400).json({ error: "Input is required" });
+            return response.status(400).json({ error: "Input is required" });
         }
 
         console.log("thread ID to use: " + threadIdToUse);
-        // const thread = { id: threadIdToUse };
-        // console.log(thread);
+
         // Pass in the user question into the existing thread
         // thread will either be newly created thread or preexisting thread of same thread id that was passed in url
         await openai.beta.threads.messages.create(threadIdToUse, {
@@ -103,7 +102,7 @@ async function runCompletionAssistant(req: Request, res: Response) {
             content: input,
         });
 
-        // Create a run
+        // Create a run 
         const run = await openai.beta.threads.runs.create(threadIdToUse, {
             assistant_id: assistantConfiguration.assistantId,
         });
@@ -142,20 +141,19 @@ async function runCompletionAssistant(req: Request, res: Response) {
 
         // If an assistant message is found, console.log() it
         if (lastMessageForRun) {
-            // console.log(`${lastMessageForRun.content[0].text.value} \n`);
             const content = lastMessageForRun.content[0];
             if ("text" in content) {
                 // It's a MessageContentText
                 console.log(`${content.text.value} \n`);
                 const responseText = content.text.value;
-                // res.json({ message: responseText }); 
-                res.json({ message: responseText, threadId: threadIdToUse }); 
+                // send threadId back as well as message to frontend to update pet profile in database
+                response.json({ message: responseText, threadId: threadIdToUse }); 
               } else {
-                // It's a MessageContentImageFile (handle accordingly)
+                // check if image was sent, not handling image responses currently
                 console.log("Received an image content. Handle appropriately.");
-                res.status(400).json({ error: "Received an image content. Handle appropriately." });
+                response.status(400).json({ error: "Received an image content. Handle appropriately." });
               }
-        } else if (
+        } else if ( // check for failure responses
             !["failed", "cancelled", "expired"].includes(runStatus.status)
         ) {
             console.log("No response received from the assistant.");
@@ -163,7 +161,7 @@ async function runCompletionAssistant(req: Request, res: Response) {
 
     } catch (error) {
         console.error("Error:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+        response.status(500).json({ error: "Internal Server Error" });
     }
 }
 

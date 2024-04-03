@@ -19,7 +19,6 @@ export const createPet = async (request: Request, response: Response) => {
         // not doing anything with generating a password
         // because creating a pet should be tied in already with user being logged in 
 
-        // const pet = Pet.create({
         await Pet.create({
             ownerId: ownerId,
             name: name,

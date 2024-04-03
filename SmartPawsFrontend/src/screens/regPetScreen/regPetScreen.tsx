@@ -117,7 +117,6 @@ const RegPetScreen = () => {
                     ]}
                     style={{ flex: 1 }}
                 >
-            {/* <Box flex={1} px="5.5" mt={"13"}> */}
             <ScrollView keyboardShouldPersistTaps='handled' style={styles.scrollViewStyle}>
                 
                 <View style={styles.centeredView}>
@@ -519,7 +518,7 @@ const savePetProfileToDatabase = async (
 // able to access user's files if they allow it 
 // saving to firebase and generating url to save as image url
 // setImageUrl and setImageIsUploading useState hooks passed in to be able to update url and disable register pet/update pet buttons while uploading image to firebase
-// exporting function to be able to use in updatePetScreen.tsx
+// exporting function to be able to use in updatePetScreen.tsx as well
 export const UploadImage = ({ setImageUrl, setImageIsUploading }: { setImageUrl: (url: string | null) => void, setImageIsUploading: (imageIsUploading: boolean) => void }) => {
     const pickImageAsync = async () => {
       try {
@@ -530,7 +529,6 @@ export const UploadImage = ({ setImageUrl, setImageIsUploading }: { setImageUrl:
             return;
         } 
         else {
-            // let result = await ImagePicker.launchImageLibraryAsync({
             const result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing: false,

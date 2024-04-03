@@ -8,8 +8,7 @@ import React, { useEffect, useState } from "react";
 import { IPet } from "../../types";
 import { BASE_URL } from "../../services/config";
 
-
-// RouteProp provides ability to receive parameters from previous screen petProfileScreen.tsx 
+// RouteProp provides ability to receive parameters from previous screen homeScreen.tsx 
 import { RouteProp } from '@react-navigation/native';
 import { LinearGradient } from "expo-linear-gradient";
 
@@ -18,7 +17,7 @@ type Props = {
 };
 
 const PetProfileScreen: React.FC<Props> = ({ route }) => {
-    const { ownerId, petName } = route.params; // parameters received from petProfileScreen.tsx
+    const { ownerId, petName } = route.params; // parameters received from homeScreen.tsx
 
     const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>();
 
@@ -92,7 +91,6 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 {/* show default empty pet image if none has been selected yet */}
                 <Image
-                    // source={pet?.image !== '' ? { uri: pet?.image } : require('../../../assets/no-image-icon-23485.png')}
                     source={pet?.image !== '' ? { uri: pet?.image } : require('../../../assets/pawprint.png')}
                     style={styles.petImage} 
                     resizeMode="cover"
