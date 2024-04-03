@@ -1,16 +1,8 @@
 import OpenAI from 'openai';
 import { Request, Response } from "express";
 
-import fs from 'fs'; // Import the 'fs' module for file operations
+import fs from 'fs'; // to read assistant.json configuration from file
 import * as process from 'process';
-
-// interface AssistantDetails {
-//     assistantId: string;
-//     name: string;
-//     instructions: string;
-//     tools: { type: string }[]; // Adjust this based on the actual structure
-//     model: string;
-// }
 
 // Ensure OPENAI_API_KEY environment variable is set
 const apiKey = process.env.OPENAI_API_KEY;
@@ -20,8 +12,6 @@ if (!apiKey) {
 }
 
 const openai = new OpenAI({ apiKey });
-
-// const fsPromises = fs.promises;
 
 // commenting out to use new function runCompletionAssistant for configuration with specific assistant and specific thread
 // async function runCompletion(req: Request, res: Response) {
@@ -48,14 +38,13 @@ const openai = new OpenAI({ apiKey });
 //     }
 // }
 
-// just messing with trying to use the assistant api
+// experimenting with using the openai assistant api
 async function runCompletionAssistant(req: Request, res: Response) {
     try {
-        // Extract input from the request body
         const { input } = req.body;
         console.log("Backend input received:", input);
 
-        // parameters passed in in url
+        // get parameters passed in from url
         const { ownerId, petName, threadId } = req.params;
         console.log("ownerId: " + ownerId);
         console.log("petName: " + petName);
@@ -69,14 +58,14 @@ async function runCompletionAssistant(req: Request, res: Response) {
         console.log(assistantConfiguration.name);
         console.log(assistantConfiguration.instructions);
 
-        // threadIdToUse will be created fresh if threadID is nope
+        // threadIdToUse will be created fresh if threadID is "nope"
         // or set to the threadId that was passed in in the url
         let threadIdToUse = "";
 
         // if thread has not been associated with the pet profile
         if(threadId == "nope") {
-            // this is taking care of creating a new thread
-            // if there wasn't already a thread id found for the pet
+            // if there wasn't already a thread id found for the pet "nope"
+            // create a new thread for this pet profile to exclusively own
             const newThread = await openai.beta.threads.create();
             console.log(newThread.id);
             threadIdToUse = newThread.id;
@@ -88,13 +77,13 @@ async function runCompletionAssistant(req: Request, res: Response) {
                 content: input,
             });
             
-            // I do not find a way to upload a file to the assistant like I can manually do
+            // I do not find a way to upload a file to the assistant like I can manually do on the website
             // tried stuff like below, but wasn't able to get to work
             // const dataToWrite = JSON.stringify(input, null, 2); // Convert to pretty-printed JSON
             // fs.writeFileSync(`${petName}-${ownerId}.json`, dataToWrite);
             // console.log('Data written to json file');
         }
-        else {
+        else { // since threadId is not "nope", should be a valid threadId 
             threadIdToUse = threadId;
             console.log("threadIdToUse that would have been already associated with the pet profile: " + threadIdToUse);
         }
@@ -105,29 +94,29 @@ async function runCompletionAssistant(req: Request, res: Response) {
         }
 
         console.log("thread ID to use: " + threadIdToUse);
-        const thread = { id: threadIdToUse };
-        console.log(thread);
+        // const thread = { id: threadIdToUse };
+        // console.log(thread);
         // Pass in the user question into the existing thread
         // thread will either be newly created thread or preexisting thread of same thread id that was passed in url
-        await openai.beta.threads.messages.create(thread.id, {
+        await openai.beta.threads.messages.create(threadIdToUse, {
             role: "user",
             content: input,
         });
 
         // Create a run
-        const run = await openai.beta.threads.runs.create(thread.id, {
+        const run = await openai.beta.threads.runs.create(threadIdToUse, {
             assistant_id: assistantConfiguration.assistantId,
         });
     
         // Immediately fetch run status, which will be "in_progress" or "complete"
-        let runStatus = await openai.beta.threads.runs.retrieve(thread.id, run.id);
+        let runStatus = await openai.beta.threads.runs.retrieve(threadIdToUse, run.id);
         console.log("Run status:", runStatus.status);
 
         // Polling mechanism to see if runStatus is completed
         while (runStatus.status !== "completed") {
             await new Promise((resolve) => setTimeout(resolve, 1000));
             runStatus = await openai.beta.threads.runs.retrieve(
-                thread.id,
+                threadIdToUse,
                 run.id
             );
 
@@ -141,7 +130,7 @@ async function runCompletionAssistant(req: Request, res: Response) {
         }
 
         // Get the last assistant message from the messages array
-        const messages = await openai.beta.threads.messages.list(thread.id);
+        const messages = await openai.beta.threads.messages.list(threadIdToUse);
 
         // Find the last message for the current run
         const lastMessageForRun = messages.data

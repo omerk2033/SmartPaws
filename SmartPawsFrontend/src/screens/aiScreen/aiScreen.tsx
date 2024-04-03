@@ -97,6 +97,7 @@ const AIScreen: React.FC = () => {
     pets.map((pet: IPet) => ({
       // key: pet.id,
       key: pet.name,
+      // key: `${pet.ownerId}-${pet.name}`, // this caused errors not sure why yet...
       value: pet.name
     }))
   );
@@ -104,6 +105,9 @@ const AIScreen: React.FC = () => {
   // Triggered when a pet is selected from the dropdown list
   const onPetSelect = (selectedValue: string) => {
     setSelectedPet(selectedValue);
+    // IS IT SELECTING THE CORRECT PET WHEN YOU SELECT FROM THE DROP DOWN?
+    // UNEXPECTED THINGS PRINTING OUT FOR selectedPet 
+    console.log("selectedPet: " + selectedPet);
   };
 
   // creating a json object instead
@@ -206,6 +210,19 @@ const AIScreen: React.FC = () => {
       console.log("thread id received from backend: " + receivedThreadId);
       // update pet with new thread id 
       pet.threadId = receivedThreadId;
+
+      // log ai response to pet profile submission
+      const aiMessage: Message = {
+          id: `ai-${Date.now()}`,
+          text: responseBody.message, // extract the message text back from the response
+          type: 'ai'
+      };
+      console.log(aiMessage);
+      // const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
+      setMessages(messages => [...messages, aiMessage]);
+
+      // to have chat screen automatically scroll to newest message
+      scrollToBottom();  
 
       // update pet profile in mongodb with new threadId
       await updatePetProfileInDatabase(pet);
@@ -397,7 +414,7 @@ const AIScreen: React.FC = () => {
         <View>
         {/* if assistant cannot recall pet's profile from the thread, ability to send again */}
           <TouchableOpacity style={styles.sendButton} onPress={handleSendPetInfoAgain}>
-            <Text style={styles.sendButtonText}>Upload Pet Profile</Text>
+            <Text style={styles.sendButtonText}>REUPLOAD PET DATA</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
