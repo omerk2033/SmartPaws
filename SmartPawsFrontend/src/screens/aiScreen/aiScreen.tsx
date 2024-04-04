@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View, TextInput, TouchableOpacity, Text, Alert, StyleSheet, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { BASE_URL } from '../../services/config';
+import axiosInstance, { BASE_URL } from '../../services/config';
 import { getAuth } from 'firebase/auth';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { IPet } from 'types';
@@ -19,7 +19,15 @@ const AIScreen: React.FC = () => {
   const [pets, setPets] = useState<IPet[]>([]);
   const [selectedPet, setSelectedPet] = useState('');
   const [petDetails, setPetDetails] = useState<IPet | null>(null);
+  const [uploadPetProfilePressed, setUploadPetProfilePressed] = useState<boolean>(false);
   const isFocused = useIsFocused();
+
+  // to have chat screen automatically scroll to newest message
+  const scrollViewRef = useRef<ScrollView | null>(null);
+
+  const scrollToBottom = () => {
+    scrollViewRef.current?.scrollToEnd({ animated: true });
+  };
 
   // If user navigates to this screen, fetch pets in case they've added a new pet
   useEffect(() => {
@@ -47,7 +55,7 @@ const AIScreen: React.FC = () => {
       setPets(data);
     } catch (error) {
       console.error("Error fetching pets", error);
-      // Handle the error as appropriate
+      // Handle the error as appropriate...
     }
   };
 
@@ -60,9 +68,16 @@ const AIScreen: React.FC = () => {
     }
   }, [selectedPet]);
 
-  // useEffect(() => {
-  //   fetchPets();
-  // }, []);
+  // set pet details if needing to upload pet profile again because assistant seems to have forgot the details
+  useEffect(() => {
+    if (selectedPet && selectedPet !== 'Chat with Gigi') {
+      if(petDetails != null) {
+        sendPetDetailsToAI(petDetails);
+      }
+    } else {
+      setPetDetails(null);
+    }
+  }, [uploadPetProfilePressed]);
 
   // Fetch pet details from backend
   const fetchPetDetails = async (petName: string) => {
@@ -78,9 +93,6 @@ const AIScreen: React.FC = () => {
 
   // Construct the data for the dropdown list
   const data = [{ key: 'Chat with Gigi', value: 'Chat with Gigi' }].concat(
-    // modifying to specify pet type as IPet
-    // and using pet.name as the key 
-    // pets.map((pet: any) => ({
     pets.map((pet: IPet) => ({
       // key: pet.id,
       key: pet.name,
@@ -91,8 +103,11 @@ const AIScreen: React.FC = () => {
   // Triggered when a pet is selected from the dropdown list
   const onPetSelect = (selectedValue: string) => {
     setSelectedPet(selectedValue);
+    // seems to print out one pet selection delayed in the console, but seems to be working fine
+    console.log("selectedPet: " + selectedPet);
   };
 
+  // creating a json object instead
   // Construct a message from the pet details
   const constructPetDetailsMessage = (pet: IPet): string => {
     return `Pet Details:\n`
@@ -114,6 +129,27 @@ const AIScreen: React.FC = () => {
          + `Notes: ${pet.notes}\n`;
   };
 
+  // construct pet profile json object to send to backend
+  // for pet profile to be sent to new thread when 1st asking a question about a pet
+  const petDetailsJsonObj = {
+    name: petDetails?.name,
+    age: petDetails?.age,
+    species: petDetails?.species,
+    breed: petDetails?.breed,
+    color: petDetails?.color,
+    gender: petDetails?.gender,
+    vaccinationRecords: petDetails?.vaccinationRecords,
+    medsSupplements: petDetails?.medsSupplements,
+    allergiesSensitivities: petDetails?.allergiesSensitivities,
+    prevIllnessesInjuries: petDetails?.prevIllnessesInjuries,
+    diet: petDetails?.diet,
+    exerciseHabits: petDetails?.exerciseHabits,
+    indoorOrOutdoor: petDetails?.indoorOrOutdoor,
+    reproductiveStatus: petDetails?.reproductiveStatus,
+    notes: petDetails?.notes,
+    threadId: petDetails?.threadId,
+  }
+
   // Triggered when pet details change
   useEffect(() => {
     if (petDetails) {
@@ -123,6 +159,15 @@ const AIScreen: React.FC = () => {
 
   // Send pet details to the AI
   const sendPetDetailsToAI = async (pet: IPet) => {
+    // if threadId already exists, then don't send all of the pet details to the thread again
+    if(pet.threadId != "") {
+      console.log("there is already a thread associated with this pet so no need to send to assistant");
+      console.log(pet.threadId);
+      return;
+    }
+
+    // a thread id is not associated with this pet profile yet, so proceed
+
     const petMessageContent = constructPetDetailsMessage(pet);
 
     // Log the pet message content
@@ -135,51 +180,194 @@ const AIScreen: React.FC = () => {
     const aiMessage: Message = { id: `ai-${Date.now()}`, text: simulatedAIResponse, type: 'ai' };
     setMessages(messages => [...messages, aiMessage]);
 
+    // if thread id is not associated with this pet, call it nope 
+    // to check in backend if a new thread needs to be created
+    let threadId = pet.threadId;
+    if(threadId == "") {
+      threadId = "nope";
+    }
     try {
-      const response = await fetch(`${BASE_URL}user/chatGPT`, {
+      const petDetailsString = JSON.stringify(petDetailsJsonObj);
+      console.log("petDetailsString: " + petDetailsString);
+      // NOT SURE IF NEED pet.ownerId AND pet.name STILL OR IF JUST threadId IS ALL WE NEED
+      // const response = await fetch(`${BASE_URL}user/chatGPT`, {
+      // const response = await fetch(`${BASE_URL}user/chatGPT/${threadId}`, {
+      const response = await fetch(`${BASE_URL}user/chatGPT/${pet.ownerId}/${pet.name}/${threadId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ input: petMessageContent })
+        // body: JSON.stringify({ input: petMessageContent })
+        body: JSON.stringify({ input: petDetailsString })
       });
 
       if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
+
+      // get newly created thread id from backend and updated pet profile
+      const responseBody = await response.json();
+      const receivedThreadId = responseBody.threadId;
+      console.log("thread id received from backend: " + receivedThreadId);
+      // update pet with new thread id 
+      pet.threadId = receivedThreadId;
+
+      // log ai response to pet profile submission
+      // const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
+      const aiMessage: Message = {
+          id: `ai-${Date.now()}`,
+          text: responseBody.message, // extract the message text back from the response
+          type: 'ai'
+      };
+      console.log(aiMessage);
+      setMessages(messages => [...messages, aiMessage]);
+
+      // to have chat screen automatically scroll to newest message
+      scrollToBottom();  
+
+      // update pet profile in mongodb with new threadId
+      await updatePetProfileInDatabase(pet);
 
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'Failed to send pet details to AI');
     }
   };
-  
 
-  const handleSendRequest = async () => {
+  // for updating thread id when received back from the backend
+  const updatePetProfileInDatabase = async (pet: IPet) => {
+    try {
+        console.log(BASE_URL + "pet/update/" + pet.ownerId + "/" + pet.name);
+        // Put request sent to pet/update route to update preexisting pet profile with updated values
+        const response = await axiosInstance.put(BASE_URL + "pet/update/" + pet.ownerId + "/" + pet.name, pet);
+        console.log("Pet updated in MongoDB");
+        return response.data.pet;
+    } catch (error) {
+        console.log("Error in updatePetProfileInDatabase", error);
+    }
+  };
+
+  const handleSendRequest2 = async () => {
     if (!inputText.trim()) {
       Alert.alert('Error', 'Please enter a message');
       return;
     }
 
     const newMessage: Message = { id: `user-${Date.now()}`, text: inputText, type: 'user' };
-    processUserMessage(newMessage);
+    processUserMessage2(newMessage);
   };
 
-  const processUserMessage = async (message: Message) => {
+  const processUserMessage2 = async (message: Message) => {
     setMessages(messages => [...messages, message]);
     setInputText('');
 
     try {
-      const response = await fetch(`${BASE_URL}user/chatGPT`, {
+      console.log("petDetails.ownerId: " + petDetails?.ownerId);
+      // check if no pet is selected, then use random chatgpt designated thread not associated with a particular pet
+      let threadIdToSend = "";
+      if(petDetails?.ownerId === undefined) {
+        threadIdToSend = process.env.CHATGPT_GEN_THREAD_ID ?? ""; 
+      }
+      else {
+        threadIdToSend = petDetails.threadId;
+      }
+      // NOT SURE IF NEED pet.ownerId AND pet.name STILL OR IF JUST threadId IS ALL WE NEED
+      // const response = await fetch(`${BASE_URL}user/chatGPT`, {
+      const response = await fetch(`${BASE_URL}user/chatGPT/${petDetails?.ownerId}/${petDetails?.name}/${threadIdToSend}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ input: message.text })
       });
 
       if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
-      const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
+      const responseBody = await response.json();
+      // const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
+      const aiMessage: Message = {
+          id: `ai-${Date.now()}`,
+          text: responseBody.message, // extract the message text back from the response
+          type: 'ai'
+      };
+      console.log(aiMessage);
       setMessages(messages => [...messages, aiMessage]);
+      // to have chat screen automatically scroll to newest message
+      scrollToBottom();  
+
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'Failed to send request');
     }
   };
+
+  // if assistant cannot recall pet's profile from the thread, ability to send again
+  const handleSendPetInfoAgain = async () => {
+    setUploadPetProfilePressed(true);
+    if (petDetails != null) {
+      sendPetInfoAgain(petDetails);
+    }
+  }
+
+  // send pet profile to thread again without creating a new thread
+  const sendPetInfoAgain = async (pet: IPet) => {
+    if(pet.threadId == "") {
+      console.log("should not send pet info again if haven't sent before and don't have a thread id already");
+      return;
+    }
+    const petMessageContent = constructPetDetailsMessage(pet);
+    console.log("Sending pet details to AI:", petMessageContent);
+
+    try {
+      const petDetailsString = JSON.stringify(petDetailsJsonObj);
+      console.log("petDetailsString: " + petDetailsString);
+      const response = await fetch(`${BASE_URL}user/chatGPT/${pet.ownerId}/${pet.name}/${pet.threadId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ input: petDetailsString })
+      });
+
+      if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
+
+      const responseBody = await response.json();
+      const aiMessage: Message = {
+          id: `ai-${Date.now()}`,
+          text: responseBody.message, // extract the message text back from the response
+          type: 'ai'
+      };
+      console.log(aiMessage);
+      setMessages(messages => [...messages, aiMessage]);
+      // to have chat screen automatically scroll to newest message
+      scrollToBottom();  
+
+    } catch (error) {
+      console.error('Error:', error);
+      Alert.alert('Error', 'Failed to send pet details to AI');
+    }
+  }
+  // ORIGINAL VERSION
+  // const handleSendRequest = async () => {
+  //   if (!inputText.trim()) {
+  //     Alert.alert('Error', 'Please enter a message');
+  //     return;
+  //   }
+
+  //   const newMessage: Message = { id: `user-${Date.now()}`, text: inputText, type: 'user' };
+  //   processUserMessage(newMessage);
+  // };
+
+  // const processUserMessage = async (message: Message) => {
+  //   setMessages(messages => [...messages, message]);
+  //   setInputText('');
+
+  //   try {
+  //     const response = await fetch(`${BASE_URL}user/chatGPT`, {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ input: message.text })
+  //     });
+
+  //     if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
+  //     const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
+  //     setMessages(messages => [...messages, aiMessage]);
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //     Alert.alert('Error', 'Failed to send request');
+  //   }
+  // };
 
   return (
     <LinearGradient
@@ -198,7 +386,7 @@ const AIScreen: React.FC = () => {
             placeholder='Select a pet...' 
           />
         </View>
-        <ScrollView contentContainerStyle={styles.chatContainer}>
+        <ScrollView contentContainerStyle={styles.chatContainer} ref={scrollViewRef} >
           {messages.map((message) => (
             <Text key={message.id} style={[
               styles.message,
@@ -216,8 +404,15 @@ const AIScreen: React.FC = () => {
             value={inputText}
             placeholderTextColor="#666"
           />
-          <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest}>
+          {/* <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest}> */}
+          <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest2}>
             <Text style={styles.sendButtonText}>Send to Gigi</Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+        {/* if assistant cannot recall pet's profile from the thread, ability to send again */}
+          <TouchableOpacity style={styles.sendButton} onPress={handleSendPetInfoAgain}>
+            <Text style={styles.sendButtonText}>REUPLOAD PET DATA</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>

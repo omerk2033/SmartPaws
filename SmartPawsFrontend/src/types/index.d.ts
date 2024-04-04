@@ -23,6 +23,7 @@ interface IPet {
     reproductiveStatus: string
     image: string
     notes: string
+    threadId: string
 }
 
 export interface IAuthenticatedUser {

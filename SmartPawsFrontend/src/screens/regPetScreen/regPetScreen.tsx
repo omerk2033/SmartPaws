@@ -28,7 +28,7 @@ const RegPetScreen = () => {
     const auth = getAuth();  
     const currentUser = auth.currentUser;
     const ownerId = currentUser ? currentUser.uid : "";
-
+    const threadId = "";
     // need to be able to useState in order to update the pet profile image url when 
     // received from user selecting picture to upload outside of react hook form
     const [imageUrl, setImageUrl] = useState<string | null>("");
@@ -60,6 +60,8 @@ const RegPetScreen = () => {
             reproductiveStatus: "",
             image: "",
             notes: "",
+            // adding threadId for pet's specific thread with openai assistant
+            threadId: threadId, 
         },
     });
     
@@ -82,7 +84,7 @@ const RegPetScreen = () => {
                 medsSupplements, allergiesSensitivities, prevIllnessesInjuries,
                 diet, exerciseHabits, 
                 indoorOrOutdoor, reproductiveStatus, image,
-                notes  
+                notes, threadId 
             } = data;
 
             await savePetProfileToDatabase(ownerId, name, age, 
@@ -91,7 +93,7 @@ const RegPetScreen = () => {
                 medsSupplements, allergiesSensitivities, prevIllnessesInjuries,
                 diet, exerciseHabits, 
                 indoorOrOutdoor, reproductiveStatus, image,
-                notes);
+                notes, threadId);
 
             // reset all of the fields of the form now that pet profile has been saved to database
             reset(); 
@@ -115,7 +117,6 @@ const RegPetScreen = () => {
                     ]}
                     style={{ flex: 1 }}
                 >
-            {/* <Box flex={1} px="5.5" mt={"13"}> */}
             <ScrollView keyboardShouldPersistTaps='handled' style={styles.scrollViewStyle}>
                 
                 <View style={styles.centeredView}>
@@ -481,6 +482,7 @@ const savePetProfileToDatabase = async (
     reproductiveStatus: string,
     image: string,
     notes: string,
+    threadId: string,
 ) => {
     try {
         const response = await axiosInstance.post("pet/create", {
@@ -501,6 +503,7 @@ const savePetProfileToDatabase = async (
             reproductiveStatus,
             image,
             notes,
+            threadId,
         });
         console.log("Pet registered to MongoDB");
         return response.data.pet;
@@ -515,7 +518,7 @@ const savePetProfileToDatabase = async (
 // able to access user's files if they allow it 
 // saving to firebase and generating url to save as image url
 // setImageUrl and setImageIsUploading useState hooks passed in to be able to update url and disable register pet/update pet buttons while uploading image to firebase
-// exporting function to be able to use in updatePetScreen.tsx
+// exporting function to be able to use in updatePetScreen.tsx as well
 export const UploadImage = ({ setImageUrl, setImageIsUploading }: { setImageUrl: (url: string | null) => void, setImageIsUploading: (imageIsUploading: boolean) => void }) => {
     const pickImageAsync = async () => {
       try {
@@ -526,7 +529,6 @@ export const UploadImage = ({ setImageUrl, setImageIsUploading }: { setImageUrl:
             return;
         } 
         else {
-            // let result = await ImagePicker.launchImageLibraryAsync({
             const result = await ImagePicker.launchImageLibraryAsync({
                 mediaTypes: ImagePicker.MediaTypeOptions.All,
                 allowsEditing: false,
