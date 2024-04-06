@@ -16,7 +16,7 @@ import UserProfileScreen from "../screens/userProfileScreen/userProfileScreen";
 import { MaterialIcons } from '@expo/vector-icons'; // Import icons from the library
 import { useContext } from 'react';
 import { NavigationContext } from "./navigationContext";
-import { View, Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 
 const Stack = createNativeStackNavigator<HomeStackParamList>()
 

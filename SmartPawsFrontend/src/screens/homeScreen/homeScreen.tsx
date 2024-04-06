@@ -25,9 +25,10 @@ const HomeScreen = () => {
 
     // navigate to map screen
     // const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
-    const navigateToMapScreen = () => {
-        homeStackNavigation.navigate('Map');
-    }
+    // moved to bottom tab navigator
+    // const navigateToMapScreen = () => {
+    //     homeStackNavigation.navigate('Map');
+    // }
     
     const [user, setUser] = useState<IUser>();
     const [pets, setPets] = useState<IPet[]>([]);

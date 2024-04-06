@@ -2,12 +2,13 @@ import React from "react";
 import { Text, TouchableOpacity, StyleSheet, ScrollView, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { HomeStackParamList } from "../../navigation/types";
+// import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+// import { HomeStackParamList } from "../../navigation/types";
 import { getAuth, signOut } from 'firebase/auth';
 import { LinearGradient } from "expo-linear-gradient";
+import { sendPasswordResetEmail } from 'firebase/auth';
 
-type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'Settings'>
+// type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'Settings'>
 
 // OptionsList component
 const OptionsList: React.FC = () => {
@@ -39,7 +40,7 @@ const OptionsList: React.FC = () => {
 };
 
 const SettingsScreen = () => {
-    const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
+    // const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
     const auth = getAuth();
 
     const handleSignOut = async () => {
@@ -47,6 +48,21 @@ const SettingsScreen = () => {
             await signOut(auth);
         } catch (error) {
             console.log("Error signing out of firebase:", error);
+        }
+    };
+
+    // firebase auth used to send password reset email to user's registered email address
+    const handleResetPassword = async () => {
+        try {
+            const currentUser = auth.currentUser;
+            if (currentUser && currentUser.email) {
+                await sendPasswordResetEmail(auth, currentUser.email);
+                alert('Password reset email sent successfully.');
+            } else {
+                alert('Please enter your email.');
+            }
+        } catch (error) {
+            alert('An error occurred while sending the password reset email.');
         }
     };
 
@@ -61,6 +77,11 @@ const SettingsScreen = () => {
 
                 <OptionsList />
 
+                {/* button to reset password, sends password reset link to user's email */}
+                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Button title="Reset Password" onPress={handleResetPassword} />
+                    <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold', textAlign: 'center', paddingHorizontal: 30 }}>A link will be sent to your registered email to reset your password</Text>
+                </View>
                 <TouchableOpacity style={styles.logOutButton} onPress={handleSignOut}>
                     {/* Ensure text is inside a <Text> component */}
                     <Text style={styles.logOutButtonText}>Log Out</Text>
