@@ -12,6 +12,7 @@ import OnBoarding1 from "../screens/onBoardScreens/onBoard1";
 import OnBoarding2 from "../screens/onBoardScreens/onBoard2";
 import OnBoarding3 from "../screens/onBoardScreens/onBoard3";
 import MapScreen from "../screens/mapScreen/mapScreen";
+import UserProfileScreen from "../screens/userProfileScreen/userProfileScreen";
 import { MaterialIcons } from '@expo/vector-icons'; // Import icons from the library
 import { useContext } from 'react';
 import { NavigationContext } from "./navigationContext";
@@ -119,6 +120,10 @@ const HomeStackNavigator = () => {
                 }}
                 component={MapScreen}
             />
+            <Stack.Screen name={"UserProfile"} 
+            component={UserProfileScreen} 
+            />
+
 
         </Stack.Navigator>
     )

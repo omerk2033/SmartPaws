@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import { Text, TouchableOpacity, StyleSheet, ScrollView, FlatList } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -8,6 +8,35 @@ import { getAuth, signOut } from 'firebase/auth';
 import { LinearGradient } from "expo-linear-gradient";
 
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'Settings'>
+
+// OptionsList component
+const OptionsList: React.FC = () => {
+    const navigation = useNavigation<HomeStackNavigationProps>();
+
+    const listData = [
+        { id: '1', title: 'User Profile', screen: 'UserProfile' },
+        { id: '2', title: 'Inactive Pets', screen: 'InactivePets' },
+        { id: '3', title: 'Terms of Use', screen: 'TermsOfUse' },
+    ];
+
+    const renderItem = ({ item }: { item: typeof listData[0] }) => (
+        <TouchableOpacity
+            style={styles.optionItem}
+            onPress={() => navigation.navigate(item.screen as any)}
+        >
+            <Text style={styles.optionText}>{item.title}</Text>
+            <Text style={styles.optionArrow}>→</Text>
+        </TouchableOpacity>
+    );
+
+    return (
+        <FlatList
+            data={listData}
+            renderItem={renderItem}
+            keyExtractor={item => item.id}
+        />
+    );
+};
 
 const SettingsScreen = () => {
     const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
@@ -27,13 +56,13 @@ const SettingsScreen = () => {
                 colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
                 style={styles.linearGradient}
             >
-                <ScrollView
-                    keyboardShouldPersistTaps='handled'
-                    contentContainerStyle={styles.scrollViewContent}
-                >
-                    <Text style={styles.title}>Settings Screen</Text>
-                </ScrollView>
+                {/* Ensure text is inside a <Text> component */}
+                <Text style={styles.title}>Settings Screen</Text>
+
+                <OptionsList />
+
                 <TouchableOpacity style={styles.logOutButton} onPress={handleSignOut}>
+                    {/* Ensure text is inside a <Text> component */}
                     <Text style={styles.logOutButtonText}>Log Out</Text>
                 </TouchableOpacity>
             </LinearGradient>
@@ -70,6 +99,21 @@ const styles = StyleSheet.create({
     logOutButtonText: {
         color: 'white',
         textAlign: 'center',
+    },
+    optionItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#cccccc',
+    },
+    optionText: {
+        fontSize: 18,
+        color: 'white', // Adjust as per your theme
+    },
+    optionArrow: {
+        fontSize: 18,
+        color: 'white',
     },
 });
 
