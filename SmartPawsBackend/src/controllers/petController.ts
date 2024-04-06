@@ -1,5 +1,6 @@
 import { Request, Response } from "express"
 import Pet from "../models/petModel"
+import { EventEmitter } from 'events';
 
 export const createPet = async (request: Request, response: Response) => {
     try {
@@ -47,6 +48,35 @@ export const createPet = async (request: Request, response: Response) => {
         throw error
     }
 }
+
+export const petEventEmitter = new EventEmitter();
+// Toggle the flaggedForConcern
+export const petConcernToggle = async (request: Request, response: Response) => {
+    try {
+        const { ownerId, petName } = request.params;
+        const pet = await Pet.findOne({ ownerId, name: petName });
+
+        if (!pet) {
+            return response.status(404).send("Pet not found");
+        }
+
+        pet.flaggedForConcern = !pet.flaggedForConcern;
+        await pet.save();
+
+        if (pet.flaggedForConcern) {
+            // Emitting an event indicating a pet has been flagged for concern
+            petEventEmitter.emit('petConcernToggled', pet);
+        }
+
+        return response.status(200).json({ 
+            message: "Pet flagged status updated successfully", 
+            flaggedForConcern: pet.flaggedForConcern 
+        });
+    } catch (error) {
+        console.log("Error in petConcernToggle", error);
+        return response.status(500).send(error);
+    }
+};
 
 // getPets is called in petRoutes.ts in the get request
 // sends request with ownerId specified like http://localhost:1337/pet/get/123456

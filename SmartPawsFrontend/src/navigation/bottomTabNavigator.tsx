@@ -8,7 +8,7 @@ import theme from "../utils/theme/style";
 import { MaterialIcons } from '@expo/vector-icons'; // Import icons from the library
 import aiScreen from "../screens/aiScreen/aiScreen";
 import journalScreen from "../screens/journalScreen/journalScreen";
-import settingsScreen from "../screens/settingsScreen/settingsScreen";
+import mapScreen from "../screens/mapScreen/mapScreen";
 
 const Tab = createBottomTabNavigator<RootBottomTabParamList>();
 
@@ -55,13 +55,13 @@ const BottomTabNavigator = () => {
                 }}
             />
             <Tab.Screen
-                name="SettingsStack"
-                component={settingsScreen}
+                name="MapStack"
+                component={mapScreen}
                 options={{
-                    title: "Settings",
+                    title: "Locate Vet",
                     headerShown: false,
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialIcons name="settings" color={color} size={size} />
+                        <MaterialIcons name="map" color={color} size={size} />
                     ),
                 }}
             />

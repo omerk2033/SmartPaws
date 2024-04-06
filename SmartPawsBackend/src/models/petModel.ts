@@ -62,6 +62,10 @@ const petSchema=new mongoose.Schema({
     threadId: {
         type: String,
         // threadId is the id of the openai assistant thread specific to the pet 
+    },
+    flaggedForConcern: {
+        type: Boolean,
+        default: false, // This field is false by default, can be toggled to true
     }
 
 },

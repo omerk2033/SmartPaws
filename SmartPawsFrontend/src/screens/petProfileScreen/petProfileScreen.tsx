@@ -1,10 +1,10 @@
 import { Box,  Text } from "../../utils/theme/style";
 import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
-import { Alert, TouchableOpacity, ScrollView, View, Image, StyleSheet } from "react-native";
+import { Alert, Animated, TouchableOpacity, ScrollView, View, Image, StyleSheet } from "react-native";
 import { HomeScreenNavigationType, HomeStackParamList } from "../../navigation/types";
 
-import React, { useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { IPet } from "../../types";
 import { BASE_URL } from "../../services/config";
 
@@ -17,15 +17,50 @@ type Props = {
 };
 
 const PetProfileScreen: React.FC<Props> = ({ route }) => {
-    const { ownerId, petName } = route.params; // parameters received from homeScreen.tsx
-
+    const { ownerId, petName } = route.params;
     const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>();
 
-    // get pet object from mongo to display all of their characteristics
-    const [pet, setPet] = useState<IPet>();
-
-    // isLoading used to make sure pet has been received in fetchPet before rendering pet info
+    const [pet, setPet] = useState<IPet | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    
+    // Slider animation value, initially 0 or 1 based on the pet's flaggedForConcern
+    const sliderAnim = useRef(new Animated.Value(pet?.flaggedForConcern ? 1 : 0)).current;
+
+
+    // Function that toggles the 'flaggedForConcern' state of the pet
+    const toggleConcernFlag = async () => {
+        // Determine the new value for the flaggedForConcern state
+        const newValue = pet?.flaggedForConcern ? 0 : 1; // If flagged, animate to 0, if not, animate to 1
+    
+        // Start the animation for the slider
+        Animated.timing(sliderAnim, {
+            toValue: newValue,
+            duration: 300,
+            useNativeDriver: true,
+        }).start();
+    
+        // Call the backend to toggle the `flaggedForConcern` status
+        try {
+            const response = await fetch(`${BASE_URL}pet/toggleConcern/${ownerId}/${petName}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            console.log('Success:', data);
+            
+            // Update local pet state with the new `flaggedForConcern` value
+            setPet(prevPet => {
+                if (!prevPet) {
+                    throw new Error("Pet data is not available");
+                }
+                return { ...prevPet, flaggedForConcern: !prevPet.flaggedForConcern };
+            });
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    };
 
     const fetchPet = async (ownerId: string, petName: string) => {
         try {
@@ -69,9 +104,29 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
         fetchPet(ownerId, petName);
     }, [ownerId, petName]);
 
+    useEffect(() => {
+        // Set the slider's initial position based on the pet's flaggedForConcern state
+        sliderAnim.setValue(pet?.flaggedForConcern ? 1 : 0);
+      }, [pet?.flaggedForConcern]);
+
     if (isLoading) {
         return <Text>Loading...</Text>;
     }
+
+
+    const trackWidth = 150; // The total width of the slider track
+    const thumbWidth = 80; // The width of the slider thumb
+    const spaceForThumbToMove = trackWidth - thumbWidth;
+    
+    const sliderMove = sliderAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0, spaceForThumbToMove], // Correctly updated for thumb in bounds
+    });
+      const sliderColor = sliderAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: ['rgba(255, 255, 255, 0.3)', '#E8A317'],
+      });
+      
 
     return(
         <SafeAreaWrapper>
@@ -125,6 +180,19 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
         <Text style={styles.buttonText}>Update Profile</Text>
     </TouchableOpacity>
 </Box>
+<Box style={styles.centeredView}>
+        {/* This is the track of the switch */}
+        <View style={styles.sliderTrack}>
+            {/* This is the animated part of the switch */}
+            <Animated.View style={[styles.sliderThumb, { transform: [{ translateX: sliderMove }], backgroundColor: sliderColor }]} />
+        </View>
+        {/* Touchable area to trigger the toggle */}
+        <TouchableOpacity onPress={toggleConcernFlag} style={styles.touchableArea}>
+            <Text style={styles.buttonText}>
+                {pet?.flaggedForConcern ? "Concern Flagged" : "Flag Concern"}
+            </Text>
+        </TouchableOpacity>
+    </Box>
 
 <Box mb="6" style={styles.centeredView}>
     <TouchableOpacity
@@ -145,7 +213,7 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
                 ]
             );
         }}
-        style={[styles.button, { backgroundColor: "red" }]} // Apply custom button style
+        style={[styles.button, { backgroundColor: "#800000" }]} // Apply custom button style
     >
         <Text style={styles.buttonText}>Remove Profile</Text>
     </TouchableOpacity>
@@ -159,12 +227,12 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
 }
 
 const styles = StyleSheet.create({
-    petImage: {
-      width: 200, 
-      height: 200, 
-      resizeMode: "cover", 
-      borderRadius: 10, 
-    },
+        petImage: {
+        width: 150, 
+        height: 150, 
+        resizeMode: "cover", 
+        borderRadius: 10, 
+        },
         scrollViewStyle: {
             flex: 1,
             paddingHorizontal: 5.5,
@@ -201,6 +269,27 @@ const styles = StyleSheet.create({
         buttonText: {
             color: '#fff',
             fontSize: 16,
+        },
+        sliderTrack: {
+            width: 150, // Use the trackWidth defined above
+            height: 40, // Adjust as needed
+            borderRadius: 30, // Typically half the height for a rounded effect
+            backgroundColor: 'grey', // Background color of the track
+            // Include padding if necessary
+          },
+          sliderThumb: {
+            width: 80, // Use the thumbWidth defined above
+            height: 40, // Adjust as needed
+            borderRadius: 30, // Typically half the height for a rounded effect
+            backgroundColor: 'green', // Background color of the thumb
+            position: 'absolute',
+          },
+        touchableArea: {
+            position: 'absolute', // Position over the track
+            width: '100%', // Same width as the track
+            height: '100%', // Same height as the track
+            justifyContent: 'center', // Center content vertically
+            alignItems: 'center', // Center content horizontally
         },
   });
   

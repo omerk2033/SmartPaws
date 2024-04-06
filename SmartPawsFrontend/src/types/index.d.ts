@@ -24,6 +24,7 @@ interface IPet {
     image: string
     notes: string
     threadId: string
+    flaggedForConcern: boolean;
 }
 
 export interface IAuthenticatedUser {

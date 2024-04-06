@@ -12,9 +12,10 @@ import OnBoarding1 from "../screens/onBoardScreens/onBoard1";
 import OnBoarding2 from "../screens/onBoardScreens/onBoard2";
 import OnBoarding3 from "../screens/onBoardScreens/onBoard3";
 import MapScreen from "../screens/mapScreen/mapScreen";
-
+import { MaterialIcons } from '@expo/vector-icons'; // Import icons from the library
 import { useContext } from 'react';
 import { NavigationContext } from "./navigationContext";
+import { View, Text, TouchableOpacity } from "react-native";
 
 const Stack = createNativeStackNavigator<HomeStackParamList>()
 
@@ -28,7 +29,19 @@ const HomeStackNavigator = () => {
         // or is logging in as a preexisting user
         // the initialScreen value will be either Onboard1 or Home 
         // and so will dictate the name of the 1st screen that gets loaded on the home stack
-        <Stack.Navigator initialRouteName={initialScreen as keyof HomeStackParamList}>
+            <Stack.Navigator
+            initialRouteName={initialScreen as keyof HomeStackParamList}
+            screenOptions={({ navigation }) => ({
+                        headerRight: () => (
+                            <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={{ flexDirection: 'row', alignItems: 'center' }}>
+                            <MaterialIcons name="settings" size={25} color="grey" />
+                            <Text style={{ color: "grey", marginLeft: 4 }}>Settings</Text>
+                        </TouchableOpacity>
+                    ),
+                        headerTitleAlign: 'center', // Centers the header title like in the tab navigator
+                        headerBackTitleVisible: false, // Hides the back button title for iOS
+                    })}
+                >
             <Stack.Screen
                 name={"Onboard1"}
                 options={{

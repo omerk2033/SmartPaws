@@ -23,7 +23,7 @@ export type RootBottomTabParamList = {
     HomeStack: NavigatorScreenParams<HomeStackParamList>
     AiStack: NavigatorScreenParams<AiStackParamList>
     JournalStack: NavigatorScreenParams<JournalStackParamList>
-    SettingsStack: NavigatorScreenParams<SettingsStackParamList>
+    MapStack: NavigatorScreenParams<SettingsStackParamList>
 }
 
 export type HomeStackParamList = {

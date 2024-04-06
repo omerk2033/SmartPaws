@@ -6,8 +6,15 @@ import { StyleSheet, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 
 import * as Location from 'expo-location'; // to get user's current location
+import { useNavigation } from '@react-navigation/native';
+import { HomeStackParamList } from 'navigation/types';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+
+type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'Map'>
+
 
 const MapScreen: React.FC = () => {
+    const homeStackNavigation = useNavigation<HomeStackNavigationProps>();  
     // using region to set the region based on how large is needed 
     // for all of the vet offices returned from google maps api
     const [region, setRegion] = useState({

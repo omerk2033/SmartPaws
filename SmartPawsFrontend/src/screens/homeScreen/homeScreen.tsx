@@ -12,8 +12,6 @@ import { BASE_URL } from "../../services/config";
 import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation, useIsFocused } from "@react-navigation/native";
 
-// import emptyPet from "../../../assets/no-image-icon-23485.png";
-
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'RegPet'>
 
 const HomeScreen = () => {
@@ -159,15 +157,6 @@ const HomeScreen = () => {
                 </TouchableOpacity>
             </View>
                 ))}
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                <TouchableOpacity 
-                    onPress={navigateToMapScreen} 
-                    style={[styles.button, { backgroundColor: "#201A64" }]} // Use your styled button
-                >
-                    <Text style={styles.buttonText}>Locate Nearby Vet</Text>
-                </TouchableOpacity>
-            </View>
-
             </ScrollView>
             </LinearGradient>
         </SafeAreaWrapper>
