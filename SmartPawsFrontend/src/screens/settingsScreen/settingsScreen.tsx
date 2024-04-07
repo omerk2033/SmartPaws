@@ -1,12 +1,11 @@
 import React from "react";
-import { Text, TouchableOpacity, StyleSheet, ScrollView, FlatList, View, Button } from "react-native";
+import { Text, TouchableOpacity, StyleSheet, FlatList, View, Button } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
+import { getAuth, signOut, sendPasswordResetEmail } from 'firebase/auth';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { HomeStackParamList } from "../../navigation/types";
-import { getAuth, signOut } from 'firebase/auth';
 import { LinearGradient } from "expo-linear-gradient";
-import { sendPasswordResetEmail } from 'firebase/auth';
 
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'Settings'>
 

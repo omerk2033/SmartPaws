@@ -6,7 +6,7 @@ import { Box,  Text } from "../../utils/theme/style";
 import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import React, { useState } from "react"
-import { ScrollView, TouchableOpacity, StyleSheet, View, } from "react-native";
+import { ScrollView, TouchableOpacity, StyleSheet, View, Alert, } from "react-native";
 import { HomeScreenNavigationType } from "navigation/types";
 import { Controller, useForm } from "react-hook-form";
 import { IPet } from "../../types";
@@ -64,6 +64,11 @@ const RegPetScreen = () => {
             threadId: threadId, 
         },
     });
+
+    const onError = (errors: any, e: any) => {
+        console.log(errors, e);
+        Alert.alert("Submission Failed", "Please check your input and try again.");
+    };
     
     const onSubmit = async (data: IPet) => {
         // imageUrl was set in UploadImage function
@@ -392,7 +397,7 @@ const RegPetScreen = () => {
                     <UploadImage setImageUrl={setImageUrl} setImageIsUploading={setImageIsUploading}/>
                 </View>
                 <TouchableOpacity
-                    onPress={handleSubmit(onSubmit)}
+                    onPress={handleSubmit(onSubmit, onError)}
                 disabled={imageIsUploading}
                 style={[
                     styles.button,

@@ -11,9 +11,10 @@ import { signInWithEmailAndPassword } from "firebase/auth"; // Correct import
 import { FIREBASE_AUTH } from "../../services/firebase";
 import { LinearGradient } from "expo-linear-gradient";
 
-import { useContext } from 'react';
+import { useContext } from "react";
 import { NavigationContext } from "../../navigation/navigationContext";
 
+import { Alert } from "react-native";
 
 interface SignInScreenProps { // Add interface for props
 }
@@ -148,6 +149,7 @@ const loginWithEmailAndPassword = async (email: string, password: string) => {
         // Navigate to the next screen after successful login
     } catch (error) {
         console.log('Error signing in:');
+        Alert.alert("Login Failed", "An error occurred during login. Please check your credentials and try again.");
         throw error; // Re-throw the error so that it can be caught in the onSubmit function
     }
 };

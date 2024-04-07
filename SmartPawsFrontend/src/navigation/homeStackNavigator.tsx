@@ -30,7 +30,7 @@ const HomeStackNavigator = () => {
         // or is logging in as a preexisting user
         // the initialScreen value will be either Onboard1 or Home 
         // and so will dictate the name of the 1st screen that gets loaded on the home stack
-            <Stack.Navigator
+        <Stack.Navigator
             initialRouteName={initialScreen as keyof HomeStackParamList}
             screenOptions={({ navigation }) => ({
                         headerRight: () => (
