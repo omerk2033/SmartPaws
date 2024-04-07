@@ -2,7 +2,7 @@ import { Box, Text } from "../../utils/theme/style";
 import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AuthScreenNavigationType } from "../../navigation/types";
-import { Pressable, TouchableWithoutFeedback, Keyboard, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import { Pressable, TouchableWithoutFeedback, Keyboard, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform, ScrollView, Alert } from "react-native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { Controller, useForm } from "react-hook-form";
 import { IUser } from "../../types";
@@ -50,7 +50,7 @@ const SignUpScreen = () => {
             await signUpWithEmailAndPassword(email, password, name);
             // navigateToSignInScreen() // Removed to avoid navigation until user is registered in MongoDB
         } catch (error) {
-            console.log("Error here on submit", error);
+            Alert.alert("Submission Failed", "Please check your input and try again.");
         }
     }
 
@@ -174,8 +174,11 @@ const signUpWithEmailAndPassword = async (email: string, password: string, name:
         console.log("User registered to MongoDB");
         // Navigate to the next screen after successful login
     } catch (error) {
-        console.error('Error signing in or updating profile:', error);
+        console.log("Error registering user", error);
         // Handle error, maybe show a message to the user
+        throw error;
+
+
     }
 }
 // Takes UID provided by firebase API then hits backend API to store information in MongoDB database.

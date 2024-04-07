@@ -61,12 +61,27 @@ const MapScreen: React.FC = () => {
     const searchRadius: number = 48280; // approximately 30 miles in meters
 
     // fetch list of veterinarians within a hardcoded radius using google maps api
+    // const getVeterinarians = async (latitude: number, longitude: number) => {
+    //     const response = await fetch(
+    //       `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${searchRadius}&type=veterinary_care&key=${process.env.GOOGLE_MAPS_API_KEY}`
+    //     );
+    //     const data = await response.json();
+    //     return data.results;
+    // };
+
+    // test something for me really quick, please! replace your getVeterinarians with this and see what the console outputs on your end:
+    // fetch list of veterinarians within a hardcoded radius using google maps api
     const getVeterinarians = async (latitude: number, longitude: number) => {
-        const response = await fetch(
-          `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${searchRadius}&type=veterinary_care&key=${process.env.GOOGLE_MAPS_API_KEY}`
-        );
+      const apiUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${searchRadius}&type=veterinary_care&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+      console.log("API URL: ", apiUrl); // Log the complete API URL
+      try {
+        const response = await fetch(apiUrl);
         const data = await response.json();
+        console.log('API Response:', data); // Log the API response
         return data.results;
+      } catch (error) {
+        console.error('Error fetching veterinarians:', error);
+      }
     };
 
     // get current user's location when page initially loads
@@ -86,6 +101,7 @@ const MapScreen: React.FC = () => {
                 latitudeDelta: 0.0922,
                 longitudeDelta: 0.0421,
             };
+            console.log(userLocation.current);
             // set locationFetched to trigger next useEffect
             setLocationFetched(true);
         })();

@@ -28,6 +28,17 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "appEasAddin": "appEasAddIn.json"
+    "appEasAddin": "appEasAddIn.json",
+    "extra": {
+      "eas": {
+        "projectId": "8760d4a7-d868-4d99-bc48-1205a28d0f67"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/8760d4a7-d868-4d99-bc48-1205a28d0f67"
+    }
   }
 }

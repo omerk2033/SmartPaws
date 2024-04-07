@@ -49,11 +49,16 @@ const SignInScreen: React.FC<SignInScreenProps> = () => { // Add props parameter
         },
     });
 
+    const onError = (errors: any, e: any) => {
+        console.log(errors, e);
+        Alert.alert("Submission Failed", "Please check your input and try again.");
+    };
 
     const onSubmit = async (data: IUser) => {
         try {
             const { email, password } = data;
             await loginWithEmailAndPassword(email, password);
+            console.log("hello there?");
             // No need to navigate here, navigation happens after successful login in loginWithEmailAndPassword
         } catch (error) {
             console.log("Error submitting form:");
@@ -126,7 +131,7 @@ const SignInScreen: React.FC<SignInScreenProps> = () => { // Add props parameter
                     </Pressable>
                     <Box mb="5.5" />
                     <TouchableOpacity
-                            onPress={handleSubmit(onSubmit)}
+                            onPress={handleSubmit(onSubmit, onError)}
                             style={styles.loginButton}>
                             <Text style={styles.loginButtonText}>Log in</Text>
                     </TouchableOpacity>
