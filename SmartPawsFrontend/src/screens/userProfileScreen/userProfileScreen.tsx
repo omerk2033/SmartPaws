@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { getAuth } from 'firebase/auth';
+import { getAuth, updateEmail, updateProfile } from 'firebase/auth';
 import { BASE_URL } from '../../services/config';
 import SafeAreaWrapper from '../../components/shared/safeAreaWrapper';
+
 
 const UserProfileScreen = () => {
     const [user, setUser] = useState({ name: '', email: '' });
@@ -32,13 +33,45 @@ const UserProfileScreen = () => {
         fetchUserData();
     }, []);
 
-    const handleSave = async () => {
-        // Implement save logic here
-        // Send updated user data to your backend
-        // This could be a PATCH or PUT request to `${BASE_URL}user/update/${user.id}`
-        // Depending on your API's implementation
+    const updateUserInMongoDB = async (uid: string, name: string, email: string) => {
+        try {
+            const response = await fetch(`${BASE_URL}user/update/${uid}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name,
+                    email,
+                }),
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const data = await response.json();
+            console.log('User updated in MongoDB:', data);
+        } catch (error) {
+            console.error('Error updating user in MongoDB:', error);
+            throw error;
+        }
+    };
 
-        Alert.alert('Profile Saved', 'Your profile has been updated successfully.');
+    const handleSave = async () => {
+        try {
+            const auth = getAuth();
+            const currentUser = auth.currentUser;
+    
+            if (currentUser) {
+                await updateUserInMongoDB(currentUser.uid, user.name, user.email);
+            }
+    
+            Alert.alert('Profile Saved', 'Your profile has been updated successfully.');
+        } catch (error) {
+            console.error('Error updating profile:', error);
+            Alert.alert('Error', 'Failed to update profile.');
+        }
     };
 
     if (loading) {
@@ -57,8 +90,9 @@ const UserProfileScreen = () => {
 
                 <Text style={styles.label}>Email</Text>
                 <TextInput
-                    style={styles.input}
+                    style={[styles.input, { backgroundColor: '#f0f0f0', color: '#777' }]}
                     value={user.email}
+                    editable={false}
                     onChangeText={(text) => setUser({...user, email: text})}
                     keyboardType="email-address"
                 />
@@ -99,3 +133,4 @@ const styles = StyleSheet.create({
 });
 
 export default UserProfileScreen;
+

@@ -84,3 +84,22 @@ export const getUser = async (request: Request, response: Response) => {
         throw error
     }
 }
+
+// API to handle updating user details
+export const updateUser = async (request: Request, response: Response) => {
+    try {
+        const { uid } = request.params;
+        const { name, email } = request.body;
+
+        const updatedUser = await User.findOneAndUpdate(
+            { uid },
+            { name, email },
+            { new: true }
+        );
+
+        return response.status(200).send({ message: "User updated successfully", updatedUser });
+    } catch (error) {
+        console.log("Error in updateUser", error);
+        response.status(500).send("Error updating user");
+    }
+};

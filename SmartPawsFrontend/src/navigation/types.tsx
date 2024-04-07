@@ -48,6 +48,7 @@ export type HomeStackParamList = {
         petName: string;
     }
     Map: undefined
+    UserProfile: undefined
 }
 
 export type ProfileStackParamList = {

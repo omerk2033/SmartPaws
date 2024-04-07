@@ -120,8 +120,10 @@ const HomeStackNavigator = () => {
                 }}
                 component={MapScreen}
             />
-            <Stack.Screen name={"UserProfile"} 
-            component={UserProfileScreen} 
+            <Stack.Screen 
+                name={"UserProfile"} 
+                options={{ headerTitle: 'User Profile' }}
+                component={UserProfileScreen} 
             />
 
 
