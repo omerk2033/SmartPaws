@@ -37,13 +37,21 @@ const SignUpScreen = () => {
         defaultValues: {
             email: "",
             password: "",
+            confirmPassword: "",
             name: "", // Add name in default values
         },
     })
 
     const onSubmit = async (data: IUser) => {
         try {
-            const { email, name, password } = data;
+            // const { email, name, password } = data;
+            const { email, name, password, confirmPassword } = data;
+
+            // check if password matches
+            if(password !== confirmPassword) {
+                Alert.alert("The passwords entered do not match. Please try again.");
+                return;
+            }
             /**
              * register user
              */
@@ -135,6 +143,27 @@ const SignUpScreen = () => {
                         )}
                         name="password"
                     />
+                    <Box mb="6" />
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: true,
+                        }}
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <Input
+                                label="Confirm Password"
+                                onBlur={onBlur}
+                                onChangeText={onChange}
+                                value={value}
+                                placeholder="Re-enter your password..."
+                                error={errors.confirmPassword}
+                                style={styles.input}
+                                secureTextEntry
+                            />
+                        )}
+                        name="confirmPassword"
+                    />
+
                     <Box mt="5.5" />
                     <Pressable onPress={navigateToSignInScreen}>
                         <Text color="fuchsia900" textAlign="right">

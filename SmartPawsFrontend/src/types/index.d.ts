@@ -3,7 +3,9 @@ interface IUser {
     name: string
     uid: string
     password: string
+    confirmPassword: string
 }
+
 
 interface IPet {
     ownerId: string
