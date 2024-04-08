@@ -141,7 +141,7 @@ const HomeScreen = () => {
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <TouchableOpacity 
                         onPress={navigateToRegPetScreen} 
-                        style={[styles.button, { backgroundColor: "#201A64" }]} // Use your styled button
+                        style={[styles.button, { backgroundColor: "#201A64" }]}
                     >
                         <Text style={styles.buttonText}>Add New Pet</Text>
                     </TouchableOpacity>

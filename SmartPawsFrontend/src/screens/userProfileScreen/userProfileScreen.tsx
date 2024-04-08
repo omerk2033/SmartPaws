@@ -3,6 +3,7 @@ import { View, TextInput, Text, TouchableOpacity, StyleSheet, Alert } from 'reac
 import { getAuth, updateEmail, updateProfile } from 'firebase/auth';
 import { BASE_URL } from '../../services/config';
 import SafeAreaWrapper from '../../components/shared/safeAreaWrapper';
+import { LinearGradient } from 'expo-linear-gradient';
 
 
 const UserProfileScreen = () => {
@@ -80,57 +81,76 @@ const UserProfileScreen = () => {
 
     return (
         <SafeAreaWrapper>
-            <View style={styles.container}>
-                <Text style={styles.label}>Name</Text>
-                <TextInput
-                    style={styles.input}
-                    value={user.name}
-                    onChangeText={(text) => setUser({...user, name: text})}
-                />
+            <LinearGradient
+                colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
+                style={styles.linearGradient}
+            >
+                <View style={styles.container}>
+                    <Text style={styles.label}>Name</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={user.name}
+                        onChangeText={(text) => setUser({...user, name: text})}
+                    />
 
-                <Text style={styles.label}>Email</Text>
-                <TextInput
-                    style={[styles.input, { backgroundColor: '#f0f0f0', color: '#777' }]}
-                    value={user.email}
-                    editable={false}
-                    onChangeText={(text) => setUser({...user, email: text})}
-                    keyboardType="email-address"
-                />
+                    <Text style={styles.label}>Email</Text>
+                    <TextInput
+                        style={[styles.input]}
+                        value={user.email}
+                        editable={false}
+                        onChangeText={(text) => setUser({...user, email: text})}
+                        keyboardType="email-address"
+                    />
 
-                <TouchableOpacity style={styles.button} onPress={handleSave}>
-                    <Text style={styles.buttonText}>Save</Text>
-                </TouchableOpacity>
-            </View>
+                    <TouchableOpacity style={styles.button} onPress={handleSave}>
+                        <Text style={styles.buttonText}>Save</Text>
+                    </TouchableOpacity>
+                </View>
+            </LinearGradient>
         </SafeAreaWrapper>
     );
 };
 
 const styles = StyleSheet.create({
+    linearGradient: {
+        flex: 1,
+        justifyContent: 'space-around', // Adjust this to your content
+        paddingHorizontal: 20,
+        paddingTop: 20, // Additional space on top, adjust as necessary
+    },
     container: {
-        padding: 20,
+        // Since the linearGradient already provides padding, you may not need padding here
+        // padding: 20,
     },
     label: {
         fontSize: 18,
+        color: 'white', // Adjust to match the theme
         marginBottom: 5,
     },
     input: {
         borderWidth: 1,
-        borderColor: 'grey',
         paddingHorizontal: 10,
         paddingVertical: 8,
         marginBottom: 20,
-        borderRadius: 5,
+        borderRadius: 20,
+        backgroundColor: 'rgba(255, 255, 255, 0.5)', // Opaque background
+        borderColor: 'rgba(0, 0, 0, 0.2)', // Lighter border
+        color: '#000',
     },
     button: {
-        backgroundColor: '#1B7899',
-        padding: 10,
-        borderRadius: 5,
+        // Match this style to the buttons in the SettingsScreen
+        paddingHorizontal: 20,
+        paddingVertical: 10,
+        borderRadius: 30,
+        justifyContent: 'center',
         alignItems: 'center',
+        margin: 10,
+        backgroundColor: '#201A64', // The button color from SettingsScreen
     },
     buttonText: {
         color: 'white',
-    }
+        fontSize: 16,
+    },
 });
 
 export default UserProfileScreen;
-
