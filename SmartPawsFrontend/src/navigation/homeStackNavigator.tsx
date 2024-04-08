@@ -48,8 +48,8 @@ const HomeStackNavigator = () => {
                 options={{
                     // changing to allow for back button option
                     // headerShown: false,
-                    headerTitle: "",
                     headerBackTitleVisible: false,
+                    headerShown: false,
                 }}
                 component={OnBoarding1}
             />
@@ -82,6 +82,7 @@ const HomeStackNavigator = () => {
                 options={{
                     headerTitle: "",
                     headerBackTitleVisible: false,
+                    headerShown: false,
                 }}
                 component={RegPetScreen}
             />
@@ -90,6 +91,7 @@ const HomeStackNavigator = () => {
                 name={"Settings"} 
                 options={{
                     headerTitle: "",
+                    headerShown: false,
                     headerBackTitleVisible: false,
                 }}
                 component={SettingsScreen}
@@ -100,6 +102,7 @@ const HomeStackNavigator = () => {
                 options={{
                     headerTitle: "",
                     headerBackTitleVisible: false,
+                    headerShown: false,
                 }}
                 component={PetProfileScreen}
             />
@@ -109,6 +112,7 @@ const HomeStackNavigator = () => {
                 options={{
                     headerTitle: "",
                     headerBackTitleVisible: false,
+                    headerShown: false,
                 }}
                 component={UpdatePetScreen}
             />
@@ -117,13 +121,17 @@ const HomeStackNavigator = () => {
                 options={{
                     headerTitle: "",
                     headerBackTitleVisible: false,
+                    headerShown: false,
                 }}
                 component={MapScreen}
             />
             <Stack.Screen 
                 name={"UserProfile"} 
-                options={{ headerTitle: 'User Profile' }}
+                options={{ headerTitle: 'User Profile',
+                headerShown: false
+                }}
                 component={UserProfileScreen} 
+                
             />
 
 

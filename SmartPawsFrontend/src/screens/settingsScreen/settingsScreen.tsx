@@ -15,8 +15,7 @@ const OptionsList: React.FC = () => {
 
     const listData = [
         { id: '1', title: 'User Profile', screen: 'UserProfile' },
-        { id: '2', title: 'Inactive Pets', screen: 'InactivePets' },
-        { id: '3', title: 'Terms of Use', screen: 'TermsOfUse' },
+        { id: '2', title: 'Terms of Use', screen: 'TermsOfUse' },
     ];
 
     const renderItem = ({ item }: { item: typeof listData[0] }) => (
@@ -72,18 +71,27 @@ const SettingsScreen = () => {
                 style={styles.linearGradient}
             >
                 {/* Ensure text is inside a <Text> component */}
-                <Text style={styles.title}>Settings Screen</Text>
+                <Text style={styles.title}>Settings</Text>
 
                 <OptionsList />
 
                 {/* button to reset password, sends password reset link to user's email */}
                 <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                    <Button title="Reset Password" onPress={handleResetPassword} />
-                    <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold', textAlign: 'center', paddingHorizontal: 30 }}>A link will be sent to your registered email to reset your password</Text>
+                    <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold', textAlign: 'center', paddingHorizontal: 30 }}>
+                        A link will be sent to your registered email to reset your password
+                    </Text>
                 </View>
-                <TouchableOpacity style={styles.logOutButton} onPress={handleSignOut}>
+                <TouchableOpacity 
+                    onPress={handleResetPassword}
+                    style={[styles.button, { backgroundColor: "#201A64" }]}  >
                     {/* Ensure text is inside a <Text> component */}
-                    <Text style={styles.logOutButtonText}>Log Out</Text>
+                    <Text style={styles.buttonText}>Reset Password</Text>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                    onPress={handleSignOut}
+                    style={[styles.button, { backgroundColor: "red" }]}  >
+                    {/* Ensure text is inside a <Text> component */}
+                    <Text style={styles.buttonText}>Log Out</Text>
                 </TouchableOpacity>
             </LinearGradient>
         </SafeAreaWrapper>
@@ -108,17 +116,18 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         color: 'white',
     },
-    logOutButton: {
-        backgroundColor: 'red',
-        borderRadius: 25, // Oval shape
+    button: {
         paddingHorizontal: 20,
         paddingVertical: 10,
-        alignSelf: 'center',
-        marginBottom: 20, // Space from bottom
+        borderRadius: 30, // Adjust this value to control the "ovalness" of the button
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
+        marginBottom: 20,
     },
-    logOutButtonText: {
-        color: 'white',
-        textAlign: 'center',
+    buttonText: {
+        color: '#fff',
+        fontSize: 16,
     },
     optionItem: {
         flexDirection: 'row',

@@ -379,13 +379,15 @@ const AIScreen: React.FC = () => {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
       >
-        <View style={styles.dropdownContainer}>
-          <SelectList 
-            data={data} 
-            setSelected={onPetSelect}
-            placeholder='Select a pet...' 
-          />
-        </View>
+      <View style={styles.dropdownContainer}>
+        <SelectList 
+          data={data} 
+          setSelected={onPetSelect}
+          placeholder='Select a pet...'
+          boxStyles={styles.selectListStyle}
+          dropdownTextStyles={styles.selectListStyle}
+        />
+      </View>
         <ScrollView contentContainerStyle={styles.chatContainer} ref={scrollViewRef} >
           {messages.map((message) => (
             <Text key={message.id} style={[
@@ -402,7 +404,7 @@ const AIScreen: React.FC = () => {
             placeholder="Enter your input..."
             onChangeText={setInputText}
             value={inputText}
-            placeholderTextColor="#666"
+            placeholderTextColor="black"
           />
           {/* <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest}> */}
           <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest2}>
@@ -411,8 +413,8 @@ const AIScreen: React.FC = () => {
         </View>
         <View>
         {/* if assistant cannot recall pet's profile from the thread, ability to send again */}
-          <TouchableOpacity style={styles.sendButton} onPress={handleSendPetInfoAgain}>
-            <Text style={styles.sendButtonText}>REUPLOAD PET DATA</Text>
+          <TouchableOpacity style={styles.sendButtonWithSpacing} onPress={handleSendPetInfoAgain}>
+            <Text style={styles.sendButtonText}>Reupload Conversation Thread</Text>
           </TouchableOpacity>
         </View>
       </KeyboardAvoidingView>
@@ -430,8 +432,22 @@ const styles = StyleSheet.create({
     marginTop: 50, 
     marginBottom: 10,
     paddingHorizontal: 10,
+    paddingVertical: 5, // Add some vertical padding if needed
+    borderWidth: 0, // If you want an outline for the container
+    borderColor: '#cccccc', // Color for the container border
+    borderRadius: 30, // Example border radius
+    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Opaque background
+    overflow: 'hidden', // Ensures nothing goes outside the container's bounds
   },
-  chatContainer: {
+  selectListStyle: {
+    width: '100%', // Ensure SelectList fills the container width
+    borderRadius:20, // Match the dropdownContainer's border radius
+    padding: 0,
+    margin: 0,
+    borderColor: 'transparent', // Make the border color transparent
+    borderWidth: 0, // Set border width to 0 to remove it
+  },
+    chatContainer: {
     flexGrow: 1,
     justifyContent: 'flex-end',
     marginBottom: 10,
@@ -475,6 +491,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  sendButtonWithSpacing: {
+    backgroundColor: '#201A64',
+    borderRadius: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   sendButtonText: {
     color: '#fff',

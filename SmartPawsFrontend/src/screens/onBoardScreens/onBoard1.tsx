@@ -51,7 +51,7 @@ export default function OnBoarding1() {
                         fontWeight="700"
                         color="red700"
                     >
-                        Fill
+                        Fi
                     </Text>
                     <Box my="3.5" mx="10">
                         <Button
