@@ -21,7 +21,7 @@ const AIScreen: React.FC = () => {
   const [petDetails, setPetDetails] = useState<IPet | null>(null);
   const [uploadPetProfilePressed, setUploadPetProfilePressed] = useState<boolean>(false);
   const isFocused = useIsFocused();
-
+  
   // to have chat screen automatically scroll to newest message
   const scrollViewRef = useRef<ScrollView | null>(null);
 
@@ -102,9 +102,13 @@ const AIScreen: React.FC = () => {
 
   // Triggered when a pet is selected from the dropdown list
   const onPetSelect = (selectedValue: string) => {
-    setSelectedPet(selectedValue);
-    // seems to print out one pet selection delayed in the console, but seems to be working fine
-    console.log("selectedPet: " + selectedPet);
+    if (selectedPet !== selectedValue) {
+      setSelectedPet(selectedValue);
+      // Clear messages to reset the conversation for a new pet
+      setMessages([]);
+    }
+  
+    console.log("Selected Pet: " + selectedValue);
   };
 
   // creating a json object instead
@@ -126,7 +130,8 @@ const AIScreen: React.FC = () => {
          + `Indoor/Outdoor: ${pet.indoorOrOutdoor}\n`
          + `Reproductive Status: ${pet.reproductiveStatus}\n`
          + `Image URL: ${pet.image}\n`
-         + `Notes: ${pet.notes}\n`;
+         + `Notes: ${pet.notes}\n`
+         + `ConcernStatus: ${pet.flaggedForConcern}\n`;
   };
 
   // construct pet profile json object to send to backend
