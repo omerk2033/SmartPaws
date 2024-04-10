@@ -17,6 +17,7 @@ export default function OnBoarding3 (){
     const navigateToSignUpScreen = () => {
         // changing to navigate to Home screen to start there after onboarding is complete
         // navigation.navigate("SignUp")
+
         navigation.navigate("Home")
     }
 

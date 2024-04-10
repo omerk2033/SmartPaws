@@ -26,7 +26,7 @@ const SignUpScreen = () => {
 
     const navigation = useNavigation<AuthScreenNavigationType<"SignUp">>()
     const navigateToSignInScreen = () => {
-        navigation.navigate("SignIn")
+        navigation.navigate("SignIn");
     }
 
     const {

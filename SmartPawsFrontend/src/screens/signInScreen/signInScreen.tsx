@@ -58,7 +58,6 @@ const SignInScreen: React.FC<SignInScreenProps> = () => { // Add props parameter
         try {
             const { email, password } = data;
             await loginWithEmailAndPassword(email, password);
-            console.log("hello there?");
             // No need to navigate here, navigation happens after successful login in loginWithEmailAndPassword
         } catch (error) {
             console.log("Error submitting form:");

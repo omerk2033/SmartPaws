@@ -21,8 +21,8 @@ const HomeScreen = () => {
     const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
     const navigateToRegPetScreen = () => {
         homeStackNavigation.navigate('RegPet');
-    }
-
+    }  
+       
     // navigate to map screen
     // const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
     // moved to bottom tab navigator

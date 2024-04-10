@@ -116,6 +116,7 @@ const HomeStackNavigator = () => {
                 }}
                 component={UpdatePetScreen}
             />
+            {/* user selects Locate Vet in bottom tab */}
             <Stack.Screen 
                 name={"Map"}
                 options={{
@@ -125,6 +126,7 @@ const HomeStackNavigator = () => {
                 }}
                 component={MapScreen}
             />
+            {/* user selects User Profile from Settings screen */}
             <Stack.Screen 
                 name={"UserProfile"} 
                 options={{ headerTitle: 'User Profile',

@@ -5,12 +5,6 @@ import React, { useEffect, useRef, useState } from 'react'
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location'; // to get user's current location
-// import { useNavigation } from '@react-navigation/native';
-// import { HomeStackParamList } from 'navigation/types';
-// import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-// type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'Map'>
-
 
 const MapScreen: React.FC = () => {
     // const homeStackNavigation = useNavigation<HomeStackNavigationProps>();  
@@ -22,8 +16,6 @@ const MapScreen: React.FC = () => {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
     });
-
-    // const [region, setRegion] = useState(null);
 
     const [locationFetched, setLocationFetched] = useState(false);
 
@@ -59,16 +51,6 @@ const MapScreen: React.FC = () => {
 
     const searchRadius: number = 48280; // approximately 30 miles in meters
 
-    // fetch list of veterinarians within a hardcoded radius using google maps api
-    // const getVeterinarians = async (latitude: number, longitude: number) => {
-    //     const response = await fetch(
-    //       `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${searchRadius}&type=veterinary_care&key=${process.env.GOOGLE_MAPS_API_KEY}`
-    //     );
-    //     const data = await response.json();
-    //     return data.results;
-    // };
-
-    // test something for me really quick, please! replace your getVeterinarians with this and see what the console outputs on your end:
     // fetch list of veterinarians within a hardcoded radius using google maps api
     const getVeterinarians = async (latitude: number, longitude: number) => {
       const apiUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${searchRadius}&type=veterinary_care&key=${process.env.GOOGLE_MAPS_API_KEY}`;
@@ -106,53 +88,104 @@ const MapScreen: React.FC = () => {
         })();
     }, []);
 
-    // find all vets within specified radius of user's location
-    // waits for locationFetched to be true before running 
-    // to make sure user location is known before getVeterinarians is called 
-    // with user's current location as arguments 
-    useEffect(() => {
-      // This effect depends on `locationFetched` to trigger.
-      // It's designed to run after the user's location has been successfully fetched.
-      if (locationFetched && !vetsFetched) {
-          // `userLocation.current` has been correctly set by the first useEffect.
-          if (userLocation.current) {
-              const { latitude, longitude } = userLocation.current;
+  //   // find all vets within specified radius of user's location
+  //   // waits for locationFetched to be true before running 
+  //   // to make sure user location is known before getVeterinarians is called 
+  //   // with user's current location as arguments 
+  //   useEffect(() => {
+  //     // This effect depends on `locationFetched` to trigger.
+  //     // It's designed to run after the user's location has been successfully fetched.
+  //     if (locationFetched && !vetsFetched) {
+  //         // `userLocation.current` has been correctly set by the first useEffect.
+  //         if (userLocation.current) {
+  //             const { latitude, longitude } = userLocation.current;
   
-              getVeterinarians(latitude, longitude)
-                  .then((vets) => {
-                      setVeterinarians(vets);
-                      setVetsFetched(true); // Ensure we mark that vets have been fetched.
-                  })
-                  .catch((error) => {
-                      console.error("Failed to fetch veterinarians:", error);
-                  });
-          }
-      }
-  }, [locationFetched]); // This useEffect is triggered when `locationFetched` changes.
-  
-const refreshVets = () => {
-    console.log('Refreshing veterinarians list');
-    if (userLocation.current) {
-        // Log the current location being used for refreshing
-        console.log(`Using location: ${userLocation.current.latitude}, ${userLocation.current.longitude}`);
-        
-        // Update the map's region to center on the user's current location
-        setRegion({
-            latitude: userLocation.current.latitude,
-            longitude: userLocation.current.longitude,
-            latitudeDelta: 0.0922, 
-            longitudeDelta: 0.0421,
-        });
+  //             getVeterinarians(latitude, longitude)
+  //                 .then((vets) => {
+  //                     setVeterinarians(vets);
+  //                     setVetsFetched(true); // Ensure we mark that vets have been fetched.
+  //                 })
+  //                 .catch((error) => {
+  //                     console.error("Failed to fetch veterinarians:", error);
+  //                 });
+  //         }
+  //     }
+  // }, [locationFetched]); // This useEffect is triggered when `locationFetched` changes.
 
-        // Reset the vetsFetched to false to re-fetch the veterinarians
-        setVetsFetched(false);
-        // Since we already have the user's location, we don't need to fetch it again
-        // Just set locationFetched to true to trigger the effect that fetches the veterinarians
-        setLocationFetched(true);
-    } else {
-        console.error("User location not available.");
+// for some reason the above useEffect was missing several things that the below has
+  // find all vets within specified radius of user's location
+  // waits for locationFetched to be true before running 
+  // to make sure user location is known before getVeterinarians is called 
+  // with user's current location as arguments 
+  useEffect(() => {
+    // get all veterinarians within radius and save in veterinarians
+    if(userLocation.current && locationFetched && !vetsFetched) {
+        getVeterinarians(userLocation.current.latitude, userLocation.current.longitude)
+        .then((vets: Veterinarian[]) => {
+            setVeterinarians(vets);
+            setVetsFetched(true);
+            // just printing
+            // console.log("some veterinarians:");
+            // veterinarians.forEach((veterinarian: { name: string; vicinity: string;  }) => {
+            // vets.forEach((veterinarian) => {
+            //     console.log(`Name: ${veterinarian.name}, Vicinity: ${veterinarian.vicinity}`);
+            //     console.log(`Latitude: ${veterinarian.geometry.location.lat}, Longitude: ${veterinarian.geometry.location.lng}`);
+            // });
+
+            let minLat: number | null = null;
+            let maxLat: number | null = null;
+            let minLng: number | null = null;
+            let maxLng: number | null = null;
+
+            // calculate the max region needed to show all of the vet locations
+            vets.forEach((vet) => {
+                const lat = vet.geometry.location.lat;
+                const lng = vet.geometry.location.lng;
+                minLat = minLat !== null ? Math.min(minLat, lat) : lat;
+                maxLat = maxLat !== null ? Math.max(maxLat, lat) : lat;
+                minLng = minLng !== null ? Math.min(minLng, lng) : lng;
+                maxLng = maxLng !== null ? Math.max(maxLng, lng) : lng;
+            });
+            // set the display region of the map
+            if(minLat != null && maxLat != null && minLng != null && maxLng != null) {
+                setRegion({
+                    latitude: (minLat + maxLat) / 2, 
+                    longitude: (minLng + maxLng) / 2,
+                    latitudeDelta: (maxLat - minLat) * 1.1, // * 1.1 for a bit of padding around the furthest locations
+                    longitudeDelta: (maxLng - minLng) * 1.1, 
+                });
+            }
+
+        })
+        .catch((error) => {
+            console.error(error);
+        });
     }
-};
+  }, [locationFetched]);
+
+  const refreshVets = () => {
+      console.log('Refreshing veterinarians list');
+      if (userLocation.current) {
+          // Log the current location being used for refreshing
+          console.log(`Using location: ${userLocation.current.latitude}, ${userLocation.current.longitude}`);
+          
+          // Update the map's region to center on the user's current location
+          setRegion({
+              latitude: userLocation.current.latitude,
+              longitude: userLocation.current.longitude,
+              latitudeDelta: 0.0922, 
+              longitudeDelta: 0.0421,
+          });
+
+          // Reset the vetsFetched to false to re-fetch the veterinarians
+          setVetsFetched(false);
+          // Since we already have the user's location, we don't need to fetch it again
+          // Just set locationFetched to true to trigger the effect that fetches the veterinarians
+          setLocationFetched(true);
+      } else {
+          console.error("User location not available.");
+      }
+  };
 
   return (
     <LinearGradient
@@ -203,7 +236,8 @@ const refreshVets = () => {
       refreshButtonContainer: {
         position: 'absolute', // Position over the map
         bottom: 20, // Distance from bottom
-        right: 20, // Distance from right
+        // right: 20, // Distance from right
+        left: 20 // Distance from left
       },
       refreshButton: {
         backgroundColor: 'rgba(255,255,255,0.8)', // Semi-transparent white
