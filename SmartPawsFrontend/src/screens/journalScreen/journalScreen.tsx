@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Keyboard, View, Text, TextInput, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, KeyboardAvoidingView, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-// import { IJournalEntry } from '../../types';
 import axiosInstance, { BASE_URL } from '../../services/config';
 import { getAuth } from 'firebase/auth';
 import { SelectList } from 'react-native-dropdown-select-list';
 import { IPet } from 'types';
 import { useIsFocused } from '@react-navigation/native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const JournalScreen = () => {
   const auth = getAuth();
@@ -17,6 +17,8 @@ const JournalScreen = () => {
   const [selectedPet, setSelectedPet] = useState('');
   const [petDetails, setPetDetails] = useState<IPet | null>(null);
   const isFocused = useIsFocused();
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   // If user navigates to this screen, fetch pets in case they've added a new pet
   useEffect(() => {
@@ -91,13 +93,14 @@ const JournalScreen = () => {
     const handleSaveEntry = async () => {
         try {
           // NEED TO GET date FROM DATE PICKER THAT YOU WILL CREATE...
-          const date = "04/11/2024"; // JUST HARDCODING A DATE FOR NOW UNTIL THE DATE PICKER IS IMPLEMENTED 
-
+          // const date = "04/11/2024"; // JUST HARDCODING A DATE FOR NOW UNTIL THE DATE PICKER IS IMPLEMENTED 
+          const formattedDate = date.toLocaleDateString('en-US'); // format the date as a string
           // just printing
-          console.log("ownerId: " + ownerId + " petName: " + petDetails?.name + " date: " + date + " entry: " + entry);
+          console.log("ownerId: " + ownerId + " petName: " + petDetails?.name + " date: " + formattedDate + " entry: " + entry);
 
           if (petDetails?.name != null) {
-            await saveJournalEntryToDatabase(ownerId, petDetails?.name, date, entry);
+            // await saveJournalEntryToDatabase(ownerId, petDetails?.name, date, entry);
+            await saveJournalEntryToDatabase(ownerId, petDetails?.name, formattedDate, entry);
           }
 
           console.log('Entry saved:', entry);
@@ -155,7 +158,7 @@ const JournalScreen = () => {
                 dropdownTextStyles={styles.selectListStyle}
               />
             </View>
-
+            
             <View style={styles.container}>
               <Text style={styles.title}>Journal</Text>
               <TextInput
@@ -165,6 +168,39 @@ const JournalScreen = () => {
                 value={entry}
                 onChangeText={setEntry}
               />
+              <View style={{alignItems: 'center'}}>
+                <Text style={styles.dateDisplay}>Selected Date: {date.toLocaleDateString('en-US')}</Text>
+              </View>
+            <View style={{margin: 20}}>  
+              {Platform.OS === 'ios' ? (
+                <DateTimePicker
+                  value={date}
+                  mode={'date'}
+                  display="default"
+                  onChange={(event, selectedDate) => {
+                    const currentDate = selectedDate || date;
+                    setDate(currentDate);
+                  }}
+                />
+              ) : (
+                <TouchableOpacity style={styles.button} onPress={() => setShowDatePicker(true)}>
+                  <Text style={styles.buttonText}>Select a date</Text>
+                </TouchableOpacity>
+              )}
+              {showDatePicker && (
+                <DateTimePicker
+                  value={date}
+                  mode={'date'}
+                  display="default"
+                  onChange={(event, selectedDate) => {
+                    const currentDate = selectedDate || date;
+                    setShowDatePicker(Platform.OS === 'ios');
+                    setDate(currentDate);
+                  }}
+                />
+              )}
+            </View>
+
               <TouchableOpacity style={styles.button} onPress={handleSaveEntry}>
                 <Text style={styles.buttonText}>Save Entry</Text>
               </TouchableOpacity>
@@ -190,6 +226,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 20,
         color: 'white',
+    },
+    dateDisplay: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      marginTop: 20,
+      color: 'black',
     },
     input: {
         height: 200,
