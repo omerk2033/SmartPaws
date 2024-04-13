@@ -9,50 +9,47 @@ import { LogBox } from 'react-native'; // to suppress firebase warnings displaye
 LogBox.ignoreLogs(['@firebase/auth']); // to suppress firebase warnings displayed on screen
 
 export default function App() {
-
-
-
   return (
-   <ThemeProvider theme={theme}>
-     <SafeAreaProvider>
-         <SWRConfig
-             value={{
-                 provider: () => new Map(),
-                 isVisible: () => {
-                     return true
-                 },
-                 initFocus(callback) {
-                     let appState = AppState.currentState
+    <ThemeProvider theme={theme}>
+      <SafeAreaProvider>
+        <SWRConfig
+          value={{
+            provider: () => new Map(),
+            isVisible: () => {
+              return true
+            },
+            initFocus(callback) {
+              let appState = AppState.currentState
 
-                    //  const onAppStateChange = (nextAppState: any) => {
-                    const onAppStateChange = (nextAppState: AppStateStatus) => {
-                         /* If it's resuming from background or inactive mode to active one */
-                         if (
-                             appState.match(/inactive|background/) &&
-                             nextAppState === "active"
-                         ) {
-                             callback()
-                         }
-                         appState = nextAppState
-                     }
+              //  const onAppStateChange = (nextAppState: any) => {
+              const onAppStateChange = (nextAppState: AppStateStatus) => {
+                /* If it's resuming from background or inactive mode to active one */
+                if (
+                  appState.match(/inactive|background/) &&
+                  nextAppState === "active"
+                ) {
+                  callback()
+                }
+                appState = nextAppState
+              }
 
-                     // Subscribe to the app state change events
-                     const subscription = AppState.addEventListener(
-                         "change",
-                         onAppStateChange
-                     )
+              // Subscribe to the app state change events
+              const subscription = AppState.addEventListener(
+                "change",
+                onAppStateChange
+              )
 
-                     return () => {
-                         subscription.remove()
-                     }
-                 },
-             }}
-         >
-             <Navigation/>
-         </SWRConfig>
+              return () => {
+                subscription.remove()
+              }
+            },
+          }}
+        >
+          <Navigation />
+        </SWRConfig>
 
-     </SafeAreaProvider>
-   </ThemeProvider>
+      </SafeAreaProvider>
+    </ThemeProvider>
   );
 }
 

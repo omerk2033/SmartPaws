@@ -2,7 +2,7 @@
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import {HomeStackParamList} from "./types";
+import { HomeStackParamList } from "./types";
 import HomeScreen from "../screens/homeScreen/homeScreen";
 import RegPetScreen from "../screens/regPetScreen/regPetScreen";
 import SettingsScreen from "../screens/settingsScreen/settingsScreen";
@@ -21,124 +21,125 @@ import { Text, TouchableOpacity } from "react-native";
 const Stack = createNativeStackNavigator<HomeStackParamList>()
 
 const HomeStackNavigator = () => {
-    const { initialScreen } = useContext(NavigationContext);
+  const { initialScreen } = useContext(NavigationContext);
 
-    return (
-        // <Stack.Navigator>
-        // initialScreen is determined in authStack 
-        // based on if user is registering for the 1st time 
-        // or is logging in as a preexisting user
-        // the initialScreen value will be either Onboard1 or Home 
-        // and so will dictate the name of the 1st screen that gets loaded on the home stack
-        <Stack.Navigator
-            initialRouteName={initialScreen as keyof HomeStackParamList}
-            screenOptions={({ navigation }) => ({
-                        headerRight: () => (
-                            <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <MaterialIcons name="settings" size={25} color="grey" />
-                            <Text style={{ color: "grey", marginLeft: 4 }}>Settings</Text>
-                        </TouchableOpacity>
-                    ),
-                        headerTitleAlign: 'center', // Centers the header title like in the tab navigator
-                        headerBackTitleVisible: false, // Hides the back button title for iOS
-                    })}
-                >
-            <Stack.Screen
-                name={"Onboard1"}
-                options={{
-                    // changing to allow for back button option
-                    // headerShown: false,
-                    headerBackTitleVisible: false,
-                    headerShown: false,
-                }}
-                component={OnBoarding1}
-            />
-            <Stack.Screen
-                name={"Onboard2"}
-                options={{
-                    headerShown: false,
-                }}
-                component={OnBoarding2}
-            />
-            <Stack.Screen
-                name={"Onboard3"}
-                options={{
-                    headerShown: false,
-                }}
-                component={OnBoarding3}
-            />
+  return (
+    // <Stack.Navigator>
+    // initialScreen is determined in authStack 
+    // based on if user is registering for the 1st time 
+    // or is logging in as a preexisting user
+    // the initialScreen value will be either Onboard1 or Home 
+    // and so will dictate the name of the 1st screen that gets loaded on the home stack
+    <Stack.Navigator
+      initialRouteName={initialScreen as keyof HomeStackParamList}
+      screenOptions={({ navigation }) => ({
+        headerRight: () => (
+          <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <MaterialIcons name="settings" size={25} color="grey" />
+            <Text style={{ color: "grey", marginLeft: 4 }}>Settings</Text>
+          </TouchableOpacity>
+        ),
+        headerTitleAlign: 'center', // Centers the header title like in the tab navigator
+        headerBackTitleVisible: false, // Hides the back button title for iOS
+      })}
+    >
+      <Stack.Screen
+        name={"Onboard1"}
+        options={{
+          // changing to allow for back button option
+          // headerShown: false,
+          headerBackTitleVisible: false,
+          headerShown: false,
+        }}
+        component={OnBoarding1}
+      />
+      <Stack.Screen
+        name={"Onboard2"}
+        options={{
+          headerShown: false,
+        }}
+        component={OnBoarding2}
+      />
+      <Stack.Screen
+        name={"Onboard3"}
+        options={{
+          headerShown: false,
+        }}
+        component={OnBoarding3}
+      />
 
-           <Stack.Screen 
-                name={"Home"} 
-                options={{
-                    headerTitle: "",
-                    headerBackTitleVisible: false,           
-                }}    
-                component={HomeScreen}
-            />
-           {/* register pet screen */}
-           <Stack.Screen 
-                name={"RegPet"} 
-                options={{
-                    headerTitle: "",
-                    headerBackTitleVisible: false,
-                    headerShown: false,
-                }}
-                component={RegPetScreen}
-            />
-            {/* user clicks on the settings button in the header */}
-            <Stack.Screen 
-                name={"Settings"} 
-                options={{
-                    headerTitle: "",
-                    headerShown: false,
-                    headerBackTitleVisible: false,
-                }}
-                component={SettingsScreen}
-            />
-            {/* user selects pet from home screen */}
-            <Stack.Screen 
-                name={"PetProfile"} 
-                options={{
-                    headerTitle: "",
-                    headerBackTitleVisible: false,
-                    headerShown: false,
-                }}
-                component={PetProfileScreen}
-            />
-            {/* user selects to update pet profile from pet profile screen */}
-            <Stack.Screen 
-                name={"UpdatePet"}
-                options={{
-                    headerTitle: "",
-                    headerBackTitleVisible: false,
-                    headerShown: false,
-                }}
-                component={UpdatePetScreen}
-            />
-            {/* user selects Locate Vet in bottom tab */}
-            <Stack.Screen 
-                name={"Map"}
-                options={{
-                    headerTitle: "",
-                    headerBackTitleVisible: false,
-                    headerShown: false,
-                }}
-                component={MapScreen}
-            />
-            {/* user selects User Profile from Settings screen */}
-            <Stack.Screen 
-                name={"UserProfile"} 
-                options={{ headerTitle: 'User Profile',
-                headerShown: false
-                }}
-                component={UserProfileScreen} 
-                
-            />
+      <Stack.Screen
+        name={"Home"}
+        options={{
+          headerTitle: "",
+          headerBackTitleVisible: false,
+        }}
+        component={HomeScreen}
+      />
+      {/* register pet screen */}
+      <Stack.Screen
+        name={"RegPet"}
+        options={{
+          headerTitle: "",
+          headerBackTitleVisible: false,
+          headerShown: false,
+        }}
+        component={RegPetScreen}
+      />
+      {/* user clicks on the settings button in the header */}
+      <Stack.Screen
+        name={"Settings"}
+        options={{
+          headerTitle: "",
+          headerShown: false,
+          headerBackTitleVisible: false,
+        }}
+        component={SettingsScreen}
+      />
+      {/* user selects pet from home screen */}
+      <Stack.Screen
+        name={"PetProfile"}
+        options={{
+          headerTitle: "",
+          headerBackTitleVisible: false,
+          headerShown: false,
+        }}
+        component={PetProfileScreen}
+      />
+      {/* user selects to update pet profile from pet profile screen */}
+      <Stack.Screen
+        name={"UpdatePet"}
+        options={{
+          headerTitle: "",
+          headerBackTitleVisible: false,
+          headerShown: false,
+        }}
+        component={UpdatePetScreen}
+      />
+      {/* user selects Locate Vet in bottom tab */}
+      <Stack.Screen
+        name={"Map"}
+        options={{
+          headerTitle: "",
+          headerBackTitleVisible: false,
+          headerShown: false,
+        }}
+        component={MapScreen}
+      />
+      {/* user selects User Profile from Settings screen */}
+      <Stack.Screen
+        name={"UserProfile"}
+        options={{
+          headerTitle: 'User Profile',
+          headerShown: false
+        }}
+        component={UserProfileScreen}
+
+      />
 
 
-        </Stack.Navigator>
-    )
+    </Stack.Navigator>
+  )
 }
 
 export default HomeStackNavigator

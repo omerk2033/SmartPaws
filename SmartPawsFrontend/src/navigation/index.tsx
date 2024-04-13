@@ -11,28 +11,28 @@ import { FIREBASE_AUTH } from "../services/firebase";
 import { NavigationContext } from './navigationContext';
 
 const Navigation = () => {
-    const [initialScreen, setInitialScreen] = useState('Home');
-    const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
+  const [initialScreen, setInitialScreen] = useState('Home');
+  const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-            setIsAuthenticated(!!user);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
+      setIsAuthenticated(!!user);
 
-            // set inital screen of home stack based on if user exists already
-            // otherwise will be registering for the 1st time and will go to Onboard1 instead
-            setInitialScreen(user ? 'Home' : 'Onboard1');
-        });
+      // set inital screen of home stack based on if user exists already
+      // otherwise will be registering for the 1st time and will go to Onboard1 instead
+      setInitialScreen(user ? 'Home' : 'Onboard1');
+    });
 
-        return () => unsubscribe();
-    }, []);
+    return () => unsubscribe();
+  }, []);
 
-    return (
-        <NavigationContext.Provider value={{ initialScreen, setInitialScreen }}>
-            <NavigationContainer>
-                {isAuthenticated ? <AppStackNavigator /> : <AuthStackNavigator />}
-            </NavigationContainer>
-        </NavigationContext.Provider>
-    );
+  return (
+    <NavigationContext.Provider value={{ initialScreen, setInitialScreen }}>
+      <NavigationContainer>
+        {isAuthenticated ? <AppStackNavigator /> : <AuthStackNavigator />}
+      </NavigationContainer>
+    </NavigationContext.Provider>
+  );
 };
 
 // const Navigation = () => {

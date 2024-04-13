@@ -4,7 +4,7 @@ import express from 'express'
 // import runCompletion from "../chatGPT";
 import runCompletionAssistant from "../chatGPT"
 
-import {createUser, getUser, loginUser, updateUser} from "../controllers/userController";
+import { createUser, getUser, loginUser, updateUser } from "../controllers/userController";
 
 const userRoutes = express.Router()
 
