@@ -1,3 +1,5 @@
+// user can view journal entries per pet and create new journal memories
+
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -28,7 +30,6 @@ const JournalScreen = () => {
       fetchPets();
     }
   }, [isFocused]);
-  
 
   // Fetch pets from backend
   // Used to populate the dropdown list of pets
@@ -77,7 +78,7 @@ const JournalScreen = () => {
   };
 
   // Construct the data for the dropdown list
-  const data = 
+  const data =
     pets.map((pet: IPet) => ({
       key: pet.name,
       value: pet.name
@@ -89,29 +90,27 @@ const JournalScreen = () => {
     if (selectedPet !== selectedValue) {
       setSelectedPet(selectedValue);
     }
-  
+
     console.log("Selected Pet: " + selectedValue);
   };
-    
-  // const handleSaveEntry = async (data: IJournalEntry) => {
+
   const handleSaveEntry = async () => {
-      try {
-        const formattedDate = date.toLocaleDateString('en-US'); // format the date as a string
-        // just printing
-        console.log("ownerId: " + ownerId + " petName: " + petDetails?.name + " date: " + formattedDate + " entry: " + entry);
+    try {
+      const formattedDate = date.toLocaleDateString('en-US'); // format the date as a string
+      // just printing
+      console.log("ownerId: " + ownerId + " petName: " + petDetails?.name + " date: " + formattedDate + " entry: " + entry);
 
-        if (petDetails?.name != null) {
-          // await saveJournalEntryToDatabase(ownerId, petDetails?.name, date, entry);
-          await saveJournalEntryToDatabase(ownerId, petDetails?.name, formattedDate, entry);
-          setEntryAddedTrigger(!entryAddedTrigger); // change the state to trigger fetchJournalEntries again
-        }
-
-        console.log('Entry saved:', entry);
-      } catch (error) {
-        console.log("Error in handleSaveEntry");
+      if (petDetails?.name != null) {
+        await saveJournalEntryToDatabase(ownerId, petDetails?.name, formattedDate, entry);
+        setEntryAddedTrigger(!entryAddedTrigger); // change the state to trigger fetchJournalEntries again
       }
 
-      setEntry(''); // reset input box
+      console.log('Entry saved:', entry);
+    } catch (error) {
+      console.log("Error in handleSaveEntry");
+    }
+
+    setEntry(''); // reset input box
 
   };
 
@@ -138,100 +137,112 @@ const JournalScreen = () => {
 
   const fetchJournalEntries = async () => {
     try {
-        // get current user's uid 
-        const auth = getAuth();  
-        const currentUser = auth.currentUser;
-        const ownerId = currentUser ? currentUser.uid : "";
+      // get current user's uid 
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+      const ownerId = currentUser ? currentUser.uid : "";
 
-        // make get request to backend with ownerId of currently logged in user
-        // and selected pet name
-        console.log("fetchJournalEntries called");
-        console.log(BASE_URL + 'journalEntry/get/' + ownerId + '/' + selectedPet);
-        const response = await fetch(BASE_URL + 'journalEntry/get/' + ownerId + '/' + selectedPet);
-        const data = await response.json();
-        setJournalEntries(data);
-        console.log(journalEntries);
+      // make get request to backend with ownerId of currently logged in user
+      // and selected pet name
+      console.log("fetchJournalEntries called");
+      console.log(BASE_URL + 'journalEntry/get/' + ownerId + '/' + selectedPet);
+      const response = await fetch(BASE_URL + 'journalEntry/get/' + ownerId + '/' + selectedPet);
+      const data = await response.json();
+      setJournalEntries(data);
+      console.log(journalEntries);
     } catch (error) {
-        console.error("Error fetching journal entries", error);
-    } 
-  };    
+      console.error("Error fetching journal entries", error);
+    }
+  };
 
-    console.log(journalEntries);
+  console.log(journalEntries);
 
-    return (
-        <LinearGradient
-          colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
-          style={styles.linearGradient}
-        >
-        <ScrollView keyboardShouldPersistTaps='handled' style={styles.scrollViewStyle}>
-            <View style={{ flex: 1 }}>
-            <View style={styles.dropdownContainer}>
-              <SelectList 
-                data={data} 
-                setSelected={onPetSelect}
-                placeholder='Select a pet...'
-                boxStyles={styles.selectListStyle}
-                dropdownTextStyles={styles.selectListStyle}
+  return (
+    <LinearGradient
+      colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
+      style={styles.linearGradient}
+    >
+      <ScrollView keyboardShouldPersistTaps='handled' style={styles.scrollViewStyle}>
+        <View style={{ flex: 1 }}>
+          <View style={styles.dropdownContainer}>
+            <SelectList
+              data={data}
+              setSelected={onPetSelect}
+              placeholder='Select a pet...'
+              boxStyles={styles.selectListStyle}
+              dropdownTextStyles={styles.selectListStyle}
+            />
+          </View>
+
+          <View style={{ margin: 20 }}>
+            {Platform.OS === 'ios' ? (
+              <DateTimePicker
+                value={date}
+                mode={'date'}
+                display="default"
+                onChange={(event, selectedDate) => {
+                  const currentDate = selectedDate || date;
+                  setDate(currentDate);
+                }}
               />
-            </View>
-            
-            <View>
-              <TextInput
-                style={styles.input}
-                multiline
-                placeholder="Write your journal entry here..."
-                value={entry}
-                onChangeText={setEntry}
-              />
-              <View style={{alignItems: 'center'}}>
-                <Text style={styles.dateDisplay}>Selected Date: {date.toLocaleDateString('en-US')}</Text>
-              </View>
-            <View style={{margin: 20}}>  
-              {Platform.OS === 'ios' ? (
-                <DateTimePicker
-                  value={date}
-                  mode={'date'}
-                  display="default"
-                  onChange={(event, selectedDate) => {
-                    const currentDate = selectedDate || date;
-                    setDate(currentDate);
-                  }}
-                />
-              ) : (
-                <TouchableOpacity style={styles.button} onPress={() => setShowDatePicker(true)}>
-                  <Text style={styles.buttonText}>Select a date</Text>
-                </TouchableOpacity>
-              )}
-              {showDatePicker && (
-                <DateTimePicker
-                  value={date}
-                  mode={'date'}
-                  display="default"
-                  onChange={(event, selectedDate) => {
-                    const currentDate = selectedDate || date;
-                    setShowDatePicker(Platform.OS === 'ios');
-                    setDate(currentDate);
-                  }}
-                />
-              )}
-            </View>
-
-              <TouchableOpacity style={{ marginBottom: 5 }} onPress={handleSaveEntry}>
-                <Text style={styles.buttonText}>Save Entry</Text>
+            ) : (
+              <TouchableOpacity style={styles.button} onPress={() => setShowDatePicker(true)}>
+                <Text style={styles.buttonText}>Select a date</Text>
               </TouchableOpacity>
+            )}
+
+            <View style={{ alignItems: 'center' }}>
+              <Text style={styles.dateDisplay}>Selected Date: {date.toLocaleDateString('en-US')}</Text>
             </View>
+
+            {showDatePicker && (
+              <DateTimePicker
+                value={date}
+                mode={'date'}
+                display="default"
+                onChange={(event, selectedDate) => {
+                  const currentDate = selectedDate || date;
+                  setShowDatePicker(Platform.OS === 'ios');
+                  setDate(currentDate);
+                }}
+              />
+            )}
+          </View>
+          <View>
+            <TextInput
+              style={styles.input}
+              multiline
+              placeholder="Write your journal entry here..."
+              value={entry}
+              onChangeText={setEntry}
+            />
+
+            <TouchableOpacity style={styles.button} onPress={handleSaveEntry}>
+              <Text style={styles.buttonText}>Save Entry</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        <View>
+          <Text style={styles.heading}>{selectedPet}'s Journal Entries</Text>
+        </View>
+        <View style={{ flex: 1 }}>
+
+          {/* sort journal entries by date and display */}
+          {journalEntries.sort((a, b) => {
+            const dateA = a.date.split('/').map(Number);
+            const dateB = b.date.split('/').map(Number);
+            return new Date(dateB[2], dateB[0] - 1, dateB[1]).getTime() - new Date(dateA[2], dateA[0] - 1, dateA[1]).getTime();
+          }).map((journalEntry: IJournalEntry, index: number) => (
+            <View key={index}>
+              <Text style={styles.journalDate}>{journalEntry.date}</Text>
+              <Text style={styles.journalEntryStyle}>{journalEntry.entry}</Text>
             </View>
-            <View style={{ flex: 1, marginTop: 40 }}>
-            {journalEntries.map((journalEntry: IJournalEntry, index: number) => (
-              <View key={index}>
-                <Text>{journalEntry.date}</Text>
-                <Text style={styles.journalEntryStyle}>{journalEntry.entry}</Text>
-              </View>
-            ))}
-            </View>
-            </ScrollView>
-        </LinearGradient>
-    );
+          ))}
+
+        </View>
+      </ScrollView>
+    </LinearGradient>
+  );
 };
 
 const styles = StyleSheet.create({
@@ -241,25 +252,6 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     marginTop: 50,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 30,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'white',
-  },
-  dateContainer: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  datePicker: {
-    margin: 20,
   },
   input: {
     height: 100,
@@ -272,17 +264,15 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
-  },
-  journalContainer: {
-    flex: 1,
-    marginTop: 20,
-  },
-  journalEntryContainer: {
-    marginBottom: 20,
+    backgroundColor: 'blue',
+    borderRadius: 25,
+    width: 140,
+    alignItems: 'center',
+    alignSelf: 'center',
   },
   selectListStyle: {
     width: '100%', // Ensure SelectList fills the container width
-    borderRadius:20, // Match the dropdownContainer's border radius
+    borderRadius: 20, // Match the dropdownContainer's border radius
     padding: 0,
     margin: 0,
     borderColor: 'transparent', // Make the border color transparent
@@ -295,17 +285,19 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   buttonText: {
-      color: '#fff',
-      fontSize: 16,
+    color: '#fff',
+    fontSize: 18,
+    marginVertical: 10
   },
   journalEntryStyle: {
-    backgroundColor: '#ADD8E6', 
-    color: 'blue', 
+    backgroundColor: '#ADD8E6',
+    color: 'blue',
     alignSelf: 'stretch', // This will make the element stretch to fill the parent container
     width: '100%', // This will make the element take up 100% of the width of its parent container
     marginBottom: 10,
     borderRadius: 10,
     paddingHorizontal: 15,
+    paddingVertical: 10,
     fontSize: 16
   },
   scrollViewStyle: {
@@ -313,7 +305,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5.5,
     marginTop: 13,
   },
-
+  heading: {
+    marginTop: 40,
+    marginBottom: 20,
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'black',
+    alignSelf: 'center',
+  },
+  journalDate: {
+    alignSelf: 'center',
+    marginTop: 10,
+    marginBottom: 5,
+    fontSize: 16,
+    fontWeight: '600',
+  },
 
 });
 
