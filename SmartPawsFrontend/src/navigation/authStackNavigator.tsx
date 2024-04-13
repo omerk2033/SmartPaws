@@ -9,38 +9,38 @@ import SignUpScreen from "../screens/signUpScreen/signUpScreen";
 const Stack = createNativeStackNavigator<AuthStackParamList>()
 
 const AuthStackNavigator = () => {
-    return (
-        <Stack.Navigator>
-            <Stack.Screen
-                name="Welcome"
-                options={{
-                    headerShown: false,
-                }}
-                component={WelcomeScreen}
-            />
-            {/* moved Onboards to homeStackNavigator */}
-            <Stack.Screen
-                name="SignIn"
-                options={{
-                    // changing to allow for back button option
-                    // headerShown: false,
-                    headerTitle: "",
-                    headerBackTitleVisible: false,
-                }}
-                component={SignInScreen}
-            />
-            <Stack.Screen
-                name="SignUp"
-                options={{
-                    // changing to allow for back button option
-                    // headerShown: false,
-                    headerTitle: "",
-                    headerBackTitleVisible: false,
-                }}
-                component={SignUpScreen}
-            />
-        </Stack.Navigator>
-    )
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="Welcome"
+        options={{
+          headerShown: false,
+        }}
+        component={WelcomeScreen}
+      />
+      {/* moved Onboards to homeStackNavigator */}
+      <Stack.Screen
+        name="SignIn"
+        options={{
+          // changing to allow for back button option
+          // headerShown: false,
+          headerTitle: "",
+          headerBackTitleVisible: false,
+        }}
+        component={SignInScreen}
+      />
+      <Stack.Screen
+        name="SignUp"
+        options={{
+          // changing to allow for back button option
+          // headerShown: false,
+          headerTitle: "",
+          headerBackTitleVisible: false,
+        }}
+        component={SignUpScreen}
+      />
+    </Stack.Navigator>
+  )
 }
 
 export default AuthStackNavigator

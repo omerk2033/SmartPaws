@@ -9,28 +9,28 @@ const TIME_OUT = 3000
 export const SMART_PAWS_TOKEN = "smart_paws_token"
 
 const axiosInstance = axios.create({
-    baseURL: BASE_URL,
-    timeout: TIME_OUT,
+  baseURL: BASE_URL,
+  timeout: TIME_OUT,
 })
 
 axiosInstance.interceptors.request.use(async (req) => {
-    try {
-        const access_token = await SecureStore.getItemAsync(SMART_PAWS_TOKEN)
-        req.headers.Authorization = access_token
-        return req
-    } catch (error) {
-        return req
-    }
+  try {
+    const access_token = await SecureStore.getItemAsync(SMART_PAWS_TOKEN)
+    req.headers.Authorization = access_token
+    return req
+  } catch (error) {
+    return req
+  }
 })
 
 axiosInstance.interceptors.response.use(response => {
   // Check if the response data is not empty and is a valid object before assuming it's JSON
   console.log('Raw response:', response);
-  
+
   if (response.data !== null && typeof response.data === 'object') {
-      return response;
+    return response;
   } else {
-      throw new Error('Response data is not valid JSON');
+    throw new Error('Response data is not valid JSON');
   }
 
 }, error => {

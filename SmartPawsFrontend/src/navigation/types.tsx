@@ -1,110 +1,110 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs"
 import {
-    CompositeNavigationProp,
-    CompositeScreenProps,
-    NavigatorScreenParams,
+  CompositeNavigationProp,
+  CompositeScreenProps,
+  NavigatorScreenParams,
 } from "@react-navigation/native"
 import {
-    NativeStackNavigationProp,
-    NativeStackScreenProps,
+  NativeStackNavigationProp,
+  NativeStackScreenProps,
 } from "@react-navigation/native-stack"
 
 // trying moving onboarding screens to HomeStackParamList
 export type AuthStackParamList = {
-    Welcome: undefined
-    SignIn: undefined
-    SignUp: undefined
-    // Onboard1: undefined
-    // Onboard2: undefined
-    // Onboard3: undefined
+  Welcome: undefined
+  SignIn: undefined
+  SignUp: undefined
+  // Onboard1: undefined
+  // Onboard2: undefined
+  // Onboard3: undefined
 }
 
 export type RootBottomTabParamList = {
-    HomeStack: NavigatorScreenParams<HomeStackParamList>
-    AiStack: NavigatorScreenParams<AiStackParamList>
-    JournalStack: NavigatorScreenParams<JournalStackParamList>
-    MapStack: NavigatorScreenParams<SettingsStackParamList>
+  HomeStack: NavigatorScreenParams<HomeStackParamList>
+  AiStack: NavigatorScreenParams<AiStackParamList>
+  JournalStack: NavigatorScreenParams<JournalStackParamList>
+  MapStack: NavigatorScreenParams<SettingsStackParamList>
 }
 
 export type HomeStackParamList = {
-    Onboard1: undefined
-    Onboard2: undefined
-    Onboard3: undefined
+  Onboard1: undefined
+  Onboard2: undefined
+  Onboard3: undefined
 
-    Home: undefined
-    // adding RegPet Screen 
-    // when user is logged out of firebase index.tsx will handle switching to welcome screen
-    RegPet: undefined
-    // user clicks on the settings button in the header
-    Settings: undefined
-    // user selects pet from home screen
-    PetProfile: {
-        ownerId: string;
-        petName: string;
-    }
-    // user selects to update pet from pet profile screen
-    UpdatePet: {
-        ownerId: string;
-        petName: string;
-    }
-    Map: undefined
-    UserProfile: undefined
-    AIScreen: undefined
-    Journal: undefined
+  Home: undefined
+  // adding RegPet Screen 
+  // when user is logged out of firebase index.tsx will handle switching to welcome screen
+  RegPet: undefined
+  // user clicks on the settings button in the header
+  Settings: undefined
+  // user selects pet from home screen
+  PetProfile: {
+    ownerId: string;
+    petName: string;
+  }
+  // user selects to update pet from pet profile screen
+  UpdatePet: {
+    ownerId: string;
+    petName: string;
+  }
+  Map: undefined
+  UserProfile: undefined
+  AIScreen: undefined
+  Journal: undefined
 }
 
 export type ProfileStackParamList = {
-    Profile: undefined;
-    EditProfile: undefined;
-    ChangePassword: undefined;
-    Notifications: undefined;
-    PrivacySettings: undefined;
-    Settings: undefined;
-    About: undefined;
-    Help: undefined;
-    Feedback: undefined;
-    Logout: undefined;
+  Profile: undefined;
+  EditProfile: undefined;
+  ChangePassword: undefined;
+  Notifications: undefined;
+  PrivacySettings: undefined;
+  Settings: undefined;
+  About: undefined;
+  Help: undefined;
+  Feedback: undefined;
+  Logout: undefined;
 };
 
 
 export type AiStackParamList = {
-    aiScreen: undefined
+  aiScreen: undefined
 }
 
 export type JournalStackParamList = {
-    journal: undefined
+  journal: undefined
 }
 
 export type SettingsStackParamList = {
-    settings: undefined
+  settings: undefined
 }
 
 export type AppStackParamList = {
-    Root: NavigatorScreenParams<RootBottomTabParamList>
-    Settings: undefined
+  Root: NavigatorScreenParams<RootBottomTabParamList>
+  Settings: undefined
 }
 
 export type RootStackParamList = {
-    AppStack: NavigatorScreenParams<AppStackParamList>
-    AuthStack: NavigatorScreenParams<AuthStackParamList>
+  AppStack: NavigatorScreenParams<AppStackParamList>
+  AuthStack: NavigatorScreenParams<AuthStackParamList>
 }
 
 export type AuthScreenNavigationType<
-    RouteName extends keyof AuthStackParamList
+  RouteName extends keyof AuthStackParamList
 > = CompositeNavigationProp<
-    NativeStackNavigationProp<AuthStackParamList, RouteName>,
-    NativeStackNavigationProp<AppStackParamList, "Root">
+  NativeStackNavigationProp<AuthStackParamList, RouteName>,
+  NativeStackNavigationProp<AppStackParamList, "Root">
 >
 
 export type RootTabScreenProps<Screen extends keyof RootBottomTabParamList> =
-    CompositeScreenProps<
-        BottomTabScreenProps<RootBottomTabParamList, Screen>,
-        NativeStackScreenProps<RootBottomTabParamList>
-    >
+  CompositeScreenProps<
+    BottomTabScreenProps<RootBottomTabParamList, Screen>,
+    NativeStackScreenProps<RootBottomTabParamList>
+  >
 
 export type HomeScreenNavigationType<
-    RouteName extends keyof HomeStackParamList
+  RouteName extends keyof HomeStackParamList
 > = CompositeNavigationProp<
-    NativeStackNavigationProp<HomeStackParamList, RouteName>,
-    NativeStackNavigationProp<AppStackParamList, "Root">
+  NativeStackNavigationProp<HomeStackParamList, RouteName>,
+  NativeStackNavigationProp<AppStackParamList, "Root">
 >

@@ -83,7 +83,7 @@ const JournalScreen = () => {
       key: pet.name,
       value: pet.name
     })
-  );
+    );
 
   // Triggered when a pet is selected from the dropdown list
   const onPetSelect = (selectedValue: string) => {
@@ -228,9 +228,12 @@ const JournalScreen = () => {
         <View style={{ flex: 1 }}>
 
           {/* sort journal entries by date and display */}
+          {/* date format is like 4/13/2024 */}
           {journalEntries.sort((a, b) => {
+            // convert dates to array of #s [month, day, year]
             const dateA = a.date.split('/').map(Number);
             const dateB = b.date.split('/').map(Number);
+            // convert to Date and return journal entry that is later (more recent) 
             return new Date(dateB[2], dateB[0] - 1, dateB[1]).getTime() - new Date(dateA[2], dateA[0] - 1, dateA[1]).getTime();
           }).map((journalEntry: IJournalEntry, index: number) => (
             <View key={index}>

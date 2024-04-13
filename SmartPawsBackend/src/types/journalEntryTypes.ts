@@ -1,6 +1,6 @@
 export interface IJournalEntry {
-    ownerId: string,
-    petName: string,
-    date: string,
-    entry: string
+  ownerId: string,
+  petName: string,
+  date: string,
+  entry: string
 }
