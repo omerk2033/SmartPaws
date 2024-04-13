@@ -7,9 +7,10 @@ import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location'; // to get user's current location
 
 const MapScreen: React.FC = () => {
-  // const homeStackNavigation = useNavigation<HomeStackNavigationProps>();  
   // using region to set the region based on how large is needed 
   // for all of the vet offices returned from google maps api
+  // default is UTA but should get set based on 
+  // the user's location and the radius of the vets found
   const [region, setRegion] = useState({
     latitude: 32.7310,
     longitude: -97.1150,
@@ -18,10 +19,9 @@ const MapScreen: React.FC = () => {
   });
 
   const [locationFetched, setLocationFetched] = useState(false);
-
   const [veterinarians, setVeterinarians] = useState<Veterinarian[]>([]);
-
   const [vetsFetched, setVetsFetched] = useState(false);
+  const [regionSet, setRegionSet] = useState(false);
 
   interface Location {
     lat: number;
@@ -88,31 +88,6 @@ const MapScreen: React.FC = () => {
     })();
   }, []);
 
-  //   // find all vets within specified radius of user's location
-  //   // waits for locationFetched to be true before running 
-  //   // to make sure user location is known before getVeterinarians is called 
-  //   // with user's current location as arguments 
-  //   useEffect(() => {
-  //     // This effect depends on `locationFetched` to trigger.
-  //     // It's designed to run after the user's location has been successfully fetched.
-  //     if (locationFetched && !vetsFetched) {
-  //         // `userLocation.current` has been correctly set by the first useEffect.
-  //         if (userLocation.current) {
-  //             const { latitude, longitude } = userLocation.current;
-
-  //             getVeterinarians(latitude, longitude)
-  //                 .then((vets) => {
-  //                     setVeterinarians(vets);
-  //                     setVetsFetched(true); // Ensure we mark that vets have been fetched.
-  //                 })
-  //                 .catch((error) => {
-  //                     console.error("Failed to fetch veterinarians:", error);
-  //                 });
-  //         }
-  //     }
-  // }, [locationFetched]); // This useEffect is triggered when `locationFetched` changes.
-
-  // for some reason the above useEffect was missing several things that the below has
   // find all vets within specified radius of user's location
   // waits for locationFetched to be true before running 
   // to make sure user location is known before getVeterinarians is called 
@@ -148,12 +123,17 @@ const MapScreen: React.FC = () => {
           });
           // set the display region of the map
           if (minLat != null && maxLat != null && minLng != null && maxLng != null) {
+            console.log("setRegion");
             setRegion({
               latitude: (minLat + maxLat) / 2,
               longitude: (minLng + maxLng) / 2,
               latitudeDelta: (maxLat - minLat) * 1.1, // * 1.1 for a bit of padding around the furthest locations
               longitudeDelta: (maxLng - minLng) * 1.1,
             });
+            console.log("region");
+            console.log(region);
+            // set boolean to allow MapView component to render
+            setRegionSet(true);
           }
 
         })
@@ -192,42 +172,47 @@ const MapScreen: React.FC = () => {
       colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
       style={styles.linearGradient}
     >
-      <View style={{ marginTop: 5, flex: 1 }}>
-        <MapView
-          style={{ flex: 1 }}
-          region={region}
-          onRegionChangeComplete={region => setRegion(region)}
-        >
-          {/* Markers for all of the nearby veterinarians */}
-          {veterinarians.map((veterinarian, index) => (
-            <Marker
-              key={index}
-              coordinate={{
-                latitude: veterinarian.geometry.location.lat,
-                longitude: veterinarian.geometry.location.lng
-              }}
-              title={veterinarian.name}
-              description={veterinarian.vicinity}
-            />
-          ))}
-          {userLocation.current && (
-            <Marker
-              key="user_location"
-              coordinate={{
-                latitude: userLocation.current.latitude,
-                longitude: userLocation.current.longitude
-              }}
-              title="Your Location"
-              pinColor="#ADD8E6"
-            />
-          )}
-        </MapView>
-      </View>
+      {/* 2 attempts at trying to get the map to wait until the region of view is set */}
+      {/* it seems to be working better so scared to touch it */}
+      {regionSet &&
+        <View style={{ marginTop: 5, flex: 1 }}>
+          {locationFetched && <MapView
+            style={{ flex: 1 }}
+            region={region}
+          >
+            {/* Markers for all of the nearby veterinarians */}
+            {veterinarians.map((veterinarian, index) => (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: veterinarian.geometry.location.lat,
+                  longitude: veterinarian.geometry.location.lng
+                }}
+                title={veterinarian.name}
+                description={veterinarian.vicinity}
+              />
+            ))}
+            {userLocation.current && (
+              <Marker
+                key="user_location"
+                coordinate={{
+                  latitude: userLocation.current.latitude,
+                  longitude: userLocation.current.longitude
+                }}
+                title="Your Location"
+                pinColor="#ADD8E6"
+              />
+            )}
+          </MapView>
+          }
+        </View>
+      }
       <View style={styles.refreshButtonContainer}>
         <TouchableOpacity onPress={refreshVets} style={styles.refreshButton}>
           <Text style={styles.refreshButtonText}>Refresh</Text>
         </TouchableOpacity>
       </View>
+
     </LinearGradient>
   );
 };

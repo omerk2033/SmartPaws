@@ -9,6 +9,7 @@ import { SelectList } from 'react-native-dropdown-select-list';
 import { IJournalEntry, IPet } from '../../types';
 import { useIsFocused } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import SafeAreaWrapper from 'components/shared/safeAreaWrapper';
 
 const JournalScreen = () => {
   const auth = getAuth();
@@ -158,93 +159,100 @@ const JournalScreen = () => {
   console.log(journalEntries);
 
   return (
-    <LinearGradient
-      colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
-      style={styles.linearGradient}
-    >
-      <ScrollView keyboardShouldPersistTaps='handled' style={styles.scrollViewStyle}>
-        <View style={{ flex: 1 }}>
-          <View style={styles.dropdownContainer}>
-            <SelectList
-              data={data}
-              setSelected={onPetSelect}
-              placeholder='Select a pet...'
-              boxStyles={styles.selectListStyle}
-              dropdownTextStyles={styles.selectListStyle}
-            />
+    <SafeAreaWrapper>
+      <LinearGradient
+        colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
+        style={styles.linearGradient}
+      >
+        <ScrollView keyboardShouldPersistTaps='handled' style={styles.scrollViewStyle}>
+          <View style={{ marginTop: 20 }}>
+            <Text style={{ textAlign: 'center', fontSize: 23, fontWeight: '700', color: 'white' }}>Pet Journal</Text>
           </View>
-
-          <View style={{ margin: 20 }}>
-            {Platform.OS === 'ios' ? (
-              <DateTimePicker
-                value={date}
-                mode={'date'}
-                display="default"
-                onChange={(event, selectedDate) => {
-                  const currentDate = selectedDate || date;
-                  setDate(currentDate);
-                }}
+          <View style={{ flex: 1 }}>
+            <View style={styles.dropdownContainer}>
+              <SelectList
+                data={data}
+                setSelected={onPetSelect}
+                placeholder='Select a pet...'
+                boxStyles={styles.selectListStyle}
+                dropdownTextStyles={styles.selectListStyle}
               />
-            ) : (
-              <TouchableOpacity style={styles.button} onPress={() => setShowDatePicker(true)}>
-                <Text style={styles.buttonText}>Select a date</Text>
-              </TouchableOpacity>
-            )}
-
-            <View style={{ alignItems: 'center' }}>
-              <Text style={styles.dateDisplay}>Selected Date: {date.toLocaleDateString('en-US')}</Text>
             </View>
 
-            {showDatePicker && (
-              <DateTimePicker
-                value={date}
-                mode={'date'}
-                display="default"
-                onChange={(event, selectedDate) => {
-                  const currentDate = selectedDate || date;
-                  setShowDatePicker(Platform.OS === 'ios');
-                  setDate(currentDate);
-                }}
+            <View>
+              {Platform.OS === 'ios' ? (
+                <DateTimePicker
+                  value={date}
+                  mode={'date'}
+                  display="default"
+                  onChange={(event, selectedDate) => {
+                    const currentDate = selectedDate || date;
+                    setDate(currentDate);
+                  }}
+                />
+              ) : (
+                <TouchableOpacity style={styles.button} onPress={() => setShowDatePicker(true)}>
+                  <Text style={styles.buttonText}>Select a date</Text>
+                </TouchableOpacity>
+              )}
+
+              <View style={{ alignItems: 'center', marginBottom: 10 }}>
+                <Text style={styles.dateDisplay}>Selected Date: {date.toLocaleDateString('en-US')}</Text>
+              </View>
+
+              {showDatePicker && (
+                <DateTimePicker
+                  value={date}
+                  mode={'date'}
+                  display="default"
+                  onChange={(event, selectedDate) => {
+                    const currentDate = selectedDate || date;
+                    setShowDatePicker(Platform.OS === 'ios');
+                    setDate(currentDate);
+                  }}
+                />
+              )}
+            </View>
+            <View>
+              <TextInput
+                style={styles.input}
+                multiline
+                placeholder="Write your journal entry here..."
+                value={entry}
+                onChangeText={setEntry}
               />
-            )}
+
+              <TouchableOpacity style={styles.button} onPress={handleSaveEntry}>
+                <Text style={styles.buttonText}>Save Entry</Text>
+              </TouchableOpacity>
+            </View>
           </View>
           <View>
-            <TextInput
-              style={styles.input}
-              multiline
-              placeholder="Write your journal entry here..."
-              value={entry}
-              onChangeText={setEntry}
-            />
-
-            <TouchableOpacity style={styles.button} onPress={handleSaveEntry}>
-              <Text style={styles.buttonText}>Save Entry</Text>
-            </TouchableOpacity>
+            {selectedPet &&
+              <Text style={styles.heading}>{selectedPet}'s Journal Entries</Text>
+            }
           </View>
-        </View>
-        <View>
-          <Text style={styles.heading}>{selectedPet}'s Journal Entries</Text>
-        </View>
-        <View style={{ flex: 1 }}>
+          <View style={{ flex: 1 }}>
 
-          {/* sort journal entries by date and display */}
-          {/* date format is like 4/13/2024 */}
-          {journalEntries.sort((a, b) => {
-            // convert dates to array of #s [month, day, year]
-            const dateA = a.date.split('/').map(Number);
-            const dateB = b.date.split('/').map(Number);
-            // convert to Date and return journal entry that is later (more recent) 
-            return new Date(dateB[2], dateB[0] - 1, dateB[1]).getTime() - new Date(dateA[2], dateA[0] - 1, dateA[1]).getTime();
-          }).map((journalEntry: IJournalEntry, index: number) => (
-            <View key={index}>
-              <Text style={styles.journalDate}>{journalEntry.date}</Text>
-              <Text style={styles.journalEntryStyle}>{journalEntry.entry}</Text>
-            </View>
-          ))}
+            {/* sort journal entries by date and display */}
+            {/* date format is like 4/13/2024 */}
+            {journalEntries.sort((a, b) => {
+              // convert dates to array of #s [month, day, year]
+              const dateA = a.date.split('/').map(Number);
+              const dateB = b.date.split('/').map(Number);
+              // convert to Date and return journal entry that is later (more recent) 
+              return new Date(dateB[2], dateB[0] - 1, dateB[1]).getTime() - new Date(dateA[2], dateA[0] - 1, dateA[1]).getTime();
+            }).map((journalEntry: IJournalEntry, index: number) => (
+              <View key={index}>
+                <Text style={styles.journalDate}>{journalEntry.date}</Text>
+                <Text style={styles.journalMemoryStyle}>{journalEntry.entry}</Text>
+              </View>
+            ))}
 
-        </View>
-      </ScrollView>
-    </LinearGradient>
+          </View>
+        </ScrollView>
+      </LinearGradient>
+    </SafeAreaWrapper>
   );
 };
 
@@ -255,6 +263,14 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     marginTop: 50,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5, // Add some vertical padding if needed
+    borderWidth: 0, // If you want an outline for the container
+    borderColor: '#cccccc', // Color for the container border
+    borderRadius: 30, // Example border radius
+    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Opaque background
+    overflow: 'hidden', // Ensures nothing goes outside the container's bounds
   },
   input: {
     height: 100,
@@ -263,6 +279,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     padding: 15,
     borderRadius: 25,
+    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Opaque background
     marginTop: 20,
   },
   button: {
@@ -302,6 +319,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     fontSize: 16
+  },
+  journalMemoryStyle: {
+    backgroundColor: '#7BA3B5',
+    color: 'blue',
+    alignSelf: 'stretch', // This will make the element stretch to fill the parent container
+    width: '100%', // This will make the element take up 100% of the width of its parent container
+    marginBottom: 10,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    fontSize: 16,
+    borderWidth: 2, // This will make the border somewhat thick
+    borderColor: '#3B6F7C', // This will make the border blue    
   },
   scrollViewStyle: {
     flex: 1,
