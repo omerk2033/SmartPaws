@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { Keyboard, View, Text, TextInput, TouchableOpacity, StyleSheet, TouchableWithoutFeedback, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import axiosInstance, { BASE_URL } from '../../services/config';
 import { getAuth } from 'firebase/auth';
 import { SelectList } from 'react-native-dropdown-select-list';
-import { IPet } from 'types';
+import { IJournalEntry, IPet } from '../../types';
 import { useIsFocused } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -19,8 +19,10 @@ const JournalScreen = () => {
   const isFocused = useIsFocused();
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [journalEntries, setJournalEntries] = useState<IJournalEntry[]>([]);
+  const [entryAddedTrigger, setEntryAddedTrigger] = useState(false);
 
-  // If user navigates to this screen, fetch pets in case they've added a new pet
+  // fetch user's pets for dropdown menu upon screen loading
   useEffect(() => {
     if (isFocused) {
       fetchPets();
@@ -52,13 +54,15 @@ const JournalScreen = () => {
   };
 
   // Fetch pet details when selected pet changes
+  // and fetch pet's journal entries to display 
   useEffect(() => {
-    if (selectedPet && selectedPet !== 'Chat with Gigi') {
+    if (selectedPet) {
       fetchPetDetails(selectedPet);
+      fetchJournalEntries();
     } else {
       setPetDetails(null);
     }
-  }, [selectedPet]);
+  }, [selectedPet, entryAddedTrigger]); // triggered if new pet is selected from dropdown or new journal entry has been saved
 
   // Fetch pet details from backend
   const fetchPetDetails = async (petName: string) => {
@@ -73,11 +77,11 @@ const JournalScreen = () => {
   };
 
   // Construct the data for the dropdown list
-  const data = [{ key: 'Chat with Gigi', value: 'Chat with Gigi' }].concat(
+  const data = 
     pets.map((pet: IPet) => ({
       key: pet.name,
       value: pet.name
-    }))
+    })
   );
 
   // Triggered when a pet is selected from the dropdown list
@@ -88,67 +92,79 @@ const JournalScreen = () => {
   
     console.log("Selected Pet: " + selectedValue);
   };
+    
+  // const handleSaveEntry = async (data: IJournalEntry) => {
+  const handleSaveEntry = async () => {
+      try {
+        const formattedDate = date.toLocaleDateString('en-US'); // format the date as a string
+        // just printing
+        console.log("ownerId: " + ownerId + " petName: " + petDetails?.name + " date: " + formattedDate + " entry: " + entry);
 
-    // const handleSaveEntry = async (data: IJournalEntry) => {
-    const handleSaveEntry = async () => {
-        try {
-          // NEED TO GET date FROM DATE PICKER THAT YOU WILL CREATE...
-          // const date = "04/11/2024"; // JUST HARDCODING A DATE FOR NOW UNTIL THE DATE PICKER IS IMPLEMENTED 
-          const formattedDate = date.toLocaleDateString('en-US'); // format the date as a string
-          // just printing
-          console.log("ownerId: " + ownerId + " petName: " + petDetails?.name + " date: " + formattedDate + " entry: " + entry);
-
-          if (petDetails?.name != null) {
-            // await saveJournalEntryToDatabase(ownerId, petDetails?.name, date, entry);
-            await saveJournalEntryToDatabase(ownerId, petDetails?.name, formattedDate, entry);
-          }
-
-          console.log('Entry saved:', entry);
-        } catch (error) {
-          console.log("Error in handleSaveEntry");
+        if (petDetails?.name != null) {
+          // await saveJournalEntryToDatabase(ownerId, petDetails?.name, date, entry);
+          await saveJournalEntryToDatabase(ownerId, petDetails?.name, formattedDate, entry);
+          setEntryAddedTrigger(!entryAddedTrigger); // change the state to trigger fetchJournalEntries again
         }
 
-        setEntry(''); // reset input box
-
-    };
-
-    const saveJournalEntryToDatabase = async (
-      ownerId: string,
-      petName: string,
-      date: string,
-      entry: string
-    ) => {
-      try {
-        // const response = await axiosInstance.post("journalEntryRoutes/create", {
-        const response = await axiosInstance.post("journalEntry/create", {
-          ownerId,
-          petName,
-          date,
-          entry
-        });
-        console.log("journal saved to MongoDB");
-        return response.data.journalEntry;
+        console.log('Entry saved:', entry);
       } catch (error) {
-        console.log("error in saveJournalEntryToDatabase", error);
-        throw error;
+        console.log("Error in handleSaveEntry");
       }
+
+      setEntry(''); // reset input box
+
+  };
+
+  const saveJournalEntryToDatabase = async (
+    ownerId: string,
+    petName: string,
+    date: string,
+    entry: string
+  ) => {
+    try {
+      const response = await axiosInstance.post("journalEntry/create", {
+        ownerId,
+        petName,
+        date,
+        entry
+      });
+      console.log("journal saved to MongoDB");
+      return response.data.journalEntry;
+    } catch (error) {
+      console.log("error in saveJournalEntryToDatabase", error);
+      throw error;
     }
-    
-    const dismissKeyboard = () => {
-        Keyboard.dismiss();
-    };
+  }
+
+  const fetchJournalEntries = async () => {
+    try {
+        // get current user's uid 
+        const auth = getAuth();  
+        const currentUser = auth.currentUser;
+        const ownerId = currentUser ? currentUser.uid : "";
+
+        // make get request to backend with ownerId of currently logged in user
+        // and selected pet name
+        console.log("fetchJournalEntries called");
+        console.log(BASE_URL + 'journalEntry/get/' + ownerId + '/' + selectedPet);
+        const response = await fetch(BASE_URL + 'journalEntry/get/' + ownerId + '/' + selectedPet);
+        const data = await response.json();
+        setJournalEntries(data);
+        console.log(journalEntries);
+    } catch (error) {
+        console.error("Error fetching journal entries", error);
+    } 
+  };    
+
+    console.log(journalEntries);
 
     return (
-      <TouchableWithoutFeedback onPress={dismissKeyboard} accessible={false}>
         <LinearGradient
           colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
           style={styles.linearGradient}
         >
-          <KeyboardAvoidingView 
-            style={{ flex: 1 }}
-            behavior={Platform.OS === "ios" ? "padding" : "height"}
-            keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
-          >
+        <ScrollView keyboardShouldPersistTaps='handled' style={styles.scrollViewStyle}>
+            <View style={{ flex: 1 }}>
             <View style={styles.dropdownContainer}>
               <SelectList 
                 data={data} 
@@ -159,8 +175,7 @@ const JournalScreen = () => {
               />
             </View>
             
-            <View style={styles.container}>
-              <Text style={styles.title}>Journal</Text>
+            <View>
               <TextInput
                 style={styles.input}
                 multiline
@@ -201,82 +216,105 @@ const JournalScreen = () => {
               )}
             </View>
 
-              <TouchableOpacity style={styles.button} onPress={handleSaveEntry}>
+              <TouchableOpacity style={{ marginBottom: 5 }} onPress={handleSaveEntry}>
                 <Text style={styles.buttonText}>Save Entry</Text>
               </TouchableOpacity>
             </View>
-          </KeyboardAvoidingView>
+            </View>
+            <View style={{ flex: 1, marginTop: 40 }}>
+            {journalEntries.map((journalEntry: IJournalEntry, index: number) => (
+              <View key={index}>
+                <Text>{journalEntry.date}</Text>
+                <Text style={styles.journalEntryStyle}>{journalEntry.entry}</Text>
+              </View>
+            ))}
+            </View>
+            </ScrollView>
         </LinearGradient>
-      </TouchableWithoutFeedback>
     );
 };
 
 const styles = StyleSheet.create({
-    linearGradient: {
-        flex: 1,
-        paddingHorizontal: 20,
-    },
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
-        color: 'white',
-    },
-    dateDisplay: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      marginTop: 20,
-      color: 'black',
-    },
-    input: {
-        height: 200,
-        width: '100%',
-        borderWidth: 1,
-        borderColor: '#ccc',
-        padding: 15,
-        borderRadius: 25, // oval shape
-        backgroundColor: 'rgba(255, 255, 255, 0.5)', // semi-transparent white
-        color: 'black', // ensure text is readable on light background
-        marginBottom: 20,
-        textAlignVertical: 'top', // start text from the top of the text input
-    },
-    button: {
-        backgroundColor: '#201A64',
-        borderRadius: 20, // oval shape
-        paddingVertical: 10,
-        paddingHorizontal: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-    },
-    dropdownContainer: {
-      marginTop: 50, 
-      marginBottom: 10,
-      paddingHorizontal: 10,
-      paddingVertical: 5, // Add some vertical padding if needed
-      borderWidth: 0, // If you want an outline for the container
-      borderColor: '#cccccc', // Color for the container border
-      borderRadius: 30, // Example border radius
-      backgroundColor: 'rgba(255, 255, 255, 0.5)', // Opaque background
-      overflow: 'hidden', // Ensures nothing goes outside the container's bounds
-    },
-    selectListStyle: {
-      width: '100%', // Ensure SelectList fills the container width
-      borderRadius:20, // Match the dropdownContainer's border radius
-      padding: 0,
-      margin: 0,
-      borderColor: 'transparent', // Make the border color transparent
-      borderWidth: 0, // Set border width to 0 to remove it
-    },
-  
+  linearGradient: {
+    flex: 1,
+    paddingHorizontal: 20,
+  },
+  dropdownContainer: {
+    marginTop: 50,
+  },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: 'white',
+  },
+  dateContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  datePicker: {
+    margin: 20,
+  },
+  input: {
+    height: 100,
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 15,
+    borderRadius: 25,
+    marginTop: 20,
+  },
+  button: {
+    marginTop: 20,
+  },
+  journalContainer: {
+    flex: 1,
+    marginTop: 20,
+  },
+  journalEntryContainer: {
+    marginBottom: 20,
+  },
+  selectListStyle: {
+    width: '100%', // Ensure SelectList fills the container width
+    borderRadius:20, // Match the dropdownContainer's border radius
+    padding: 0,
+    margin: 0,
+    borderColor: 'transparent', // Make the border color transparent
+    borderWidth: 0, // Set border width to 0 to remove it
+  },
+  dateDisplay: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
+    color: 'black',
+  },
+  buttonText: {
+      color: '#fff',
+      fontSize: 16,
+  },
+  journalEntryStyle: {
+    backgroundColor: '#ADD8E6', 
+    color: 'blue', 
+    alignSelf: 'stretch', // This will make the element stretch to fill the parent container
+    width: '100%', // This will make the element take up 100% of the width of its parent container
+    marginBottom: 10,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    fontSize: 16
+  },
+  scrollViewStyle: {
+    flex: 1,
+    paddingHorizontal: 5.5,
+    marginTop: 13,
+  },
+
+
 });
 
 export default JournalScreen;
