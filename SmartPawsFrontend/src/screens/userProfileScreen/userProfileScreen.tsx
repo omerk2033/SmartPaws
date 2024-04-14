@@ -1,6 +1,8 @@
+// ability for user to change their user name that is displayed
+
 import React, { useState, useEffect } from 'react';
 import { View, TextInput, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { getAuth, updateEmail, updateProfile } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import { BASE_URL } from '../../services/config';
 import SafeAreaWrapper from '../../components/shared/safeAreaWrapper';
 import { LinearGradient } from 'expo-linear-gradient';

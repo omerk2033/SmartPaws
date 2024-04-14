@@ -1,3 +1,7 @@
+// sign up screen provides user with 1st time account registration form
+// sets initial home screen to Onboard1 to provide 1st time instructions for using app
+// account setup handled using firebase
+
 import { Box, Text } from "../../utils/theme/style";
 import React, { useEffect } from "react";
 import { useNavigation } from "@react-navigation/native";
@@ -11,7 +15,6 @@ import { FIREBASE_AUTH } from "../../services/firebase";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import axiosInstance from "../../services/config";
 import { LinearGradient } from "expo-linear-gradient";
-
 import { useContext } from 'react';
 import { NavigationContext } from "../../navigation/navigationContext";
 
@@ -38,13 +41,12 @@ const SignUpScreen = () => {
       email: "",
       password: "",
       confirmPassword: "",
-      name: "", // Add name in default values
+      name: "", 
     },
   })
 
   const onSubmit = async (data: IUser) => {
     try {
-      // const { email, name, password } = data;
       const { email, name, password, confirmPassword } = data;
 
       // check if password matches
@@ -52,9 +54,7 @@ const SignUpScreen = () => {
         Alert.alert("The passwords entered do not match. Please try again.");
         return;
       }
-      /**
-       * register user
-       */
+      // register user
       await signUpWithEmailAndPassword(email, password, name);
       // navigateToSignInScreen() // Removed to avoid navigation until user is registered in MongoDB
     } catch (error) {
@@ -80,7 +80,6 @@ const SignUpScreen = () => {
               contentContainerStyle={styles.scrollViewContent}
               keyboardShouldPersistTaps="handled"
             >
-              {/* removed mt="13" to be able to see password input box above keyboard */}
               <Box flex={1} px="5.5" >
                 <Text variant="textLg" color="neutral700" fontWeight="700" mb="10">
 
@@ -99,7 +98,7 @@ const SignUpScreen = () => {
                       value={value}
                       placeholder="Enter your name..."
                       error={errors.name}
-                      style={styles.input} // Applying the custom style
+                      style={styles.input} 
                     />
                   )}
                   name="name"

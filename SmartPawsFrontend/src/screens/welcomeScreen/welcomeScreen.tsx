@@ -1,3 +1,5 @@
+// initial intro logo screen welcoming user to use the app
+
 import React, { useEffect, useRef } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import { AuthScreenNavigationType } from "../../navigation/types";

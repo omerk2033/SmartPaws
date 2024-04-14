@@ -10,5 +10,4 @@ export const NavigationContext = React.createContext({
   // it does need the value 'Home' to be passed in 
   // to instead navigate to Home screen after user has been authenticated
   setInitialScreen: (value: string) => { },
-  // setInitialScreen: () => {},
 });

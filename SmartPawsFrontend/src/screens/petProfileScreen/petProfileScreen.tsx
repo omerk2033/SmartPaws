@@ -127,7 +127,6 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
     outputRange: ['rgba(255, 255, 255, 0.3)', '#E8A317'],
   });
 
-
   return (
     <SafeAreaWrapper>
       <LinearGradient

@@ -1,3 +1,5 @@
+// mongodb pet schema
+
 import mongoose from "mongoose";
 
 const petSchema = new mongoose.Schema({

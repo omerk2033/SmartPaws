@@ -103,7 +103,9 @@ const JournalScreen = () => {
 
       if (petDetails?.name != null) {
         await saveJournalEntryToDatabase(ownerId, petDetails?.name, formattedDate, entry);
-        setEntryAddedTrigger(!entryAddedTrigger); // change the state to trigger fetchJournalEntries again
+        // change the state to trigger fetchJournalEntries again
+        // so that new journal entry will be rendered on screen
+        setEntryAddedTrigger(!entryAddedTrigger); 
       }
 
       console.log('Entry saved:', entry);

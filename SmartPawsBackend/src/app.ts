@@ -6,7 +6,7 @@ import { petEventEmitter } from "./controllers/petController";
 import journalEntryRoutes from "./routes/journalEntryRoutes";
 
 
-// ExpressJS code to define server and main route.
+// ExpressJS code to define server and routes.
 
 const application = express();
 application.use(express.json())

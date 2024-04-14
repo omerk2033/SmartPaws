@@ -1,5 +1,11 @@
+// settings screen provides user with option to 
+// change user name that is displayed
+// display terms of use of the app
+// reset password with email sent to user's registered email
+// log out of app
+
 import React from "react";
-import { Text, TouchableOpacity, StyleSheet, FlatList, View, Button } from "react-native";
+import { Text, TouchableOpacity, StyleSheet, FlatList, View, } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { getAuth, signOut, sendPasswordResetEmail } from 'firebase/auth';
@@ -38,7 +44,6 @@ const OptionsList: React.FC = () => {
 };
 
 const SettingsScreen = () => {
-  // const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
   const auth = getAuth();
 
   const handleSignOut = async () => {
@@ -71,22 +76,24 @@ const SettingsScreen = () => {
         style={styles.linearGradient}
       >
         {/* Ensure text is inside a <Text> component */}
-        <Text style={styles.title}>Settings</Text>
+        <Text style={[styles.title, {marginTop: 20}]}>Settings</Text>
 
         <OptionsList />
 
+
         {/* button to reset password, sends password reset link to user's email */}
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold', textAlign: 'center', paddingHorizontal: 30 }}>
-            A link will be sent to your registered email to reset your password
-          </Text>
-        </View>
         <TouchableOpacity
           onPress={handleResetPassword}
-          style={[styles.button, { backgroundColor: "#201A64" }]}  >
+          style={[styles.button, { backgroundColor: "#201A64", width: 200, alignSelf: 'center', marginBottom: 0 }]}  >
           {/* Ensure text is inside a <Text> component */}
           <Text style={styles.buttonText}>Reset Password</Text>
         </TouchableOpacity>
+
+          <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold', textAlign: 'center', paddingHorizontal: 30, marginTop: 10 }}>
+            A link will be sent to your registered email to reset your password
+          </Text>
+        </View>
         <TouchableOpacity
           onPress={handleSignOut}
           style={[styles.button, { backgroundColor: "red" }]}  >

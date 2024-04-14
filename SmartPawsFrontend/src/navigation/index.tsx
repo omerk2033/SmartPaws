@@ -35,25 +35,5 @@ const Navigation = () => {
   );
 };
 
-// const Navigation = () => {
-
-//     const [isAuthenticated, setIsAuthenticated] = useState(false); // Change initial state to false
-
-//     useEffect(() => {
-//         const unsubscribe = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-//             setIsAuthenticated(!!user); // Update isAuthenticated based on user existence
-//         });
-
-//         // Cleanup function for useEffect
-//         return () => unsubscribe();
-//     }, []);
-
-//     return (
-//         <NavigationContainer>
-//             {isAuthenticated ? <AppStackNavigator /> : <AuthStackNavigator />}
-//         </NavigationContainer>
-//     );
-// };
-
 export default Navigation;
 

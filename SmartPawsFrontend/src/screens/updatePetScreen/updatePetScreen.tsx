@@ -119,10 +119,57 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
       reset();
 
       // navigate back to user's home page 
-      // OR COULD PERHAPS NAVIGATE BACK TO THE PET PROFILE SCREEN OF THE PET THAT WAS JUST EDITED 
       navigation.navigate("Home");
     } catch (error) {
       console.log("Error on submit pet profile", error);
+    }
+  }
+
+  const updatePetProfileInDatabase = async (
+    ownerId: string,
+    name: string,
+    age: string,
+    species: string,
+    breed: string,
+    color: string,
+    gender: string,
+    vaccinationRecords: string,
+    medsSupplements: string,
+    allergiesSensitivities: string,
+    prevIllnessesInjuries: string,
+    diet: string,
+    exerciseHabits: string,
+    indoorOrOutdoor: string,
+    reproductiveStatus: string,
+    image: string,
+    notes: string,
+  ) => {
+    try {
+      console.log(BASE_URL + "pet/update/" + ownerId, + "/" + name);
+      // put request sent to pet/update route to update preexisting pet profile with updated values
+      const response = await axiosInstance.put(BASE_URL + "pet/update/" + ownerId + "/" + name, {
+        ownerId,
+        name,
+        age,
+        species,
+        breed,
+        color,
+        gender,
+        vaccinationRecords,
+        medsSupplements,
+        allergiesSensitivities,
+        prevIllnessesInjuries,
+        diet,
+        exerciseHabits,
+        indoorOrOutdoor,
+        reproductiveStatus,
+        image,
+        notes,
+      });
+      console.log("pet updated in mongoDB");
+      return response.data.pet;
+    } catch (error) {
+      console.log("error in updatePetProfileInDatabase", error);
     }
   }
 
@@ -173,7 +220,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
         ]}
         style={{ flex: 1 }}
       >
-        {/* <Box flex={1} px="5.5" mt={"13"}> */}
         <ScrollView keyboardShouldPersistTaps='handled' style={styles.scrollViewStyle}>
 
           <View style={styles.centeredView}>
@@ -256,7 +302,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 value={value}
                 placeholder="Pet Breed"
                 style={styles.input}
-              // error={errors.name}  
               />
             )}
             name="breed"
@@ -272,7 +317,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 value={value}
                 placeholder="Pet Color"
                 style={styles.input}
-              // error={errors.name}  
               />
             )}
             name="color"
@@ -288,7 +332,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 value={value}
                 placeholder="Pet Gender"
                 style={styles.input}
-              // error={errors.name}  
               />
             )}
             name="gender"
@@ -304,7 +347,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 value={value}
                 placeholder="Pet Vaccination Records"
                 style={styles.input}
-              // error={errors.name}  
               />
             )}
             name="vaccinationRecords"
@@ -320,7 +362,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 value={value}
                 placeholder="Pet Medications/Supplements"
                 style={styles.input}
-              // error={errors.name}  
               />
             )}
             name="medsSupplements"
@@ -336,7 +377,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 value={value}
                 placeholder="Pet Allergies/Sensitivities"
                 style={styles.input}
-              // error={errors.name}  
               />
             )}
             name="allergiesSensitivities"
@@ -352,7 +392,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 value={value}
                 placeholder="Pet Previous Illnesses/Injuries/Surgeries"
                 style={styles.input}
-              // error={errors.name}  
               />
             )}
             name="prevIllnessesInjuries"
@@ -368,7 +407,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 value={value}
                 placeholder="Pet Diet"
                 style={styles.input}
-              // error={errors.name}  
               />
             )}
             name="diet"
@@ -384,7 +422,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 value={value}
                 placeholder="Pet Exercise Habits"
                 style={styles.input}
-              // error={errors.name}  
               />
             )}
             name="exerciseHabits"
@@ -400,7 +437,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 value={value}
                 placeholder="Pet Indoor/Outdoor"
                 style={styles.input}
-              // error={errors.name}  
               />
             )}
             name="indoorOrOutdoor"
@@ -416,13 +452,11 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 value={value}
                 placeholder="Pet Reproductive Status"
                 style={styles.input}
-              // error={errors.name}  
               />
             )}
             name="reproductiveStatus"
           />
           <Box mb="6" />
-          {/* REMOVED IMAGE TEXT BOX SINCE UPLOADING WITH + BUTTON */}
           <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -433,7 +467,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
                 value={value}
                 placeholder="Pet Notes"
                 style={styles.input}
-              // error={errors.name}  
               />
             )}
             name="notes"
@@ -458,60 +491,10 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
             <Text style={styles.buttonText}>Update Profile</Text>
           </TouchableOpacity>
           <Box mb="5.5" />
-
-          {/* </Box> */}
         </ScrollView>
       </LinearGradient>
     </SafeAreaWrapper>
   )
-}
-
-const updatePetProfileInDatabase = async (
-  ownerId: string,
-  name: string,
-  age: string,
-  species: string,
-  breed: string,
-  color: string,
-  gender: string,
-  vaccinationRecords: string,
-  medsSupplements: string,
-  allergiesSensitivities: string,
-  prevIllnessesInjuries: string,
-  diet: string,
-  exerciseHabits: string,
-  indoorOrOutdoor: string,
-  reproductiveStatus: string,
-  image: string,
-  notes: string,
-) => {
-  try {
-    console.log(BASE_URL + "pet/update/" + ownerId, + "/" + name);
-    // put request sent to pet/update route to update preexisting pet profile with updated values
-    const response = await axiosInstance.put(BASE_URL + "pet/update/" + ownerId + "/" + name, {
-      ownerId,
-      name,
-      age,
-      species,
-      breed,
-      color,
-      gender,
-      vaccinationRecords,
-      medsSupplements,
-      allergiesSensitivities,
-      prevIllnessesInjuries,
-      diet,
-      exerciseHabits,
-      indoorOrOutdoor,
-      reproductiveStatus,
-      image,
-      notes,
-    });
-    console.log("pet updated in mongoDB");
-    return response.data.pet;
-  } catch (error) {
-    console.log("error in updatePetProfileInDatabase", error);
-  }
 }
 
 const styles = StyleSheet.create({

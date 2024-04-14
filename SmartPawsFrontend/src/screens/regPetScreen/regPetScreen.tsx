@@ -201,7 +201,6 @@ const RegPetScreen = () => {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Pet Breed"
-                // error={errors.name} 
                 style={styles.input}
               />
             )}
@@ -217,7 +216,6 @@ const RegPetScreen = () => {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Pet Color"
-                // error={errors.name} 
                 style={styles.input}
               />
             )}
@@ -233,7 +231,6 @@ const RegPetScreen = () => {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Pet Gender"
-                // error={errors.name}
                 style={styles.input}
               />
             )}
@@ -249,7 +246,6 @@ const RegPetScreen = () => {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Pet Vaccination Records"
-                // error={errors.name}
                 style={styles.input}
               />
             )}
@@ -265,7 +261,6 @@ const RegPetScreen = () => {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Pet Medications/Supplements"
-                // error={errors.name} 
                 style={styles.input}
               />
             )}
@@ -281,7 +276,6 @@ const RegPetScreen = () => {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Pet Allergies/Sensitivities"
-                // error={errors.name} 
                 style={styles.input}
               />
             )}
@@ -297,7 +291,6 @@ const RegPetScreen = () => {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Pet Previous Illnesses/Injuries/Surgeries"
-                // error={errors.name} 
                 style={styles.input}
               />
             )}
@@ -313,7 +306,6 @@ const RegPetScreen = () => {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Pet Diet"
-                // error={errors.name}  
                 style={styles.input}
               />
             )}
@@ -329,7 +321,6 @@ const RegPetScreen = () => {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Pet Exercise Habits"
-                // error={errors.name}  
                 style={styles.input}
               />
             )}
@@ -345,7 +336,6 @@ const RegPetScreen = () => {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Pet Indoor/Outdoor"
-                // error={errors.name}  
                 style={styles.input}
               />
             )}
@@ -361,14 +351,12 @@ const RegPetScreen = () => {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Pet Reproductive Status"
-                // error={errors.name} 
                 style={styles.input}
               />
             )}
             name="reproductiveStatus"
           />
           <Box mb="6" />
-          {/* REMOVED IMAGE TEXT BOX SINCE UPLOADING WITH + BUTTON */}
           <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -378,7 +366,6 @@ const RegPetScreen = () => {
                 onChangeText={onChange}
                 value={value}
                 placeholder="Pet Notes"
-                // error={errors.name} 
                 style={styles.input}
               />
             )}
@@ -404,8 +391,6 @@ const RegPetScreen = () => {
             <Text style={styles.buttonText}>Register Pet</Text>
           </TouchableOpacity>
           <Box mb="5.5" />
-
-          {/* </Box> */}
         </ScrollView>
       </LinearGradient>
     </SafeAreaWrapper>
@@ -456,7 +441,6 @@ const savePetProfileToDatabase = async (
     console.log("Pet registered to MongoDB");
     return response.data.pet;
   } catch (error) {
-    // THIS CATCH BLOCK IS NOT ENTERED WHEN USER SUBMITS FORM WITH MISSING REQUIRED FIELDS
     console.log("error in savePetProfileToDatabase", error);
     throw error;
   }
@@ -465,7 +449,8 @@ const savePetProfileToDatabase = async (
 // upload pet image
 // able to access user's files if they allow it 
 // saving to firebase and generating url to save as image url
-// setImageUrl and setImageIsUploading useState hooks passed in to be able to update url and disable register pet/update pet buttons while uploading image to firebase
+// setImageUrl and setImageIsUploading useState hooks passed in 
+// to be able to update url and disable register pet/update pet buttons while uploading image to firebase
 // exporting function to be able to use in updatePetScreen.tsx as well
 export const UploadImage = ({ setImageUrl, setImageIsUploading }: { setImageUrl: (url: string | null) => void, setImageIsUploading: (imageIsUploading: boolean) => void }) => {
   const pickImageAsync = async () => {
@@ -483,7 +468,7 @@ export const UploadImage = ({ setImageUrl, setImageIsUploading }: { setImageUrl:
           quality: 1,
         });
         if (!result.canceled) {
-          // set image is uploading boolean to disable register pet button until image file is uploaded and url is available
+          // set imageIsUploading boolean to disable register pet button until image file is uploaded and url is available
           setImageIsUploading(true);
           // upload user's selected image to firebase
           // get current time to use as filename 
@@ -518,6 +503,7 @@ export const UploadImage = ({ setImageUrl, setImageIsUploading }: { setImageUrl:
     }
   };
 
+  // Upload Pet Photo button
   return <TouchableOpacity style={uploadPhotoStyles.container} onPress={pickImageAsync} >
     <Text>+</Text>
   </TouchableOpacity>

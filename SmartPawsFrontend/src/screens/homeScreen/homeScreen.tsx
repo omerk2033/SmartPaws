@@ -16,7 +16,7 @@ type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'R
 
 const HomeScreen = () => {
   const isFocused = useIsFocused();
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true); 
 
   const homeStackNavigation = useNavigation<HomeStackNavigationProps>();
   const navigateToRegPetScreen = () => {
@@ -39,7 +39,6 @@ const HomeScreen = () => {
       }
       const data = await response.json();
       setUser(data);
-      // await fetchPets(ownerId); // Fetch pets after successfully fetching user
       // no need to pass userId to fetchPets as fetchPets gets the userId from finding the currently logged in user
       await fetchPets(); // Fetch pets after successfully fetching user
     } catch (error) {
@@ -49,7 +48,6 @@ const HomeScreen = () => {
     }
   };
 
-  // const fetchPets = async (ownerId: string) => {
   const fetchPets = async () => {
     try {
       // get current user's uid to associate user with their pets' profiles
@@ -109,7 +107,6 @@ const HomeScreen = () => {
     // navigate to PetProfile screen with parameters needed to find/display pet
     homeStackNavigation.navigate('PetProfile', { ownerId, petName });
   }
-
 
   return (
     <SafeAreaWrapper>
@@ -213,7 +210,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 });
-
-
 
 export default HomeScreen

@@ -6,7 +6,6 @@ interface IUser {
   confirmPassword: string
 }
 
-
 interface IPet {
   ownerId: string
   name: string

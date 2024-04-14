@@ -54,11 +54,11 @@ const MapScreen: React.FC = () => {
   // fetch list of veterinarians within a hardcoded radius using google maps api
   const getVeterinarians = async (latitude: number, longitude: number) => {
     const apiUrl = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=${searchRadius}&type=veterinary_care&key=${process.env.GOOGLE_MAPS_API_KEY}`;
-    console.log("API URL: ", apiUrl); // Log the complete API URL
+    console.log("API URL: ", apiUrl); 
     try {
       const response = await fetch(apiUrl);
       const data = await response.json();
-      console.log('API Response:', data); // Log the API response
+      console.log('API Response:', data); 
       return data.results;
     } catch (error) {
       console.error('Error fetching veterinarians:', error);
@@ -172,7 +172,7 @@ const MapScreen: React.FC = () => {
       colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
       style={styles.linearGradient}
     >
-      {/* 2 attempts at trying to get the map to wait until the region of view is set */}
+      {/* 2 attempts (regionSet, locationFetched) at trying to get the map to wait until the region of view is set */}
       {/* it seems to be working better so scared to touch it */}
       {regionSet &&
         <View style={{ marginTop: 5, flex: 1 }}>
@@ -221,7 +221,6 @@ const styles = StyleSheet.create({
   refreshButtonContainer: {
     position: 'absolute', // Position over the map
     bottom: 20, // Distance from bottom
-    // right: 20, // Distance from right
     left: 20 // Distance from left
   },
   refreshButton: {

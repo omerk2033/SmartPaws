@@ -134,9 +134,7 @@ const HomeStackNavigator = () => {
           headerShown: false
         }}
         component={UserProfileScreen}
-
       />
-
 
     </Stack.Navigator>
   )

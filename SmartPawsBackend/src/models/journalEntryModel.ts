@@ -1,3 +1,5 @@
+// mongodb JounalEntry schema
+
 import mongoose from "mongoose";
 
 const journalEntrySchema = new mongoose.Schema({

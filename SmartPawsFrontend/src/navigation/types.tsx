@@ -32,8 +32,8 @@ export type HomeStackParamList = {
   Onboard3: undefined
 
   Home: undefined
-  // adding RegPet Screen 
   // when user is logged out of firebase index.tsx will handle switching to welcome screen
+  // usere clicks on add pet from home screen
   RegPet: undefined
   // user clicks on the settings button in the header
   Settings: undefined
@@ -47,6 +47,7 @@ export type HomeStackParamList = {
     ownerId: string;
     petName: string;
   }
+  // bottom tab navigation screens
   Map: undefined
   UserProfile: undefined
   AIScreen: undefined
@@ -65,7 +66,6 @@ export type ProfileStackParamList = {
   Feedback: undefined;
   Logout: undefined;
 };
-
 
 export type AiStackParamList = {
   aiScreen: undefined

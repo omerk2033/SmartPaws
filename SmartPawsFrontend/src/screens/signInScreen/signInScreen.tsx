@@ -1,3 +1,6 @@
+// login form for previously registered user
+// skips onboarding screens and takes user directly to their home screen
+
 import { useNavigation } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -10,10 +13,8 @@ import Input from "../../components/shared/input";
 import { signInWithEmailAndPassword } from "firebase/auth"; // Correct import
 import { FIREBASE_AUTH } from "../../services/firebase";
 import { LinearGradient } from "expo-linear-gradient";
-
 import { useContext } from "react";
 import { NavigationContext } from "../../navigation/navigationContext";
-
 import { Alert } from "react-native";
 
 interface SignInScreenProps { // Add interface for props
@@ -28,7 +29,6 @@ const SignInScreen: React.FC<SignInScreenProps> = () => { // Add props parameter
   // set initial screen of home stack to Home skipping onboarding screens since user already has an account
   useEffect(() => {
     setInitialScreen('Home');
-    // setInitialScreen();
   }, []);
 
   const navigation = useNavigation<AuthScreenNavigationType<"SignIn">>();

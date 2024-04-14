@@ -1,3 +1,8 @@
+// AI screen allows user to select from a dropdown menu populated by their registered pets
+// to ask the openai assistant questions about their pet
+// a unique conversation thread is created and maintained through the openai assistant api
+// allowing for the assistant to reference previously communicated pet details and conversation topics 
+
 import React, { useEffect, useRef, useState } from 'react';
 import { KeyboardAvoidingView, Platform, View, TextInput, TouchableOpacity, Text, Alert, StyleSheet, ScrollView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -21,7 +26,7 @@ const AIScreen: React.FC = () => {
   const [petDetails, setPetDetails] = useState<IPet | null>(null);
   const [uploadPetProfilePressed, setUploadPetProfilePressed] = useState<boolean>(false);
   const isFocused = useIsFocused();
-  
+
   // to have chat screen automatically scroll to newest message
   const scrollViewRef = useRef<ScrollView | null>(null);
 
@@ -69,9 +74,10 @@ const AIScreen: React.FC = () => {
   }, [selectedPet]);
 
   // set pet details if needing to upload pet profile again because assistant seems to have forgot the details
+  // or relevant information has been updated in a pet profile since the original upload
   useEffect(() => {
     if (selectedPet && selectedPet !== 'Chat with Gigi') {
-      if(petDetails != null) {
+      if (petDetails != null) {
         sendPetDetailsToAI(petDetails);
       }
     } else {
@@ -94,7 +100,6 @@ const AIScreen: React.FC = () => {
   // Construct the data for the dropdown list
   const data = [{ key: 'Chat with Gigi', value: 'Chat with Gigi' }].concat(
     pets.map((pet: IPet) => ({
-      // key: pet.id,
       key: pet.name,
       value: pet.name
     }))
@@ -107,34 +112,33 @@ const AIScreen: React.FC = () => {
       // Clear messages to reset the conversation for a new pet
       setMessages([]);
     }
-  
+
     console.log("Selected Pet: " + selectedValue);
   };
 
-  // creating a json object instead
   // Construct a message from the pet details
   const constructPetDetailsMessage = (pet: IPet): string => {
     return `Pet Details:\n`
-         + `Name: ${pet.name}\n`
-         + `Age: ${pet.age}\n`
-         + `Species: ${pet.species}\n`
-         + `Breed: ${pet.breed}\n`
-         + `Color: ${pet.color}\n`
-         + `Gender: ${pet.gender}\n`
-         + `Vaccination Records: ${pet.vaccinationRecords}\n`
-         + `Meds/Supplements: ${pet.medsSupplements}\n`
-         + `Allergies/Sensitivities: ${pet.allergiesSensitivities}\n`
-         + `Previous Illnesses/Injuries: ${pet.prevIllnessesInjuries}\n`
-         + `Diet: ${pet.diet}\n`
-         + `Exercise Habits: ${pet.exerciseHabits}\n`
-         + `Indoor/Outdoor: ${pet.indoorOrOutdoor}\n`
-         + `Reproductive Status: ${pet.reproductiveStatus}\n`
-         + `Image URL: ${pet.image}\n`
-         + `Notes: ${pet.notes}\n`
-         + `ConcernStatus: ${pet.flaggedForConcern}\n`;
+      + `Name: ${pet.name}\n`
+      + `Age: ${pet.age}\n`
+      + `Species: ${pet.species}\n`
+      + `Breed: ${pet.breed}\n`
+      + `Color: ${pet.color}\n`
+      + `Gender: ${pet.gender}\n`
+      + `Vaccination Records: ${pet.vaccinationRecords}\n`
+      + `Meds/Supplements: ${pet.medsSupplements}\n`
+      + `Allergies/Sensitivities: ${pet.allergiesSensitivities}\n`
+      + `Previous Illnesses/Injuries: ${pet.prevIllnessesInjuries}\n`
+      + `Diet: ${pet.diet}\n`
+      + `Exercise Habits: ${pet.exerciseHabits}\n`
+      + `Indoor/Outdoor: ${pet.indoorOrOutdoor}\n`
+      + `Reproductive Status: ${pet.reproductiveStatus}\n`
+      + `Image URL: ${pet.image}\n`
+      + `Notes: ${pet.notes}\n`
+      + `ConcernStatus: ${pet.flaggedForConcern}\n`;
   };
 
-  // construct pet profile json object to send to backend
+  // construct pet profile json object to send to conversation thread
   // for pet profile to be sent to new thread when 1st asking a question about a pet
   const petDetailsJsonObj = {
     name: petDetails?.name,
@@ -155,7 +159,7 @@ const AIScreen: React.FC = () => {
     threadId: petDetails?.threadId,
   }
 
-  // Triggered when pet details change
+  // send pet details triggered when pet details change
   useEffect(() => {
     if (petDetails) {
       sendPetDetailsToAI(petDetails);
@@ -165,7 +169,7 @@ const AIScreen: React.FC = () => {
   // Send pet details to the AI
   const sendPetDetailsToAI = async (pet: IPet) => {
     // if threadId already exists, then don't send all of the pet details to the thread again
-    if(pet.threadId != "") {
+    if (pet.threadId != "") {
       console.log("there is already a thread associated with this pet so no need to send to assistant");
       console.log(pet.threadId);
       return;
@@ -188,19 +192,15 @@ const AIScreen: React.FC = () => {
     // if thread id is not associated with this pet, call it nope 
     // to check in backend if a new thread needs to be created
     let threadId = pet.threadId;
-    if(threadId == "") {
+    if (threadId == "") {
       threadId = "nope";
     }
     try {
       const petDetailsString = JSON.stringify(petDetailsJsonObj);
       console.log("petDetailsString: " + petDetailsString);
-      // NOT SURE IF NEED pet.ownerId AND pet.name STILL OR IF JUST threadId IS ALL WE NEED
-      // const response = await fetch(`${BASE_URL}user/chatGPT`, {
-      // const response = await fetch(`${BASE_URL}user/chatGPT/${threadId}`, {
       const response = await fetch(`${BASE_URL}user/chatGPT/${pet.ownerId}/${pet.name}/${threadId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        // body: JSON.stringify({ input: petMessageContent })
         body: JSON.stringify({ input: petDetailsString })
       });
 
@@ -214,17 +214,16 @@ const AIScreen: React.FC = () => {
       pet.threadId = receivedThreadId;
 
       // log ai response to pet profile submission
-      // const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
       const aiMessage: Message = {
-          id: `ai-${Date.now()}`,
-          text: responseBody.message, // extract the message text back from the response
-          type: 'ai'
+        id: `ai-${Date.now()}`,
+        text: responseBody.message, // extract the message text back from the response
+        type: 'ai'
       };
       console.log(aiMessage);
       setMessages(messages => [...messages, aiMessage]);
 
       // to have chat screen automatically scroll to newest message
-      scrollToBottom();  
+      scrollToBottom();
 
       // update pet profile in mongodb with new threadId
       await updatePetProfileInDatabase(pet);
@@ -238,27 +237,27 @@ const AIScreen: React.FC = () => {
   // for updating thread id when received back from the backend
   const updatePetProfileInDatabase = async (pet: IPet) => {
     try {
-        console.log(BASE_URL + "pet/update/" + pet.ownerId + "/" + pet.name);
-        // Put request sent to pet/update route to update preexisting pet profile with updated values
-        const response = await axiosInstance.put(BASE_URL + "pet/update/" + pet.ownerId + "/" + pet.name, pet);
-        console.log("Pet updated in MongoDB");
-        return response.data.pet;
+      console.log(BASE_URL + "pet/update/" + pet.ownerId + "/" + pet.name);
+      // Put request sent to pet/update route to update preexisting pet profile with updated values
+      const response = await axiosInstance.put(BASE_URL + "pet/update/" + pet.ownerId + "/" + pet.name, pet);
+      console.log("Pet updated in MongoDB");
+      return response.data.pet;
     } catch (error) {
-        console.log("Error in updatePetProfileInDatabase", error);
+      console.log("Error in updatePetProfileInDatabase", error);
     }
   };
 
-  const handleSendRequest2 = async () => {
+  const handleSendRequest = async () => {
     if (!inputText.trim()) {
       Alert.alert('Error', 'Please enter a message');
       return;
     }
 
     const newMessage: Message = { id: `user-${Date.now()}`, text: inputText, type: 'user' };
-    processUserMessage2(newMessage);
+    processUserMessage(newMessage);
   };
 
-  const processUserMessage2 = async (message: Message) => {
+  const processUserMessage = async (message: Message) => {
     setMessages(messages => [...messages, message]);
     setInputText('');
 
@@ -266,14 +265,12 @@ const AIScreen: React.FC = () => {
       console.log("petDetails.ownerId: " + petDetails?.ownerId);
       // check if no pet is selected, then use random chatgpt designated thread not associated with a particular pet
       let threadIdToSend = "";
-      if(petDetails?.ownerId === undefined) {
-        threadIdToSend = process.env.CHATGPT_GEN_THREAD_ID ?? ""; 
+      if (petDetails?.ownerId === undefined) {
+        threadIdToSend = process.env.CHATGPT_GEN_THREAD_ID ?? "";
       }
       else {
         threadIdToSend = petDetails.threadId;
       }
-      // NOT SURE IF NEED pet.ownerId AND pet.name STILL OR IF JUST threadId IS ALL WE NEED
-      // const response = await fetch(`${BASE_URL}user/chatGPT`, {
       const response = await fetch(`${BASE_URL}user/chatGPT/${petDetails?.ownerId}/${petDetails?.name}/${threadIdToSend}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -282,17 +279,16 @@ const AIScreen: React.FC = () => {
 
       if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
       const responseBody = await response.json();
-      // const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
       const aiMessage: Message = {
-          id: `ai-${Date.now()}`,
-          text: responseBody.message, // extract the message text back from the response
-          type: 'ai'
+        id: `ai-${Date.now()}`,
+        text: responseBody.message, // extract the message text back from the response
+        type: 'ai'
       };
       console.log(aiMessage);
       setMessages(messages => [...messages, aiMessage]);
-      // to have chat screen automatically scroll to newest message
-      scrollToBottom();  
 
+      // to have chat screen automatically scroll to newest message
+      scrollToBottom();
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'Failed to send request');
@@ -309,7 +305,7 @@ const AIScreen: React.FC = () => {
 
   // send pet profile to thread again without creating a new thread
   const sendPetInfoAgain = async (pet: IPet) => {
-    if(pet.threadId == "") {
+    if (pet.threadId == "") {
       console.log("should not send pet info again if haven't sent before and don't have a thread id already");
       return;
     }
@@ -329,70 +325,40 @@ const AIScreen: React.FC = () => {
 
       const responseBody = await response.json();
       const aiMessage: Message = {
-          id: `ai-${Date.now()}`,
-          text: responseBody.message, // extract the message text back from the response
-          type: 'ai'
+        id: `ai-${Date.now()}`,
+        text: responseBody.message, // extract the message text back from the response
+        type: 'ai'
       };
       console.log(aiMessage);
       setMessages(messages => [...messages, aiMessage]);
-      // to have chat screen automatically scroll to newest message
-      scrollToBottom();  
 
+      // to have chat screen automatically scroll to newest message
+      scrollToBottom();
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'Failed to send pet details to AI');
     }
   }
-  // ORIGINAL VERSION
-  // const handleSendRequest = async () => {
-  //   if (!inputText.trim()) {
-  //     Alert.alert('Error', 'Please enter a message');
-  //     return;
-  //   }
-
-  //   const newMessage: Message = { id: `user-${Date.now()}`, text: inputText, type: 'user' };
-  //   processUserMessage(newMessage);
-  // };
-
-  // const processUserMessage = async (message: Message) => {
-  //   setMessages(messages => [...messages, message]);
-  //   setInputText('');
-
-  //   try {
-  //     const response = await fetch(`${BASE_URL}user/chatGPT`, {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ input: message.text })
-  //     });
-
-  //     if (!response.ok) throw new Error(`Failed to fetch: ${response.statusText}`);
-  //     const aiMessage: Message = { id: `ai-${Date.now()}`, text: (await response.json()).message.content, type: 'ai' };
-  //     setMessages(messages => [...messages, aiMessage]);
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //     Alert.alert('Error', 'Failed to send request');
-  //   }
-  // };
 
   return (
     <LinearGradient
       colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
       style={styles.linearGradient}
     >
-      <KeyboardAvoidingView 
+      <KeyboardAvoidingView
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 64 : 0}
       >
-      <View style={styles.dropdownContainer}>
-        <SelectList 
-          data={data} 
-          setSelected={onPetSelect}
-          placeholder='Select a pet...'
-          boxStyles={styles.selectListStyle}
-          dropdownTextStyles={styles.selectListStyle}
-        />
-      </View>
+        <View style={styles.dropdownContainer}>
+          <SelectList
+            data={data}
+            setSelected={onPetSelect}
+            placeholder='Select a pet...'
+            boxStyles={styles.selectListStyle}
+            dropdownTextStyles={styles.selectListStyle}
+          />
+        </View>
         <ScrollView contentContainerStyle={styles.chatContainer} ref={scrollViewRef} >
           {messages.map((message) => (
             <Text key={message.id} style={[
@@ -411,13 +377,12 @@ const AIScreen: React.FC = () => {
             value={inputText}
             placeholderTextColor="black"
           />
-          {/* <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest}> */}
-          <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest2}>
+          <TouchableOpacity style={styles.sendButton} onPress={handleSendRequest}>
             <Text style={styles.sendButtonText}>Send to Gigi</Text>
           </TouchableOpacity>
         </View>
         <View>
-        {/* if assistant cannot recall pet's profile from the thread, ability to send again */}
+          {/* if assistant cannot recall pet's profile from the thread, ability to send again */}
           <TouchableOpacity style={styles.sendButtonWithSpacing} onPress={handleSendPetInfoAgain}>
             <Text style={styles.sendButtonText}>Reupload Conversation Thread</Text>
           </TouchableOpacity>
@@ -434,7 +399,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   dropdownContainer: {
-    marginTop: 50, 
+    marginTop: 50,
     marginBottom: 10,
     paddingHorizontal: 10,
     paddingVertical: 5, // Add some vertical padding if needed
@@ -446,13 +411,13 @@ const styles = StyleSheet.create({
   },
   selectListStyle: {
     width: '100%', // Ensure SelectList fills the container width
-    borderRadius:20, // Match the dropdownContainer's border radius
+    borderRadius: 20, // Match the dropdownContainer's border radius
     padding: 0,
     margin: 0,
     borderColor: 'transparent', // Make the border color transparent
     borderWidth: 0, // Set border width to 0 to remove it
   },
-    chatContainer: {
+  chatContainer: {
     flexGrow: 1,
     justifyContent: 'flex-end',
     marginBottom: 10,
