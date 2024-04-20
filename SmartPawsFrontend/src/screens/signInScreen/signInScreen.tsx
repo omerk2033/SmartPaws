@@ -20,8 +20,6 @@ import { Alert } from "react-native";
 interface SignInScreenProps { // Add interface for props
 }
 
-
-// const SignInScreen: React.FC<SignInScreenProps> = (props) => { // Add props parameter
 const SignInScreen: React.FC<SignInScreenProps> = () => { // Add props parameter
   // navigate to Home screen after logging in process is complete
   const { setInitialScreen } = useContext(NavigationContext);

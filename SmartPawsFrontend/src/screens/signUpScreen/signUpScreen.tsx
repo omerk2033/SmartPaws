@@ -1,5 +1,6 @@
 // sign up screen provides user with 1st time account registration form
 // sets initial home screen to Onboard1 to provide 1st time instructions for using app
+// instead initial navigation is to terms of use page skipping onboarding screens for now
 // account setup handled using firebase
 
 import { Box, Text } from "../../utils/theme/style";
@@ -23,8 +24,10 @@ const SignUpScreen = () => {
   const { setInitialScreen } = useContext(NavigationContext);
 
   // set initial screen in home stack navigator to be Onboard1 since coming from SignUp
+  // instead skipping onboarding screens for now and navigating to terms of use screen
   useEffect(() => {
-    setInitialScreen('Onboard1');
+    // setInitialScreen('Onboard1');
+    setInitialScreen('TermsOfUse');
   }, []);
 
   const navigation = useNavigation<AuthScreenNavigationType<"SignUp">>()

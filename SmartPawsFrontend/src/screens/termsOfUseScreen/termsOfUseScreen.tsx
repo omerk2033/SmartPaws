@@ -10,9 +10,10 @@ import { HomeScreenNavigationType } from "navigation/types";
 const TermsOfUseScreen = () => {
   const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>();
 
-  const navigateToSettingsScreen = () => {
-    navigation.navigate("Settings");
+  const navigateToHomeScreen = () => {
+    navigation.navigate("Home");
   }
+  
   return (
     <SafeAreaWrapper>
       <LinearGradient
@@ -33,7 +34,7 @@ const TermsOfUseScreen = () => {
               By using SmartPaws, you acknowledge that you have read, understood, and agree to be bound by these Terms of Use.{'\n'}{'\n'}
             </Text>
           </View>
-          <TouchableOpacity onPress={navigateToSettingsScreen} style={[styles.button, { backgroundColor: '#201A64' }]}>
+          <TouchableOpacity onPress={navigateToHomeScreen} style={[styles.button, { backgroundColor: '#201A64' }]}>
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
         </ScrollView>
