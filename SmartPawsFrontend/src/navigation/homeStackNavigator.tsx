@@ -13,6 +13,7 @@ import OnBoarding2 from "../screens/onBoardScreens/onBoard2";
 import OnBoarding3 from "../screens/onBoardScreens/onBoard3";
 import MapScreen from "../screens/mapScreen/mapScreen";
 import UserProfileScreen from "../screens/userProfileScreen/userProfileScreen";
+import TermsOfUseScreen from "../screens/termsOfUseScreen/termsOfUseScreen";
 import { MaterialIcons } from '@expo/vector-icons'; // Import icons from the library
 import { useContext } from 'react';
 import { NavigationContext } from "./navigationContext";
@@ -135,6 +136,17 @@ const HomeStackNavigator = () => {
         }}
         component={UserProfileScreen}
       />
+
+      {/* terms of use screen */}
+      <Stack.Screen
+        name={"TermsOfUse"}
+        options={{
+          headerTitle: 'Terms of Use',
+          headerShown: false
+        }}
+        component={TermsOfUseScreen}
+      />
+
 
     </Stack.Navigator>
   )

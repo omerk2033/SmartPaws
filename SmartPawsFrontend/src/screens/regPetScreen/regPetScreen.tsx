@@ -20,7 +20,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { format } from "date-fns";
 
 const RegPetScreen = () => {
-  const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>()
+  const navigation = useNavigation<HomeScreenNavigationType<"RegPet">>();
 
   // get current user's uid to associate user with their pets' profiles
   const auth = getAuth();

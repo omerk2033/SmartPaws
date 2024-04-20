@@ -52,6 +52,7 @@ export type HomeStackParamList = {
   UserProfile: undefined
   AIScreen: undefined
   Journal: undefined
+  TermsOfUse: undefined
 }
 
 export type ProfileStackParamList = {
