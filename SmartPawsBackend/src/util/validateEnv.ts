@@ -1,3 +1,5 @@
+// validate environment variables 
+
 import { cleanEnv, port, str } from "envalid";
 
 

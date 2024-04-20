@@ -59,7 +59,6 @@ const SignInScreen: React.FC<SignInScreenProps> = () => { // Add props parameter
       // No need to navigate here, navigation happens after successful login in loginWithEmailAndPassword
     } catch (error) {
       console.log("Error submitting form:");
-      // Handle error, maybe show a message to the user
     }
   };
 
@@ -95,7 +94,6 @@ const SignInScreen: React.FC<SignInScreenProps> = () => { // Add props parameter
               contentContainerStyle={styles.scrollViewContent}
               keyboardShouldPersistTaps="handled"
             >
-
               <Box flex={1} px="5.5" justifyContent="center">
                 <Box mb="6" />
                 <Text variant="textLg" color="neutral700" fontWeight="700" mb="10">
@@ -170,21 +168,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textTransform: 'uppercase', // If you want the text to be uppercase
   },
-  linearGradient: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'white',
-  },
   input: {
     height: 50,
     width: '100%',
@@ -196,22 +179,6 @@ const styles = StyleSheet.create({
     color: 'black', // ensure text is readable on light background
     marginBottom: 20,
     textAlignVertical: 'top', // start text from the top of the text input
-  },
-  button: {
-    backgroundColor: '#201A64',
-    borderRadius: 20, // oval shape
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-
-  keyboardAvoidingView: {
-    flex: 1,
   },
   scrollView: {
     flex: 1,

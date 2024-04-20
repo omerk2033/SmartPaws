@@ -44,7 +44,7 @@ const SignUpScreen = () => {
       email: "",
       password: "",
       confirmPassword: "",
-      name: "", 
+      name: "",
     },
   })
 
@@ -59,11 +59,52 @@ const SignUpScreen = () => {
       }
       // register user
       await signUpWithEmailAndPassword(email, password, name);
-      // navigateToSignInScreen() // Removed to avoid navigation until user is registered in MongoDB
     } catch (error) {
       Alert.alert("Submission Failed", "Please check your input and try again.");
     }
   }
+
+  const signUpWithEmailAndPassword = async (email: string, password: string, name: string) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
+      // Signed in
+      const user = userCredential.user;
+      console.log('User logged in:', user);
+
+      // Update the user's profile with their name
+      await updateProfile(user, {
+        displayName: name
+      });
+      console.log("User's display name updated:", name);
+
+      // Save user to MongoDB
+      await registerUserMongoDB(name, email, user.uid, password);
+      console.log("User registered to MongoDB");
+      // Navigate to the next screen after successful login
+    } catch (error) {
+      console.log("Error registering user", error);
+      // Handle error, maybe show a message to the user
+      throw error;
+
+
+    }
+  }
+  
+  // Takes UID provided by firebase API then hits backend API to store information in MongoDB database.
+  const registerUserMongoDB = async (name: string, email: string, uid: string, password: string) => {
+    try {
+      const response = await axiosInstance.post("user/create", {
+        email,
+        password,
+        uid,
+        name,
+      });
+      return response.data.user;
+    } catch (error) {
+      console.log("error in registerUser", error);
+      throw error;
+    }
+  };
 
   return (
     <SafeAreaWrapper>
@@ -84,10 +125,6 @@ const SignUpScreen = () => {
               keyboardShouldPersistTaps="handled"
             >
               <Box flex={1} px="5.5" >
-                <Text variant="textLg" color="neutral700" fontWeight="700" mb="10">
-
-                </Text>
-
                 <Controller
                   control={control}
                   rules={{
@@ -101,7 +138,7 @@ const SignUpScreen = () => {
                       value={value}
                       placeholder="Enter your name..."
                       error={errors.name}
-                      style={styles.input} 
+                      style={styles.input}
                     />
                   )}
                   name="name"
@@ -165,7 +202,6 @@ const SignUpScreen = () => {
                   )}
                   name="confirmPassword"
                 />
-
                 <Box mt="5.5" />
                 <Pressable onPress={navigateToSignInScreen}>
                   <Text color="fuchsia900" textAlign="right">
@@ -187,47 +223,6 @@ const SignUpScreen = () => {
   )
 }
 
-const signUpWithEmailAndPassword = async (email: string, password: string, name: string) => {
-  try {
-    const userCredential = await createUserWithEmailAndPassword(FIREBASE_AUTH, email, password);
-    // Signed in
-    const user = userCredential.user;
-    console.log('User logged in:', user);
-
-    // Update the user's profile with their name
-    await updateProfile(user, {
-      displayName: name
-    });
-    console.log("User's display name updated:", name);
-
-    // Save user to MongoDB
-    await registerUserMongoDB(name, email, user.uid, password);
-    console.log("User registered to MongoDB");
-    // Navigate to the next screen after successful login
-  } catch (error) {
-    console.log("Error registering user", error);
-    // Handle error, maybe show a message to the user
-    throw error;
-
-
-  }
-}
-// Takes UID provided by firebase API then hits backend API to store information in MongoDB database.
-const registerUserMongoDB = async (name: string, email: string, uid: string, password: string) => {
-  try {
-    const response = await axiosInstance.post("user/create", {
-      email,
-      password,
-      uid,
-      name,
-    });
-    return response.data.user;
-  } catch (error) {
-    console.log("error in registerUser", error);
-    throw error;
-  }
-};
-
 const styles = StyleSheet.create({
   loginButton: {
     backgroundColor: '#201A64', // Button color
@@ -242,21 +237,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textTransform: 'uppercase', // If you want the text to be uppercase
   },
-  linearGradient: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    color: 'white',
-  },
   input: {
     height: 50,
     width: '100%',
@@ -268,22 +248,6 @@ const styles = StyleSheet.create({
     color: 'black', // ensure text is readable on light background
     marginBottom: 20,
     textAlignVertical: 'top', // start text from the top of the text input
-  },
-  button: {
-    backgroundColor: '#201A64',
-    borderRadius: 20, // oval shape
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
-
-  keyboardAvoidingView: {
-    flex: 1,
   },
   scrollView: {
     flex: 1,

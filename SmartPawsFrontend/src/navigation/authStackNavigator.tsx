@@ -1,4 +1,5 @@
 // Screens that are shown in the Authentication Stack, screens user sees before logging in
+
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import React from "react"
 import { AuthStackParamList } from "./types"
@@ -22,8 +23,6 @@ const AuthStackNavigator = () => {
       <Stack.Screen
         name="SignIn"
         options={{
-          // changing to allow for back button option
-          // headerShown: false,
           headerTitle: "",
           headerBackTitleVisible: false,
         }}
@@ -32,8 +31,6 @@ const AuthStackNavigator = () => {
       <Stack.Screen
         name="SignUp"
         options={{
-          // changing to allow for back button option
-          // headerShown: false,
           headerTitle: "",
           headerBackTitleVisible: false,
         }}

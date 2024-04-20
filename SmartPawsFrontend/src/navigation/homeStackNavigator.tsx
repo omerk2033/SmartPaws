@@ -44,11 +44,10 @@ const HomeStackNavigator = () => {
         headerBackTitleVisible: false, // Hides the back button title for iOS
       })}
     >
+      {/* onboarding screens */}
       <Stack.Screen
         name={"Onboard1"}
         options={{
-          // changing to allow for back button option
-          // headerShown: false,
           headerBackTitleVisible: false,
           headerShown: false,
         }}
@@ -68,7 +67,7 @@ const HomeStackNavigator = () => {
         }}
         component={OnBoarding3}
       />
-
+      {/* home screen */}
       <Stack.Screen
         name={"Home"}
         options={{
@@ -146,7 +145,6 @@ const HomeStackNavigator = () => {
         }}
         component={TermsOfUseScreen}
       />
-
 
     </Stack.Navigator>
   )

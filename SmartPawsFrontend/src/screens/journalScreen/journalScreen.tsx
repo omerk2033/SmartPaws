@@ -51,7 +51,6 @@ const JournalScreen = () => {
       setPets(data);
     } catch (error) {
       console.error("Error fetching pets", error);
-      // Handle the error as appropriate...
     }
   };
 
@@ -84,7 +83,7 @@ const JournalScreen = () => {
       key: pet.name,
       value: pet.name
     })
-    );
+  );
 
   // Triggered when a pet is selected from the dropdown list
   const onPetSelect = (selectedValue: string) => {
@@ -147,7 +146,6 @@ const JournalScreen = () => {
 
       // make get request to backend with ownerId of currently logged in user
       // and selected pet name
-      console.log("fetchJournalEntries called");
       console.log(BASE_URL + 'journalEntry/get/' + ownerId + '/' + selectedPet);
       const response = await fetch(BASE_URL + 'journalEntry/get/' + ownerId + '/' + selectedPet);
       const data = await response.json();
@@ -180,7 +178,6 @@ const JournalScreen = () => {
                 dropdownTextStyles={styles.selectListStyle}
               />
             </View>
-
             <View>
               {Platform.OS === 'ios' ? (
                 <DateTimePicker
@@ -197,11 +194,9 @@ const JournalScreen = () => {
                   <Text style={styles.buttonText}>Select a date</Text>
                 </TouchableOpacity>
               )}
-
               <View style={{ alignItems: 'center', marginBottom: 10 }}>
                 <Text style={styles.dateDisplay}>Selected Date: {date.toLocaleDateString('en-US')}</Text>
               </View>
-
               {showDatePicker && (
                 <DateTimePicker
                   value={date}
@@ -223,7 +218,6 @@ const JournalScreen = () => {
                 value={entry}
                 onChangeText={setEntry}
               />
-
               <TouchableOpacity style={styles.button} onPress={handleSaveEntry}>
                 <Text style={styles.buttonText}>Save Entry</Text>
               </TouchableOpacity>
@@ -250,7 +244,6 @@ const JournalScreen = () => {
                 <Text style={styles.journalMemoryStyle}>{journalEntry.entry}</Text>
               </View>
             ))}
-
           </View>
         </ScrollView>
       </LinearGradient>

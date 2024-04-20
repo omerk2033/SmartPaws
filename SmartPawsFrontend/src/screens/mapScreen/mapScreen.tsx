@@ -11,6 +11,7 @@ const MapScreen: React.FC = () => {
   // for all of the vet offices returned from google maps api
   // default is UTA but should get set based on 
   // the user's location and the radius of the vets found
+  // if the user grant's permission to their location
   const [region, setRegion] = useState({
     latitude: 32.7310,
     longitude: -97.1150,
@@ -99,13 +100,6 @@ const MapScreen: React.FC = () => {
         .then((vets: Veterinarian[]) => {
           setVeterinarians(vets);
           setVetsFetched(true);
-          // just printing
-          // console.log("some veterinarians:");
-          // veterinarians.forEach((veterinarian: { name: string; vicinity: string;  }) => {
-          // vets.forEach((veterinarian) => {
-          //     console.log(`Name: ${veterinarian.name}, Vicinity: ${veterinarian.vicinity}`);
-          //     console.log(`Latitude: ${veterinarian.geometry.location.lat}, Longitude: ${veterinarian.geometry.location.lng}`);
-          // });
 
           let minLat: number | null = null;
           let maxLat: number | null = null;
@@ -121,9 +115,9 @@ const MapScreen: React.FC = () => {
             minLng = minLng !== null ? Math.min(minLng, lng) : lng;
             maxLng = maxLng !== null ? Math.max(maxLng, lng) : lng;
           });
+
           // set the display region of the map
           if (minLat != null && maxLat != null && minLng != null && maxLng != null) {
-            console.log("setRegion");
             setRegion({
               latitude: (minLat + maxLat) / 2,
               longitude: (minLng + maxLng) / 2,
@@ -143,6 +137,7 @@ const MapScreen: React.FC = () => {
     }
   }, [locationFetched]);
 
+  // if app did not load vet locations and refresh button is pressed
   const refreshVets = () => {
     console.log('Refreshing veterinarians list');
     if (userLocation.current) {
@@ -212,7 +207,6 @@ const MapScreen: React.FC = () => {
           <Text style={styles.refreshButtonText}>Refresh</Text>
         </TouchableOpacity>
       </View>
-
     </LinearGradient>
   );
 };
@@ -233,67 +227,10 @@ const styles = StyleSheet.create({
     color: '#007aff',
     textAlign: 'center',
   },
-
   linearGradient: {
     flex: 1,
     paddingHorizontal: 10,
     paddingTop: 20,
-  },
-  dropdownContainer: {
-    marginTop: 50,
-    marginBottom: 10,
-    paddingHorizontal: 10,
-  },
-  chatContainer: {
-    flexGrow: 1,
-    justifyContent: 'flex-end',
-    marginBottom: 10,
-  },
-  message: {
-    fontSize: 16,
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    padding: 8,
-    marginVertical: 15,
-    maxWidth: '80%',
-  },
-  userMessage: {
-    backgroundColor: '#ADD8E6', // Light blue background for user message
-    color: 'blue', // Blue text for user message
-    alignSelf: 'flex-end',
-  },
-  aiMessage: {
-    backgroundColor: '#FFC0CB', // Light red background for AI message
-    color: 'red', // Red text for AI message
-    alignSelf: 'flex-start',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.6)',
-    paddingHorizontal: 15,
-    marginRight: 10,
-  },
-  sendButton: {
-    backgroundColor: '#201A64',
-    borderRadius: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  sendButtonText: {
-    color: '#fff',
-  },
-  container: {
-    flex: 1,
   },
   map: {
     width: '100%',

@@ -21,9 +21,7 @@ const TermsOfUseScreen = () => {
         style={styles.linearGradient}
       >
         <ScrollView keyboardShouldPersistTaps='handled'>
-
           <Text style={[styles.title, { marginTop: 20 }]}>Terms Of Use</Text>
-
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold', textAlign: 'left', paddingHorizontal: 30, marginTop: 10 }}>
               Welcome to SmartPaws, the virtual veterinarian chatbot designed to provide you with preliminary advice and information regarding your pet's health. By using SmartPaws, you agree to be bound by these Terms of Use.{'\n'}{'\n'}
@@ -38,7 +36,6 @@ const TermsOfUseScreen = () => {
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
         </ScrollView>
-
       </LinearGradient>
     </SafeAreaWrapper>
   );

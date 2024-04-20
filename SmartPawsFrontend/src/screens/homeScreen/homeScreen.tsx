@@ -172,31 +172,6 @@ const styles = StyleSheet.create({
     fontSize: 24, // Adjust font size as desired
     fontWeight: 'bold',
   },
-  scrollViewStyle: {
-    flex: 1,
-    paddingHorizontal: 5.5,
-    marginTop: 13,
-  },
-  centeredView: {
-    alignItems: 'center', // This will center the child components horizontally
-    justifyContent: 'center', // This will center the child components vertically if the view has a defined height
-    flex: 1,
-  },
-  headerText: {
-    fontSize: 24, // Adjust the font size as needed
-    fontWeight: 'bold', // If you want the text to be bold
-    textAlign: 'center', // Center the text horizontally
-    marginTop: 20, // Optional: add some spacing at the top
-    marginBottom: 20, // Optional: add some spacing at the bottom
-  },
-  container: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.0)',
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   button: {
     paddingHorizontal: 20,
     paddingVertical: 10,

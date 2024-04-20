@@ -1,3 +1,5 @@
+// various types for use in defining variables in other program files
+
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs"
 import {
   CompositeNavigationProp,
@@ -14,6 +16,7 @@ export type AuthStackParamList = {
   Welcome: undefined
   SignIn: undefined
   SignUp: undefined
+  // moved onboarding screens to home stack
   // Onboard1: undefined
   // Onboard2: undefined
   // Onboard3: undefined

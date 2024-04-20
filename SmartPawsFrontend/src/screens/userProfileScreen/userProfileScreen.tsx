@@ -1,12 +1,12 @@
 // ability for user to change their user name that is displayed
+// email is not allowed to be changed 
 
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, Text, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
 import { getAuth } from 'firebase/auth';
 import { BASE_URL } from '../../services/config';
 import SafeAreaWrapper from '../../components/shared/safeAreaWrapper';
 import { LinearGradient } from 'expo-linear-gradient';
-
 
 const UserProfileScreen = () => {
   const [user, setUser] = useState({ name: '', email: '' });
@@ -87,27 +87,27 @@ const UserProfileScreen = () => {
         colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
         style={styles.linearGradient}
       >
-        <View style={styles.container}>
-          <Text style={styles.label}>Name</Text>
-          <TextInput
-            style={styles.input}
-            value={user.name}
-            onChangeText={(text) => setUser({ ...user, name: text })}
-          />
-
-          <Text style={styles.label}>Email</Text>
-          <TextInput
-            style={[styles.input]}
-            value={user.email}
-            editable={false}
-            onChangeText={(text) => setUser({ ...user, email: text })}
-            keyboardType="email-address"
-          />
-
-          <TouchableOpacity style={styles.button} onPress={handleSave}>
-            <Text style={styles.buttonText}>Save</Text>
-          </TouchableOpacity>
-        </View>
+        <ScrollView keyboardShouldPersistTaps='handled' style={styles.scrollViewStyle}>
+          <View>
+            <Text style={styles.label}>Name</Text>
+            <TextInput
+              style={styles.input}
+              value={user.name}
+              onChangeText={(text) => setUser({ ...user, name: text })}
+            />
+            <Text style={styles.label}>Email</Text>
+            <TextInput
+              style={[styles.input]}
+              value={user.email}
+              editable={false}
+              onChangeText={(text) => setUser({ ...user, email: text })}
+              keyboardType="email-address"
+            />
+            <TouchableOpacity style={styles.button} onPress={handleSave}>
+              <Text style={styles.buttonText}>Save</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </LinearGradient>
     </SafeAreaWrapper>
   );
@@ -119,10 +119,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around', // Adjust this to your content
     paddingHorizontal: 20,
     paddingTop: 20, // Additional space on top, adjust as necessary
-  },
-  container: {
-    // Since the linearGradient already provides padding, you may not need padding here
-    // padding: 20,
   },
   label: {
     fontSize: 18,
@@ -152,6 +148,11 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 16,
+  },
+  scrollViewStyle: {
+    flex: 1,
+    paddingHorizontal: 5.5,
+    marginTop: 13,
   },
 });
 

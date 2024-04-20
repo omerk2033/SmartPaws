@@ -1,13 +1,16 @@
+// pet profile screen displays all of selected pet's details and picture
+// update profile button to go to update pet screen
+// concern toggle switch to toggle on concern for the pet
+// remove profile button to remove pet's profile 
+
 import { Box, Text } from "../../utils/theme/style";
 import { useNavigation } from "@react-navigation/native";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { Alert, Animated, TouchableOpacity, ScrollView, View, Image, StyleSheet } from "react-native";
 import { HomeScreenNavigationType, HomeStackParamList } from "../../navigation/types";
-
 import React, { useRef, useEffect, useState } from "react";
 import { IPet } from "../../types";
 import { BASE_URL } from "../../services/config";
-
 // RouteProp provides ability to receive parameters from previous screen homeScreen.tsx 
 import { RouteProp } from '@react-navigation/native';
 import { LinearGradient } from "expo-linear-gradient";
@@ -113,7 +116,7 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
     return <Text>Loading...</Text>;
   }
 
-
+  // concern toggle slider parameters
   const trackWidth = 150; // The total width of the slider track
   const thumbWidth = 80; // The width of the slider thumb
   const spaceForThumbToMove = trackWidth - thumbWidth;
@@ -168,8 +171,6 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
             <Text>{"Indoor/Outdoor: " + pet?.indoorOrOutdoor}</Text>
             <Text>{"Reproductive Status: " + pet?.reproductiveStatus}</Text>
             <Text>{"Notes: " + pet?.notes}</Text>
-            {/* just for debugging don't want to display */}
-            {/* <Text>{ "Thread ID: " + pet?.threadId }</Text> */}
           </Box>
           <Box mt="6" style={styles.centeredView}>
             <TouchableOpacity
@@ -217,11 +218,9 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
               <Text style={styles.buttonText}>Remove Profile</Text>
             </TouchableOpacity>
           </Box>
-
         </ScrollView>
       </LinearGradient>
     </SafeAreaWrapper>
-
   )
 }
 
@@ -232,30 +231,10 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     borderRadius: 10,
   },
-  scrollViewStyle: {
-    flex: 1,
-    paddingHorizontal: 5.5,
-    marginTop: 13,
-  },
   centeredView: {
     alignItems: 'center', // This will center the child components horizontally
     justifyContent: 'center', // This will center the child components vertically if the view has a defined height
     flex: 1,
-  },
-  headerText: {
-    fontSize: 24, // Adjust the font size as needed
-    fontWeight: 'bold', // If you want the text to be bold
-    textAlign: 'center', // Center the text horizontally
-    marginTop: 20, // Optional: add some spacing at the top
-    marginBottom: 20, // Optional: add some spacing at the bottom
-  },
-  container: {
-    flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.0)',
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   button: {
     paddingHorizontal: 20,
@@ -274,7 +253,6 @@ const styles = StyleSheet.create({
     height: 40, // Adjust as needed
     borderRadius: 30, // Typically half the height for a rounded effect
     backgroundColor: 'grey', // Background color of the track
-    // Include padding if necessary
   },
   sliderThumb: {
     width: 80, // Use the thumbWidth defined above

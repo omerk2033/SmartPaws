@@ -60,7 +60,6 @@ const AIScreen: React.FC = () => {
       setPets(data);
     } catch (error) {
       console.error("Error fetching pets", error);
-      // Handle the error as appropriate...
     }
   };
 
@@ -257,6 +256,8 @@ const AIScreen: React.FC = () => {
     processUserMessage(newMessage);
   };
 
+  // send user's query to pet's thread in assistant api
+  // display response from chatbot 
   const processUserMessage = async (message: Message) => {
     setMessages(messages => [...messages, message]);
     setInputText('');
@@ -304,6 +305,7 @@ const AIScreen: React.FC = () => {
   }
 
   // send pet profile to thread again without creating a new thread
+  // display response from chatbot
   const sendPetInfoAgain = async (pet: IPet) => {
     if (pet.threadId == "") {
       console.log("should not send pet info again if haven't sent before and don't have a thread id already");

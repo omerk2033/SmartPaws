@@ -75,21 +75,15 @@ const SettingsScreen = () => {
         colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
         style={styles.linearGradient}
       >
-        {/* Ensure text is inside a <Text> component */}
         <Text style={[styles.title, {marginTop: 20}]}>Settings</Text>
-
         <OptionsList />
-
-
         {/* button to reset password, sends password reset link to user's email */}
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <TouchableOpacity
           onPress={handleResetPassword}
           style={[styles.button, { backgroundColor: "#201A64", width: 200, alignSelf: 'center', marginBottom: 0 }]}  >
-          {/* Ensure text is inside a <Text> component */}
           <Text style={styles.buttonText}>Reset Password</Text>
         </TouchableOpacity>
-
           <Text style={{ color: '#000', fontSize: 20, fontWeight: 'bold', textAlign: 'center', paddingHorizontal: 30, marginTop: 10 }}>
             A link will be sent to your registered email to reset your password
           </Text>
@@ -97,7 +91,6 @@ const SettingsScreen = () => {
         <TouchableOpacity
           onPress={handleSignOut}
           style={[styles.button, { backgroundColor: "red" }]}  >
-          {/* Ensure text is inside a <Text> component */}
           <Text style={styles.buttonText}>Log Out</Text>
         </TouchableOpacity>
       </LinearGradient>
@@ -109,12 +102,6 @@ const styles = StyleSheet.create({
   linearGradient: {
     flex: 1,
     justifyContent: 'space-between', // Push content to the top and button to the bottom
-  },
-  scrollViewContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingTop: 20, // Space from top
   },
   title: {
     fontSize: 24,

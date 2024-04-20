@@ -14,11 +14,11 @@ import { IPet } from "../../types";
 import Input from "../../components/shared/input";
 import axiosInstance, { BASE_URL } from "../../services/config";
 import { RouteProp } from '@react-navigation/native';
+import { LinearGradient } from "expo-linear-gradient";
 
 // UploadImage used if user updates pet profile image
 // exactly the same function so importing here rather than duplicating code
 import { UploadImage } from "../regPetScreen/regPetScreen";
-import { LinearGradient } from "expo-linear-gradient";
 
 type Props = {
   route: RouteProp<HomeStackParamList, 'UpdatePet'>;
@@ -92,10 +92,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
       // imageUrl was set in UploadImage function
       data.image = imageUrl;
     }
-
-    // just printing
-    console.log("onSubmit function");
-    console.log(data);
 
     try {
       const { ownerId, name, age,
@@ -180,7 +176,7 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
         reset({
           ownerId: ownerId,
           name: pet.name,
-          age: pet.age.toString(),
+          age: pet.age,
           species: pet.species,
           breed: pet.breed,
           color: pet.color,
@@ -221,11 +217,9 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
         style={{ flex: 1 }}
       >
         <ScrollView keyboardShouldPersistTaps='handled' style={styles.scrollViewStyle}>
-
           <View style={styles.centeredView}>
             <Text style={styles.headerText}>Update Pet Profile</Text>
           </View>
-
           <Box mb="6" />
           <Controller
             control={control}
@@ -498,11 +492,6 @@ const UpdatePetScreen: React.FC<Props> = ({ route }) => {
 }
 
 const styles = StyleSheet.create({
-  linearGradient: {
-    flex: 1,
-    paddingHorizontal: 10,
-    paddingTop: 20,
-  },
   input: {
     backgroundColor: 'rgba(255, 255, 255, 0.5)', // Semi-transparent background
     borderRadius: 20, // Rounded corners

@@ -7,9 +7,9 @@ const port = env.PORT
 const connectToDatabase = async () => {
 
   try {
-    const connection = await mongoose.connect(env.MONGODB_CONNECTION_STRING)
+    const connection = await mongoose.connect(env.MONGODB_CONNECTION_STRING);
     if (connection) {
-      console.log("Mongoose connected!")
+      console.log("Mongoose connected!");
     }
     // application imported from app.ts signifies the initial routes for /user and /pet
     application.listen(port, () => {
@@ -17,7 +17,7 @@ const connectToDatabase = async () => {
     });
 
   } catch (error) {
-    console.log("error in connecting to database...")
+    console.log("error in connecting to database...");
   }
 
 

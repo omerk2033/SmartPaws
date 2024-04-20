@@ -58,8 +58,7 @@ const RegPetScreen = () => {
       reproductiveStatus: "",
       image: "",
       notes: "",
-      // adding threadId for pet's specific thread with openai assistant
-      threadId: threadId,
+      threadId: threadId, // threadId for pet's specific thread with openai assistant
     },
   });
 
@@ -151,14 +150,6 @@ const RegPetScreen = () => {
           <Box mb="6" />
           <Controller
             control={control}
-            rules={{
-              // check that age value is a number and is greater than or equal to 0
-              validate: value => {
-                const floatAge = parseFloat(value);
-                return Number.isFinite(floatAge) && floatAge >= 0;
-              },
-              required: true,
-            }}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
                 label="Age"

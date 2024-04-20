@@ -20,6 +20,7 @@ const Navigation = () => {
 
       // set inital screen of home stack based on if user exists already
       // otherwise will be registering for the 1st time and will go to Onboard1 instead
+      // switched to skip onboarding and go to TermsOfUse for now
       // setInitialScreen(user ? 'Home' : 'Onboard1');
       setInitialScreen(user ? 'Home' : 'TermsOfUse');
     });

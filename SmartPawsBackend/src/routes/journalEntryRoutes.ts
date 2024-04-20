@@ -1,3 +1,5 @@
+// defines routes for jounralEntryController to post to
+
 import express from 'express';
 import { createJournalEntry, getJournalEntriesOnePet } from "../controllers/journalEntryController";
 

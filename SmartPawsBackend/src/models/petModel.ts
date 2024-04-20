@@ -12,7 +12,7 @@ const petSchema = new mongoose.Schema({
     required: true,
   },
   age: {
-    type: Number,
+    type: String,
     required: true,
   },
   species: {
@@ -59,7 +59,6 @@ const petSchema = new mongoose.Schema({
   },
   notes: {
     type: String,
-    // perhaps an array of notes...
   },
   threadId: {
     type: String,
