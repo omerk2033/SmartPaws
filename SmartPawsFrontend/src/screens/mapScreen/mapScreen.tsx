@@ -221,7 +221,8 @@ const styles = StyleSheet.create({
   refreshButtonContainer: {
     position: 'absolute', // Position over the map
     bottom: 20, // Distance from bottom
-    left: 20 // Distance from left
+    // left: 20, // Distance from left
+    alignSelf: 'center',
   },
   refreshButton: {
     backgroundColor: 'rgba(255,255,255,0.8)', // Semi-transparent white
