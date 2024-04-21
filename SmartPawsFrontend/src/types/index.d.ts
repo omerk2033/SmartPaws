@@ -7,6 +7,7 @@ interface IUser {
 }
 
 interface IPet {
+  id: any
   ownerId: string
   name: string
   age: string
