@@ -21,14 +21,7 @@ export default function OnBoarding1() {
   return (
     <SafeAreaWrapper>
       <LinearGradient
-        colors={[
-          "#C2BBF0",
-          "#C2BBF0",
-          "#C2BBF0",
-          "#C2BBF0",
-          "#C2BBF0",
-          "#C2BBF0",
-        ]}
+        colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
         style={{ flex: 1 }}
       >
         {/* Add Image at the top and center */}

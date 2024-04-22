@@ -26,8 +26,8 @@ const SignUpScreen = () => {
   // set initial screen in home stack navigator to be Onboard1 since coming from SignUp
   // instead skipping onboarding screens for now and navigating to terms of use screen
   useEffect(() => {
-    // setInitialScreen('Onboard1');
-    setInitialScreen('TermsOfUse');
+     setInitialScreen('Onboard1');
+    //setInitialScreen('TermsOfUse');
   }, []);
 
   const navigation = useNavigation<AuthScreenNavigationType<"SignUp">>()

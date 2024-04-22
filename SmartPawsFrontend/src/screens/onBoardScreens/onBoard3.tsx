@@ -27,14 +27,7 @@ export default function OnBoarding3() {
   return (
     <SafeAreaWrapper>
       <LinearGradient
-        colors={[
-          "#62BFED",
-          "#62BFED",
-          "#62BFED",
-          "#62BFED",
-          "#62BFED",
-          "#62BFED",
-        ]}
+        colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
         style={{ flex: 1 }}
       >
         <Box flex={1} justifyContent="center">
