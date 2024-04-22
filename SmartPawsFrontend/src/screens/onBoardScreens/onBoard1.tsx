@@ -4,14 +4,12 @@ import { HomeStackParamList } from "../../navigation/types";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { LinearGradient } from "expo-linear-gradient";
 import { Box, Text } from "../../utils/theme/style";
-import Button from "../../components/shared/button";
+import { Image, TouchableOpacity } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'RegPet'>
 
 export default function OnBoarding1() {
-
-  // const navigation = useNavigation<AuthScreenNavigationType<"Onboard1">>();
   const navigation = useNavigation<HomeStackNavigationProps>();
 
   const navigateToOnboard2Screen = () => {
@@ -20,40 +18,45 @@ export default function OnBoarding1() {
 
   return (
     <SafeAreaWrapper>
-      <LinearGradient
-        colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
-        style={{ flex: 1 }}
+      <TouchableOpacity 
+        style={{ flex: 1 }} 
+        activeOpacity={1} // Keep the TouchableOpacity visible
+        onPress={navigateToOnboard2Screen} // Navigation function
       >
-        {/* Add Image at the top and center */}
-        <Box flex={1} justifyContent="center">
-          <Box alignItems="center" mb="10">
+        <LinearGradient
+          colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
+          style={{ flex: 1 }}
+        >
+          <Box alignItems="center" mt="5">
+            <Image
+              source={require('../../../assets/sp_logo.png')}
+              style={{ width: 225, height: 225 }}
+            />
+          </Box>
+
+          <Box flex={1} justifyContent="center" alignItems="center">
             <Text
               textAlign="center"
               variant="textXl"
               fontWeight="700"
-              color="blu900"
+              color="zinc900"
+              style={{ marginHorizontal: 20 }}
             >
-              Registering a Pet:
-              Use the Add Pet button and fill out the requested fields about your pet! They will be added to
-              the home screen which will allow you to manage your pet's data.
+              Thank you for joining us at SmartPaws! We strive to keep your pets happy and healthy.
+              Together, we can make a difference in their lives with cutting-edge technology and a
+              compassionate community. Our powerful AI assistant, Gigi, is here to help you along the way!
             </Text>
           </Box>
-          <Text
-            textAlign="center"
-            variant="textXl"
-            fontWeight="700"
-            color="red700"
-          >
-            Fi
-          </Text>
-          <Box my="3.5" mx="10">
-            <Button
-              label="Next"
-              onPress={navigateToOnboard2Screen}
-            />
+
+          <Box alignItems="center" mb="10">
+            <Text
+              style={{ color: 'fuchsia900', fontSize: 16 }}
+            >
+              Tap anywhere to continue...
+            </Text>
           </Box>
-        </Box>
-      </LinearGradient>
+        </LinearGradient>
+      </TouchableOpacity>
     </SafeAreaWrapper>
   );
 }

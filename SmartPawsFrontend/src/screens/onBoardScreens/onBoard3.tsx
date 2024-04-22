@@ -1,60 +1,74 @@
-import React from 'react'
+import React from 'react';
 import { useNavigation } from "@react-navigation/native";
+import { TouchableOpacity, StyleSheet} from 'react-native';
 import { HomeStackParamList } from "../../navigation/types";
 import SafeAreaWrapper from "../../components/shared/safeAreaWrapper";
 import { LinearGradient } from "expo-linear-gradient";
 import { Box, Text } from "../../utils/theme/style";
-import Button from "../../components/shared/button";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 type HomeStackNavigationProps = NativeStackNavigationProp<HomeStackParamList, 'RegPet'>
 
-
 export default function OnBoarding3() {
-
-  // const navigation = useNavigation<AuthScreenNavigationType<"Onboard3">>()
   const navigation = useNavigation<HomeStackNavigationProps>();
-  const navigateToSignUpScreen = () => {
-    // changing to navigate to Home screen to start there after onboarding is complete
-    // navigation.navigate("SignUp")
 
-    navigation.navigate("Home")
+  const navigateToHomeScreen = () => {
+    navigation.navigate("Home");
   }
 
-  const navigateToOnboard2Screen = () => {
-    navigation.navigate("Onboard2")
-  }
   return (
     <SafeAreaWrapper>
-      <LinearGradient
-        colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
-        style={{ flex: 1 }}
+      <TouchableOpacity 
+        style={{ flex: 1 }} 
+        activeOpacity={1}
+        onPress={navigateToHomeScreen}
       >
-        <Box flex={1} justifyContent="center">
-          <Box alignItems="center" mb="3.5">
-
-          </Box>
-          <Text textAlign="center" variant="textXl" fontWeight="700">
-            Gigi:
-            Your very own AI companion! Gigi can assist you with any of your questions or concerns
-            about your pet. Don't worry Gigi doesn't bite!
-
+        <LinearGradient
+          colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
+          style={{ flex: 1 }}
+        >
+          <Box flex={1} justifyContent="center" alignItems="center" paddingHorizontal="10">
+          <Text 
+              style={{
+                textAlign: 'center', 
+                fontSize: 24, 
+                fontWeight: '700',
+                textDecorationLine: 'underline' 
+              }}
+            >
+            Getting Started
           </Text>
-          <Box my="3.5" mx="10">
-            <Button
-              label="Next"
-              onPress={navigateToSignUpScreen}
-            />
+            <Text textAlign="center" variant="textLg" fontWeight="600" style={{ marginTop: 20 }}>
+              1.) Select 'Add Pet' to begin adding your pet's profile.
+            </Text>
+            <Text textAlign="center" variant="textLg" fontWeight="600" style={{ marginTop: 20 }}>
+              2.) Fill in the Pet Profile; the more information, the better!
+            </Text>
+            <Text textAlign="center" variant="textLg" fontWeight="600" style={{ marginTop: 20 }}>
+              3.) With your pet added, you can view, edit, and flag the profile for concern after selecting it.
+            </Text>
+            <Text textAlign="center" variant="textLg" fontWeight="600" style={{ marginTop: 20 }}>
+              4.) Enjoy! You are all set to use SmartPaws to keep your pets happy and healthy.
+            </Text>
           </Box>
-          <Box my="3.5" mx="10">
-            <Button
-              label="Back"
-              onPress={navigateToOnboard2Screen}
-            />
+          <Box alignItems="center" mb="10">
+            <Text
+              style={{ color: 'fuchsia900', fontSize: 16 }}
+            >
+              Tap anywhere to continue...
+            </Text>
           </Box>
-        </Box>
-      </LinearGradient>
+        </LinearGradient>
+      </TouchableOpacity>
     </SafeAreaWrapper>
-  )
-
+  );
 }
+
+const styles = StyleSheet.create({
+  titleText: {
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '700',
+    marginBottom: 10,
+  },
+});
