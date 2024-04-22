@@ -23,7 +23,7 @@ export type AuthStackParamList = {
 }
 
 export type RootBottomTabParamList = {
-  HomeStack: NavigatorScreenParams<HomeScreenStack>
+  HomeStack: NavigatorScreenParams<HomeStackParamList>
   AiStack: NavigatorScreenParams<AiStackParamList>
   JournalStack: NavigatorScreenParams<JournalStackParamList>
   MapStack: NavigatorScreenParams<SettingsStackParamList>

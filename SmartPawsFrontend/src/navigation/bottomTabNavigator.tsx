@@ -3,12 +3,12 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { RootBottomTabParamList } from "./types";
 import React from "react";
+import HomeStackNavigator from "./homeStackNavigator";
 import theme from "../utils/theme/style";
 import { MaterialIcons } from '@expo/vector-icons'; // Import icons from the library
 import aiScreen from "../screens/aiScreen/aiScreen";
 import journalScreen from "../screens/journalScreen/journalScreen";
 import mapScreen from "../screens/mapScreen/mapScreen";
-import HomeScreen from "screens/homeScreen/homeScreen";
 
 const Tab = createBottomTabNavigator<RootBottomTabParamList>();
 
@@ -23,7 +23,7 @@ const BottomTabNavigator = () => {
     >
       <Tab.Screen
         name="HomeStack"
-        component={HomeScreen}
+        component={HomeStackNavigator}
         options={{
           title: "Home",
           headerShown: false,
