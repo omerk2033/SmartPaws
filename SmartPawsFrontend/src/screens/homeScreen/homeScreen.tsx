@@ -156,7 +156,7 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   petEntry: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
     marginVertical: 8, // Adds space between entries
   },
@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
   petName: {
     fontSize: 24, // Adjust font size as desired
     fontWeight: 'bold',
+    marginTop: 10,
   },
   button: {
     paddingHorizontal: 20,
