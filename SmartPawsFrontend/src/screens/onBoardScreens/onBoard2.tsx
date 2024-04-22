@@ -13,7 +13,7 @@ export default function OnBoarding2() {
   const navigation = useNavigation<HomeStackNavigationProps>();
 
   const navigateToNextScreen = () => {
-    navigation.navigate("Onboard3"); // Adjust as needed for your flow
+    navigation.navigate("Onboard3"); 
   }
 
   return (
@@ -52,7 +52,8 @@ export default function OnBoarding2() {
           </Box>
           <Box alignItems="center" mb="10">
             <Text
-              style={{ color: 'fuchsia900', fontSize: 16 }}
+              color='fuchsia900'
+              style={{ fontSize: 16 }}
             >
               Tap anywhere to continue...
             </Text>

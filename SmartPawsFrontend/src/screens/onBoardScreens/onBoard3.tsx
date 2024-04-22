@@ -53,7 +53,8 @@ export default function OnBoarding3() {
           </Box>
           <Box alignItems="center" mb="10">
             <Text
-              style={{ color: 'fuchsia900', fontSize: 16 }}
+              color='fuchsia900'
+              style={{ fontSize: 16 }}
             >
               Tap anywhere to continue...
             </Text>

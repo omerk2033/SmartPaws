@@ -20,8 +20,8 @@ export default function OnBoarding1() {
     <SafeAreaWrapper>
       <TouchableOpacity 
         style={{ flex: 1 }} 
-        activeOpacity={1} // Keep the TouchableOpacity visible
-        onPress={navigateToOnboard2Screen} // Navigation function
+        activeOpacity={1} 
+        onPress={navigateToOnboard2Screen} 
       >
         <LinearGradient
           colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
@@ -47,10 +47,10 @@ export default function OnBoarding1() {
               compassionate community. Our powerful AI assistant, Gigi, is here to help you along the way!
             </Text>
           </Box>
-
           <Box alignItems="center" mb="10">
             <Text
-              style={{ color: 'fuchsia900', fontSize: 16 }}
+              color='fuchsia900'
+              style={{ fontSize: 16 }}
             >
               Tap anywhere to continue...
             </Text>
