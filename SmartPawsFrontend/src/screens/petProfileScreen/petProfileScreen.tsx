@@ -226,10 +226,9 @@ const PetProfileScreen: React.FC<Props> = ({ route }) => {
 
 const styles = StyleSheet.create({
   petImage: {
-    width: 150,
-    height: 150,
-    resizeMode: "cover",
-    borderRadius: 10,
+    width: 170, // Adjust width as desired
+    height: 170, // Adjust height as desired
+    borderRadius: 85, // Adjust for rounded corners, 50 if you want it circular
   },
   centeredView: {
     alignItems: 'center', // This will center the child components horizontally

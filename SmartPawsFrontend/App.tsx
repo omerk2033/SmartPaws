@@ -5,6 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { SWRConfig } from "swr";
 import { AppState, AppStateStatus } from "react-native";
 import { LogBox } from 'react-native'; // to suppress firebase warnings displayed on screen 
+import { StatusBar } from 'react-native';
 
 LogBox.ignoreLogs(['@firebase/auth']); // to suppress firebase warnings displayed on screen
 
@@ -12,6 +13,7 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <SafeAreaProvider>
+      <StatusBar barStyle="dark-content" backgroundColor="white" />
         <SWRConfig
           value={{
             provider: () => new Map(),

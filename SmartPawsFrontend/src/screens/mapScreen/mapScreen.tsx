@@ -5,6 +5,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location'; // to get user's current location
+import { FlatList } from 'react-native';
 
 const MapScreen: React.FC = () => {
   // using region to set the region based on how large is needed 
@@ -64,6 +65,17 @@ const MapScreen: React.FC = () => {
     } catch (error) {
       console.error('Error fetching veterinarians:', error);
     }
+  };
+
+  const zoomedInDelta = 0.05; // Smaller values for a closer zoom
+
+  const centerMapOnVet = (vet: Veterinarian) => {
+    setRegion({
+      latitude: vet.geometry.location.lat,
+      longitude: vet.geometry.location.lng,
+      latitudeDelta: zoomedInDelta,
+      longitudeDelta: zoomedInDelta,
+    });
   };
 
   // get current user's location when page initially loads
@@ -137,80 +149,44 @@ const MapScreen: React.FC = () => {
     }
   }, [locationFetched]);
 
-  // if app did not load vet locations and refresh button is pressed
-  const refreshVets = () => {
-    console.log('Refreshing veterinarians list');
-    if (userLocation.current) {
-      // Log the current location being used for refreshing
-      console.log(`Using location: ${userLocation.current.latitude}, ${userLocation.current.longitude}`);
-
-      // Update the map's region to center on the user's current location
-      setRegion({
-        latitude: userLocation.current.latitude,
-        longitude: userLocation.current.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-
-      // Reset the vetsFetched to false to re-fetch the veterinarians
-      setVetsFetched(false);
-      // Since we already have the user's location, we don't need to fetch it again
-      // Just set locationFetched to true to trigger the effect that fetches the veterinarians
-      setLocationFetched(true);
-    } else {
-      console.error("User location not available.");
-    }
-  };
-
+  
   return (
     <LinearGradient
       colors={["#1B7899", "#43B2BD", "#43B2BD", "#43B2BD", "#1B7899"]}
       style={styles.linearGradient}
     >
-      {/* 2 attempts (regionSet, locationFetched) at trying to get the map to wait until the region of view is set */}
-      {/* it seems to be working better so scared to touch it */}
-      {regionSet &&
-        <View style={{ marginTop: 5, flex: 1 }}>
-          {locationFetched && <MapView
-            style={{ flex: 1 }}
-            region={region}
-          >
-            {/* Markers for all of the nearby veterinarians */}
-            {veterinarians.map((veterinarian, index) => (
-              <Marker
-                key={index}
-                coordinate={{
-                  latitude: veterinarian.geometry.location.lat,
-                  longitude: veterinarian.geometry.location.lng
-                }}
-                title={veterinarian.name}
-                description={veterinarian.vicinity}
-              />
-            ))}
-            {userLocation.current && (
-              <Marker
-                key="user_location"
-                coordinate={{
-                  latitude: userLocation.current.latitude,
-                  longitude: userLocation.current.longitude
-                }}
-                title="Your Location"
-                pinColor="#ADD8E6"
-              />
-            )}
-          </MapView>
-          }
-        </View>
-      }
-      <View style={styles.refreshButtonContainer}>
-        <TouchableOpacity onPress={refreshVets} style={styles.refreshButton}>
-          <Text style={styles.refreshButtonText}>Refresh</Text>
-        </TouchableOpacity>
+      <View style={styles.mapContainer}>
+        <MapView
+          style={styles.map}
+          region={region}
+        >
+          {veterinarians.map((vet, index) => (
+            <Marker
+              key={index}
+              coordinate={{
+                latitude: vet.geometry.location.lat,
+                longitude: vet.geometry.location.lng,
+              }}
+              title={vet.name}
+              description={vet.vicinity}
+            />
+          ))}
+        </MapView>
       </View>
+      <FlatList
+        data={veterinarians}
+        keyExtractor={(item, index) => 'key' + index}
+        renderItem={({ item }) => (
+          <TouchableOpacity style={styles.listItem} onPress={() => centerMapOnVet(item)}>
+            <Text style={styles.listItemText}>{item.name}</Text>
+            <Text style={styles.listItemSubtext}>{item.vicinity}</Text>
+          </TouchableOpacity>
+        )}
+        style={styles.list}
+      />
     </LinearGradient>
   );
 };
-
 const styles = StyleSheet.create({
   refreshButtonContainer: {
     position: 'absolute', // Position over the map
@@ -229,12 +205,30 @@ const styles = StyleSheet.create({
   },
   linearGradient: {
     flex: 1,
-    paddingHorizontal: 10,
-    paddingTop: 20,
+  },
+  mapContainer: {
+    flex: 1, // Take up all available space
+    height: '50%', // Set the height to 50% of the screen
   },
   map: {
-    width: '100%',
-    height: '100%',
+    ...StyleSheet.absoluteFillObject, // Fill up the entire space of its parent
+  },
+  list: {
+    flex: 1, // Take up all available space
+    height: '50%', // Set the height to 50% of the screen
+  },
+  listItem: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    backgroundColor: 'white',
+  },
+  listItemText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  listItemSubtext: {
+    fontSize: 14,
   },
 });
 
