@@ -23,16 +23,14 @@ const AuthStackNavigator = () => {
       <Stack.Screen
         name="SignIn"
         options={{
-          headerTitle: "",
-          headerBackTitleVisible: false,
+          headerShown: false,
         }}
         component={SignInScreen}
       />
       <Stack.Screen
         name="SignUp"
         options={{
-          headerTitle: "",
-          headerBackTitleVisible: false,
+          headerShown: false,
         }}
         component={SignUpScreen}
       />

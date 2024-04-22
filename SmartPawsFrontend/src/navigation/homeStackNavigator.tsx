@@ -53,7 +53,15 @@ const HomeStackNavigator = () => {
         headerTitleAlign: 'center',
         headerBackTitleVisible: false,
       })}
-    >
+      >{/* home screen */}
+      <Stack.Screen
+        name={"Home"}
+        options={{
+          headerTitle: "",
+          headerBackTitleVisible: false,
+        }}
+        component={HomeScreen}
+      />
       {/* onboarding screens */}
       <Stack.Screen
         name={"Onboard1"}
@@ -76,15 +84,6 @@ const HomeStackNavigator = () => {
           headerShown: false,
         }}
         component={OnBoarding3}
-      />
-      {/* home screen */}
-      <Stack.Screen
-        name={"Home"}
-        options={{
-          headerTitle: "",
-          headerBackTitleVisible: false,
-        }}
-        component={HomeScreen}
       />
       {/* register pet screen */}
       <Stack.Screen

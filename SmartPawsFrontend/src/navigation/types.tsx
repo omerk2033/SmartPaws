@@ -29,11 +29,6 @@ export type RootBottomTabParamList = {
   MapStack: NavigatorScreenParams<SettingsStackParamList>
 }
 
-export type HomeScreenStack = {
-  HomeScreen: undefined
-  
-}
-
 export type HomeStackParamList = {
   Onboard1: undefined
   Onboard2: undefined
