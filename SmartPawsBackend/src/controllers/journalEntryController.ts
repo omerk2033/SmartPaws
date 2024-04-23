@@ -27,13 +27,13 @@ export const createJournalEntry = async (request: Request, response: Response) =
 
 export const getJournalEntriesOnePet = async (request: Request, response: Response) => {
   try {
-    const { ownerId, petName } = request.params
+    const { ownerId, petName } = request.params;
     const journalEntries = await JournalEntry.find({ ownerId, petName });
-    console.log(journalEntries)
-    return response.status(200).send(journalEntries)
+    console.log(journalEntries);
+    return response.status(200).send(journalEntries);
   } catch (error) {
-    console.log("error in getJournalEntriesOnePet", error)
-    throw error
+    console.log("error in getJournalEntriesOnePet", error);
+    throw error;
   }
 }
 

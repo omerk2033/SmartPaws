@@ -47,7 +47,7 @@ export default function OnBoarding2() {
               Journal: Keep heartfelt notes and track your pet’s milestones.
             </Text>
             <Text textAlign="center" variant="textLg" fontWeight="600" style={{ marginTop: 20 }}>
-              Locate Nearby Veterinaries: Quickly find veterinary care when you need it most.
+              Locate Nearby Veterinarians: Quickly find veterinary care when you need it most.
             </Text>
           </Box>
           <Box alignItems="center" mb="10">

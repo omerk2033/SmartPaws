@@ -12,12 +12,11 @@ export const createPet = async (request: Request, response: Response) => {
       gender, vaccinationRecords,
       medsSupplements, allergiesSensitivities, prevIllnessesInjuries,
       diet, exerciseHabits, indoorOrOutdoor,
-      reproductiveStatus, image, notes, threadId } = request.body
+      reproductiveStatus, image, notes, threadId } = request.body;
 
-    // NOT SURE THAT THIS IS WORKING FOR CHECKING IF AN OWNER ALREADY HAS A PET WITH THE SAME NAME, NEED TO TEST...
-    const existingPet = await Pet.findOne({ ownerId, name }) // check if the database already contains a pet with same ownerId and name
+    const existingPet = await Pet.findOne({ ownerId, name }); // check if the database already contains a pet with same ownerId and name
     if (existingPet) {
-      return response.status(409).send("pet already exists")
+      return response.status(409).send("pet already exists");
     }
 
     // not doing anything with generating a password
@@ -44,11 +43,11 @@ export const createPet = async (request: Request, response: Response) => {
       threadId: threadId,
     })
 
-    return response.status(201).send({ message: "Pet created successfully" })
+    return response.status(201).send({ message: "Pet created successfully" });
 
   } catch (error) {
-    console.log("error in createPet", error)
-    throw error
+    console.log("error in createPet", error);
+    throw error;
   }
 }
 
@@ -86,43 +85,43 @@ export const petConcernToggle = async (request: Request, response: Response) => 
 // and gets all pets that have same ownerId as currently logged in user's uid
 export const getPets = async (request: Request, response: Response) => {
   try {
-    const { ownerId } = request.params
-    const pets = await Pet.find({ ownerId })
-    console.log(pets)
-    return response.status(200).send(pets)
+    const { ownerId } = request.params;
+    const pets = await Pet.find({ ownerId });
+    console.log(pets);
+    return response.status(200).send(pets);
   } catch (error) {
-    console.log("error in getPets", error)
-    throw error
+    console.log("error in getPets", error);
+    throw error;
   }
 }
 
 // get pet based on ownerId and pet name
 export const getOnePet = async (request: Request, response: Response) => {
   try {
-    const { ownerId, petName } = request.params
-    const pet = await Pet.findOne({ "ownerId": ownerId, "name": petName })
-    console.log(pet)
-    return response.status(200).send(pet)
+    const { ownerId, petName } = request.params;
+    const pet = await Pet.findOne({ "ownerId": ownerId, "name": petName });
+    console.log(pet);
+    return response.status(200).send(pet);
   } catch (error) {
-    console.log("error in getOnePet")
-    throw error
+    console.log("error in getOnePet");
+    throw error;
   }
 }
 
 // delete pet based on ownerId and pet name
 export const deleteOnePet = async (request: Request, response: Response) => {
   try {
-    const { ownerId, petName } = request.params
+    const { ownerId, petName } = request.params;
     const pet = await Pet.findOneAndDelete({ "ownerId": ownerId, "name": petName });
-    console.log(pet)
+    console.log(pet);
     if (!pet) {
-      return response.status(400).json("Pet not found")
+      return response.status(400).json("Pet not found");
     }
-    response.status(200).json("Pet deleted successfully")
-    console.log("pet deleted from database")
+    response.status(200).json("Pet deleted successfully");
+    console.log("pet deleted from database");
   } catch (error) {
-    console.log("error in deleteOnePet")
-    throw error
+    console.log("error in deleteOnePet");
+    throw error;
   }
 }
 

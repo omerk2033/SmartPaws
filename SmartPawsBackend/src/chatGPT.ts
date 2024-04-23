@@ -95,9 +95,7 @@ async function runCompletionAssistant(request: Request, response: Response) {
 
       // Check for failed, cancelled, or expired status
       if (["failed", "cancelled", "expired"].includes(runStatus.status)) {
-        console.log(
-          `Run status is '${runStatus.status}'. Unable to complete the request.`
-        );
+        console.log(`Run status is '${runStatus.status}'. Unable to complete the request.`);
         break; // Exit the loop if the status indicates a failure or cancellation
       }
     }
@@ -113,7 +111,7 @@ async function runCompletionAssistant(request: Request, response: Response) {
       )
       .pop();
 
-    // If an assistant message is found, console.log() it
+    // send message and thread id from assistant back to frontend to display on screen
     if (lastMessageForRun) {
       const content = lastMessageForRun.content[0];
       if ("text" in content) {

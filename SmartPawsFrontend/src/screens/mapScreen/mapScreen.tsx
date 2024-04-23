@@ -23,7 +23,6 @@ const MapScreen: React.FC = () => {
   const [locationFetched, setLocationFetched] = useState(false);
   const [veterinarians, setVeterinarians] = useState<Veterinarian[]>([]);
   const [vetsFetched, setVetsFetched] = useState(false);
-  const [regionSet, setRegionSet] = useState(false);
 
   interface Location {
     lat: number;
@@ -138,8 +137,6 @@ const MapScreen: React.FC = () => {
             });
             console.log("region");
             console.log(region);
-            // set boolean to allow MapView component to render
-            setRegionSet(true);
           }
 
         })

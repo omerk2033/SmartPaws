@@ -19,7 +19,7 @@ import { useContext } from 'react';
 import { NavigationContext } from "./navigationContext";
 import { Text, TouchableOpacity } from "react-native";
 
-const Stack = createNativeStackNavigator<HomeStackParamList>()
+const Stack = createNativeStackNavigator<HomeStackParamList>();
 
 const HomeStackNavigator = () => {
   const { initialScreen } = useContext(NavigationContext);
@@ -145,7 +145,6 @@ const HomeStackNavigator = () => {
         }}
         component={UserProfileScreen}
       />
-
       {/* terms of use screen */}
       <Stack.Screen
         name={"TermsOfUse"}
@@ -156,7 +155,6 @@ const HomeStackNavigator = () => {
         }}
         component={TermsOfUseScreen}
       />
-
     </Stack.Navigator>
   )
 }
